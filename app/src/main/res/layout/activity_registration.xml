@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.andre.medicopaziente.Registration">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/view">
+    <EditText
+        android:id="@+id/registerName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nome"
+        android:imeActionId="@+id/registerCognome"
+        android:imeActionLabel="Cognome"
+        android:imeOptions="actionUnspecified"
+        android:inputType="textPersonName"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>
+
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/view1"
+        android:layout_below="@+id/view">
+    <EditText
+        android:id="@+id/registerCognome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Cognome"
+        android:imeActionId="@+id/registerEmail"
+        android:imeActionLabel="Email"
+        android:imeOptions="actionUnspecified"
+        android:inputType="textPersonName"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:layout_below="@+id/view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/view2"
+        android:layout_below="@+id/view1">
+    <EditText
+        android:id="@+id/registerEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email"
+        android:imeActionId="@+id/registerPassword"
+        android:imeActionLabel="Password"
+        android:imeOptions="actionUnspecified"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:layout_below="@+id/registerCognome"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/view3"
+        android:layout_below="@+id/view2">
+
+    <EditText
+        android:id="@+id/registerPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/prompt_password"
+        android:imeActionId="@+id/registerCodFiscal"
+        android:imeActionLabel="Codice Fiscale"
+        android:imeOptions="actionUnspecified"
+        android:inputType="textPassword"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:layout_below="@+id/registerEmail"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/view4"
+        android:layout_below="@+id/view3">
+    <EditText
+        android:id="@+id/registerCodFiscal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Codice Fiscale"
+        android:imeActionId="@+id/registerIndirizzo"
+        android:imeActionLabel="Indirizzo"
+        android:imeOptions="actionUnspecified"
+        android:inputType="text"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:layout_below="@+id/registerPassword"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/view5"
+        android:layout_below="@+id/view4">
+        <EditText
+            android:id="@+id/registerIndirizzo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Indirizzo"
+            android:imeActionId="@+id/btnSaveData"
+            android:imeActionLabel="Save Data"
+            android:imeOptions="actionUnspecified"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:layout_below="@+id/registerCo"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+    </android.support.design.widget.TextInputLayout>
+    <Button
+        android:id="@+id/btnSaveData"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
