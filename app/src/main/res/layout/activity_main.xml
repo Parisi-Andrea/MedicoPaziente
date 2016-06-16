@@ -16,12 +16,13 @@
         android:orientation="vertical">
         <ImageView
             android:layout_width="@dimen/imageViewMainActivityDimension"
-            android:layout_height="@dimen/imageViewMainActivityDimension"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:id="@+id/imageViewMainActivity"
             android:layout_above="@+id/email_login_form"
             android:layout_alignRight="@+id/email_login_form"
             android:layout_alignEnd="@+id/email_login_form"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

@@ -108,6 +108,10 @@ public class MainActivity extends AppCompatActivity {
         btnLogIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                new SendNotification().execute(codiceFiscaleTxt.getText().toString());//DA ELIMINARE
+
+
                 Snackbar snackbar = Snackbar.make(v, codiceFiscaleTxt.getText().toString(),Snackbar.LENGTH_LONG);
                 snackbar.show();
                 username = codiceFiscaleTxt.getText().toString();
@@ -129,13 +133,15 @@ public class MainActivity extends AppCompatActivity {
                 }
                 new AsyncCallSoap().execute();
 
-
             }
         });
 
         btnRegister.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), RegistrationIntentService.class);//DA ELIMINARE
+                startService(intent);//DA ELIMINARE
+
                 Snackbar snackbar = Snackbar.make(v, "Working progress",Snackbar.LENGTH_LONG);
                 snackbar.show();
 
@@ -143,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent newPage = new Intent(getBaseContext(), Registration.class);
                 finish();
                 startActivity(newPage);
+
+
 
 
             }
