@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private Button btnRegister;
     private String username;
     private String password;
-    private String id_utente;
     private String response;
     private ProgressDialog progressDialog;
     private CheckBox checkBoxMedico,checkBoxSalva;
@@ -90,16 +89,20 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
 
-        if (prefs.contains("codiceFiscale")) {
+        if (prefs.contains("codiceFiscale"))
+        {
             codiceFiscaleTxt.setText(prefs.getString("codiceFiscale", ""));
         }
-        if (prefs.contains("password")) {
+        if (prefs.contains("password"))
+        {
             passwordTxt.setText(prefs.getString("password", ""));
         }
-        if (prefs.contains("check")) {
+        if (prefs.contains("check"))
+        {
             checkBoxMedico.setChecked(prefs.getBoolean("check", false));
         }
-        if (prefs.contains("rememberMe")) {
+        if (prefs.contains("rememberMe"))
+        {
             checkBoxSalva.setChecked(prefs.getBoolean("rememberMe", false));
         }
 
@@ -108,17 +111,8 @@ public class MainActivity extends AppCompatActivity {
         btnLogIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar snackbar = Snackbar.make(v, codiceFiscaleTxt.getText().toString(),Snackbar.LENGTH_LONG);
-                snackbar.show();
                 username = codiceFiscaleTxt.getText().toString();
-                if(checkBoxMedico.isChecked())
-                {
-                    tipoUtente = "Medico";
-                }
-                else
-                {
-                    tipoUtente = "Paziente";
-                }
+
                 if(username.length()!=16)
                 {
                     AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
@@ -126,6 +120,15 @@ public class MainActivity extends AppCompatActivity {
                     alertDialog.setMessage("Formato codice fiscale non corretto");
                     alertDialog.show();
                     return;
+                }
+
+                if(checkBoxMedico.isChecked())
+                {
+                    tipoUtente = "Medico";
+                }
+                else
+                {
+                    tipoUtente = "Paziente";
                 }
                 new AsyncCallSoap().execute();
 
