@@ -7,6 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/colorBackground"
     tools:context="com.example.andre.medicopaziente.MainActivity">
 
     <LinearLayout
@@ -68,6 +69,7 @@
             android:text="Medico"
             android:layout_weight="3"
             android:id="@+id/cbMedico"
+
             android:layout_gravity="right" />
 
         <CheckBox

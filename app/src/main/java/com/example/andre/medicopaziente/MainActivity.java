@@ -26,6 +26,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -48,26 +50,13 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class MainActivity extends AppCompatActivity {
 
 
-    private EditText passwordTxt;
-    private EditText codiceFiscaleTxt;
+    private EditText passwordTxt,codiceFiscaleTxt;
     private ImageView imageView;
-    private Button btnLogIn;
-    private Button btnRegister;
-    private String username;
-    private String password;
-    private String response;
+    private Button btnLogIn,btnRegister;
+    private String username,password,response;
     private ProgressDialog progressDialog;
     private CheckBox checkBoxMedico,checkBoxSalva;
-    String tipoUtente;
-    String codiceFiscaleExtra;
-    String nomeExtra;
-    String cognomeExtra;
-    String dataNascitaExtra;
-    String luogoNascitaExtra;
-    String residenzaExtra;
-    String EmailExtra;
-    String nTelExtra;
-    String passwordExtra;
+    String tipoUtente,codiceFiscaleExtra,nomeExtra,cognomeExtra,dataNascitaExtra,luogoNascitaExtra,residenzaExtra,EmailExtra,nTelExtra,passwordExtra;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
 
@@ -80,12 +69,54 @@ public class MainActivity extends AppCompatActivity {
         codiceFiscaleTxt = (EditText) findViewById(R.id.email);
         passwordTxt = (EditText) findViewById(R.id.password);
         imageView = (ImageView) findViewById(R.id.imageViewMainActivity);
-        imageView.setImageResource(R.drawable.logomedium);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         btnLogIn = (Button) findViewById(R.id.btnLogin);
         checkBoxMedico = (CheckBox) findViewById(R.id.cbMedico);
         checkBoxSalva = (CheckBox) findViewById(R.id.cbSave);
         btnRegister = (Button) findViewById(R.id.btnRegistrazione);
+
+        setImageDimension();
+
+        recuperaDatiPref();
+
+        btnLogIn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                login(v);
+
+            }
+        });
+
+        btnRegister.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registration(v);
+
+
+
+            }
+        });
+
+    }
+
+    private void setImageDimension() {
+
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+
+        int height = displaymetrics.heightPixels;
+        int width = displaymetrics.widthPixels;
+
+        imageView.setImageResource(R.drawable.logomedium);
+
+        imageView.requestLayout();
+
+        imageView.getLayoutParams().height = (height / 3);
+        imageView.getLayoutParams().width = (width / 3)+(width/6);
+
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+    }
+
+    private void recuperaDatiPref() {
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
 
@@ -106,53 +137,57 @@ public class MainActivity extends AppCompatActivity {
             checkBoxSalva.setChecked(prefs.getBoolean("rememberMe", false));
         }
 
+    }
+    public void registration(View v) {
+//        Snackbar snackbar = Snackbar.make(v, "Working progress",Snackbar.LENGTH_LONG);
+//        snackbar.show();
 
 
-        btnLogIn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                username = codiceFiscaleTxt.getText().toString();
-
-                if(username.length()!=16)
-                {
-                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                    alertDialog.setTitle("ATTENZIONE");
-                    alertDialog.setMessage("Formato codice fiscale non corretto");
-                    alertDialog.show();
-                    return;
-                }
-
-                if(checkBoxMedico.isChecked())
-                {
-                    tipoUtente = "Medico";
-                }
-                else
-                {
-                    tipoUtente = "Paziente";
-                }
-                new AsyncCallSoap().execute();
-
-
-            }
-        });
-
-        btnRegister.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar snackbar = Snackbar.make(v, "Working progress",Snackbar.LENGTH_LONG);
-                snackbar.show();
-
-
-                Intent newPage = new Intent(getBaseContext(), Registration.class);
-                finish();
-                startActivity(newPage);
-
-
-            }
-        });
-
+        Intent newPage = new Intent(getBaseContext(), Registration.class);
+        //finish();
+        startActivity(newPage);
     }
 
+    public void login(View v) {
+
+        if (!validate()) {
+            return;
+        }
+        if(checkBoxMedico.isChecked())
+        {
+            tipoUtente = "Medico";
+        }
+        else
+        {
+            tipoUtente = "Paziente";
+        }
+        new AsyncCallSoap().execute();
+    }
+
+    public boolean validate() {
+        boolean valid = true;
+
+        String codiceFiscale = codiceFiscaleTxt.getText().toString();
+        String password = passwordTxt.getText().toString();
+
+        //!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+
+        if (codiceFiscale.isEmpty() || codiceFiscale.length()!=16 ) {
+            codiceFiscaleTxt.setError("inserire un codice fiscale valido");
+            valid = false;
+        } else {
+            codiceFiscaleTxt.setError(null);
+        }
+
+        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+            passwordTxt.setError("password compresa tra 4 e 10 caratteri");
+            valid = false;
+        } else {
+            passwordTxt.setError(null);
+        }
+
+        return valid;
+    }
     public class AsyncCallSoap extends AsyncTask<String,Void,String>
     {
         @Override
@@ -252,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
                             else if(tipoUtente.equals("Medico"))
                             {
                                 Intent newPage = new Intent(getBaseContext(), Profilo.class);
-                                newPage.putExtra("CodiceFiscale", codiceFiscaleExtra);
+                                newPage.putExtra("codiceFiscale", codiceFiscaleExtra);
                                 newPage.putExtra("nome", nomeExtra);
                                 newPage.putExtra("cognome", cognomeExtra);
                                 newPage.putExtra("email", EmailExtra);

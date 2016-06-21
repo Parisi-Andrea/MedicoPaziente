@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -71,15 +73,21 @@ public class Profilo extends AppCompatActivity
         TextView textViewCF = (TextView) findViewById(R.id.textCodiceFiscale);
 
         Intent intent = getIntent();
+        String tipoUtente = intent.getStringExtra("tipoUtente");
 
         String codiceFiscaleIntent = intent.getStringExtra("codiceFiscale");
         String nomeIntent = intent.getStringExtra("nome");
         String cognomeIntent = intent.getStringExtra("cognome");
-        String nomeCompletoIntent = nomeIntent+ " " +cognomeIntent;
-
-        textViewNome.setText(nomeCompletoIntent);
-        textViewCF.setText(codiceFiscaleIntent);
-
+        String nomeCompletoIntent = nomeIntent + " " + cognomeIntent;
+        if(tipoUtente.equals("Paziente")) {
+            textViewNome.setText(nomeCompletoIntent);
+            textViewCF.setText(codiceFiscaleIntent);
+        }
+        else if(tipoUtente.equals("Medico"))
+        {
+            textViewNome.setText("Dottor: "+nomeCompletoIntent);
+            textViewCF.setText(codiceFiscaleIntent);
+        }
         return true;
     }
 
@@ -101,13 +109,18 @@ public class Profilo extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        Fragment fragment = new Fragment();
+
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
             getSupportActionBar().setTitle("Home");
+            fragment = new HomeFragment();
         } else if (id == R.id.nav_wait) {
             getSupportActionBar().setTitle("In Attesa");
+            fragment = new WaitFragment();
         } else if (id == R.id.nav_response) {
             getSupportActionBar().setTitle("Risposte");
         } else if (id == R.id.nav_complete) {
@@ -115,7 +128,8 @@ public class Profilo extends AppCompatActivity
         } else if (id == R.id.nav_setting) {
             getSupportActionBar().setTitle("Setting");
         }
-
+        transaction.replace(R.id.flFragments, fragment);
+        transaction.commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
