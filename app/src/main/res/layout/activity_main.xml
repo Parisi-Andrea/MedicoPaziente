@@ -7,18 +7,20 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/colorBackground"
     tools:context="com.example.andre.medicopaziente.MainActivity">
 
     <LinearLayout
         android:id="@+id/email_login_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="100">
         <ImageView
-            android:layout_width="@dimen/imageViewMainActivityDimension"
-            android:layout_height="@dimen/imageViewMainActivityDimension"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/imageViewMainActivity"
+            android:src="@drawable/logo"
+            android:layout_weight="115"
             android:layout_above="@+id/email_login_form"
             android:layout_alignRight="@+id/email_login_form"
             android:layout_alignEnd="@+id/email_login_form"
@@ -63,24 +65,23 @@
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:layout_alignParentBottom="true">
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Medico"
-            android:layout_weight="3"
-            android:id="@+id/cbMedico"
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Medico"
+                android:layout_weight="3"
+                android:id="@+id/cbMedico"
+                android:layout_gravity="right" />
 
-            android:layout_gravity="right" />
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ricordami"
-            android:layout_weight="1"
-            android:id="@+id/cbSave"
-            android:layout_toRightOf="@id/btnLogin"
-            android:layout_gravity="right"
-            android:checked="false" />
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ricordami"
+                android:layout_weight="1"
+                android:id="@+id/cbSave"
+                android:layout_toRightOf="@id/btnLogin"
+                android:layout_gravity="right"
+                android:checked="false" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/LinearLayout02"
@@ -109,8 +110,4 @@
 
         </LinearLayout>
     </LinearLayout>
-
-
-
-
 </RelativeLayout>

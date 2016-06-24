@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private String username,password,response;
     private ProgressDialog progressDialog;
     private CheckBox checkBoxMedico,checkBoxSalva;
-    String tipoUtente,codiceFiscaleExtra,nomeExtra,cognomeExtra,dataNascitaExtra,luogoNascitaExtra,residenzaExtra,EmailExtra,nTelExtra,passwordExtra;
+    String tipoUtente,codiceFiscaleExtra,nomeExtra,medicoExtra,cognomeExtra,dataNascitaExtra,luogoNascitaExtra,residenzaExtra,EmailExtra,nTelExtra,passwordExtra;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
 
@@ -90,9 +90,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 registration(v);
-
-
-
             }
         });
 
@@ -103,17 +100,17 @@ public class MainActivity extends AppCompatActivity {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 
-        int height = displaymetrics.heightPixels;
-        int width = displaymetrics.widthPixels;
-
-        imageView.setImageResource(R.drawable.logomedium);
-
-        imageView.requestLayout();
-
-        imageView.getLayoutParams().height = (height / 3);
-        imageView.getLayoutParams().width = (width / 3)+(width/6);
-
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//        int height = displaymetrics.heightPixels;
+//        int width = displaymetrics.widthPixels;
+//
+//        imageView.setImageResource(R.drawable.logomedium);
+//
+//        imageView.requestLayout();
+//
+//        imageView.getLayoutParams().height = (height / 3);
+//        imageView.getLayoutParams().width = (width / 3)+(width/6);
+//
+//        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
     }
 
     private void recuperaDatiPref() {
@@ -215,29 +212,27 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.setMessage(s);
                 alertDialog.show();
                 if(tipoUtente.equals("Paziente")) {
-                    codiceFiscaleExtra = Utility.GetFieldCSV(s, 1, ".");
-                    nomeExtra = Utility.GetFieldCSV(s, 2, ".");
-                    cognomeExtra = Utility.GetFieldCSV(s, 3, ".");
-                    dataNascitaExtra = Utility.GetFieldCSV(s, 4, ".");
-                    luogoNascitaExtra = Utility.GetFieldCSV(s, 5, ".");
-                    residenzaExtra = Utility.GetFieldCSV(s, 6, ".");
-                    EmailExtra = Utility.GetFieldCSV(s, 7, ".") + "." + Utility.GetFieldCSV(s, 8, ".");
-
-                    //ATTENZIONE EMAIL CON CARATTERI '.'
-
-                    nTelExtra = Utility.GetFieldCSV(s, 9, ".");
-                    passwordExtra = Utility.GetFieldCSV(s, 10, ".");
+                    codiceFiscaleExtra = Utility.GetFieldCSV(s, 1, "%");
+                    nomeExtra = Utility.GetFieldCSV(s, 2, "%");
+                    cognomeExtra = Utility.GetFieldCSV(s, 3, "%");
+                    dataNascitaExtra = Utility.GetFieldCSV(s, 4, "%");
+                    luogoNascitaExtra = Utility.GetFieldCSV(s, 5, "%");
+                    residenzaExtra = Utility.GetFieldCSV(s, 6, "%");
+                    EmailExtra = Utility.GetFieldCSV(s, 7, "%");
+                    nTelExtra = Utility.GetFieldCSV(s, 8, "%");
+                    passwordExtra = Utility.GetFieldCSV(s, 9, "%");
+                    medicoExtra = Utility.GetFieldCSV(s,10,"%");
 
 
                 }
                 else if(tipoUtente.equals("Medico"))
                 {
-                    codiceFiscaleExtra = Utility.GetFieldCSV(s, 1, ".");
-                    nomeExtra = Utility.GetFieldCSV(s, 2, ".");
-                    cognomeExtra = Utility.GetFieldCSV(s, 3, ".");
-                    EmailExtra = Utility.GetFieldCSV(s, 4, ".") + "." + Utility.GetFieldCSV(s, 5, ".");
-                    nTelExtra = Utility.GetFieldCSV(s, 6, ".");
-                    passwordExtra = Utility.GetFieldCSV(s, 7, ".");
+                    codiceFiscaleExtra = Utility.GetFieldCSV(s, 1, "%");
+                    nomeExtra = Utility.GetFieldCSV(s, 2, "%");
+                    cognomeExtra = Utility.GetFieldCSV(s, 3, "%");
+                    EmailExtra = Utility.GetFieldCSV(s, 4, "%");
+                    nTelExtra = Utility.GetFieldCSV(s, 5, "%");
+                    passwordExtra = Utility.GetFieldCSV(s, 6, "%");
                 }
                 Thread background = new Thread() {
                     public  void run () {
@@ -247,8 +242,8 @@ public class MainActivity extends AppCompatActivity {
 
                             if(checkBoxSalva.isChecked()) {
                                 SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                                editor.putString("codiceFiscale", codiceFiscaleExtra);
-                                editor.putString("password", passwordExtra);
+                                editor.putString("codiceFiscale", codiceFiscaleTxt.getText().toString());
+                                editor.putString("password", passwordTxt.getText().toString());
                                 editor.putBoolean("check", checkBoxMedico.isChecked());
                                 editor.putBoolean("rememberMe",checkBoxSalva.isChecked());
                                 boolean committato = editor.commit();
@@ -280,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
                                 newPage.putExtra("nTel", nTelExtra);
                                 newPage.putExtra("password", passwordExtra);
                                 newPage.putExtra("tipoUtente",tipoUtente);
+                                newPage.putExtra("medico",medicoExtra);
 
                                 finish();
                                 startActivity(newPage);
