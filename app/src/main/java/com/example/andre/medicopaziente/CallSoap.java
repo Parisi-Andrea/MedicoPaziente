@@ -159,13 +159,13 @@ public class CallSoap {
             SoapObject result = (SoapObject) envelope.getResponse();
 
 
+            medico.codiceFiscale = result.getProperty("CodiceFiscale").toString();
             medico.nome = result.getProperty("Nome").toString();
             medico.cognome = result.getProperty("Cognome").toString();
             medico.email = result.getProperty("Email").toString();
             medico.nTel = result.getProperty("NTel").toString();
             medico.ambulatorio = result.getProperty("Ambulatorio").toString();
             medico.orario = result.getProperty("Orario").toString();
-            medico.codiceFiscale = result.getProperty("CodiceFiscale").toString();
 
         } catch (Exception ex) {
         response = ex.getMessage().toString();
@@ -290,10 +290,11 @@ public class CallSoap {
         return richieste;
     }
 
-    public String Login(String username, String password,String tipoUtente)
+    public Medico LoginMedico(String username, String password,String tipoUtente)
     {
-        String SOAP_ACTION = "http://tempuri.org/Autenticazione";
-        String OPERATION_NAME = "Autenticazione";
+        Medico medico = new Medico();
+        String SOAP_ACTION = "http://tempuri.org/AutenticazioneMedico";
+        String OPERATION_NAME = "AutenticazioneMedico";
         String WSDL_TAREGET_NAMESPACE ="http://tempuri.org/";
         String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
@@ -326,16 +327,87 @@ public class CallSoap {
             HttpTransportSE httpTransport = new HttpTransportSE(SOAP_ADDRESS);
             httpTransport.setXmlVersionTag("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
             httpTransport.debug = true;
-            httpTransport.call(SOAP_ACTION,envelope);
-            //response = httpTransport.responseDump;
-            SoapPrimitive tmp = (SoapPrimitive) envelope.getResponse();
-            response = tmp.toString();
+            httpTransport.call(SOAP_ACTION, envelope);
+
+            SoapObject result = (SoapObject) envelope.getResponse();
+
+            medico.codiceFiscale = result.getProperty("CodiceFiscale").toString();
+            medico.nome = result.getProperty("Nome").toString();
+            medico.cognome = result.getProperty("Cognome").toString();
+            medico.email = result.getProperty("Email").toString();
+            medico.nTel = result.getProperty("NTel").toString();
+            medico.password = result.getProperty("Password").toString();
+            medico.ambulatorio = result.getProperty("Ambulatorio").toString();
+            medico.orario = result.getProperty("Orario").toString();
+
         }
         catch (Exception ex)
         {
             response = ex.getMessage().toString();
+            medico = null;
         }
-        return response;
+        return medico;
+    }
+
+    public Paziente LoginPaziente(String username, String password,String tipoUtente)
+    {
+        Paziente paziente = new Paziente();
+        String SOAP_ACTION = "http://tempuri.org/AutenticazionePaziente";
+        String OPERATION_NAME = "AutenticazionePaziente";
+        String WSDL_TAREGET_NAMESPACE ="http://tempuri.org/";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
+
+        SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE,OPERATION_NAME);
+
+        PropertyInfo PI = new PropertyInfo();
+        PI.setName("codiceFiscale");
+        PI.setValue(username);
+        PI.setType(String.class);
+        request.addProperty(PI);
+
+        PI = new PropertyInfo();
+        PI.setName("Password");
+        PI.setValue(password);
+        PI.setType(String.class);
+        request.addProperty(PI);
+
+        PI = new PropertyInfo();
+        PI.setName("TipoUtente");
+        PI.setValue(tipoUtente);
+        PI.setType(String.class);
+        request.addProperty(PI);
+
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envelope.dotNet  = true;
+        envelope.setOutputSoapObject(request);
+        String response = null;
+        try
+        {
+            HttpTransportSE httpTransport = new HttpTransportSE(SOAP_ADDRESS);
+            httpTransport.setXmlVersionTag("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            httpTransport.debug = true;
+            httpTransport.call(SOAP_ACTION, envelope);
+
+            SoapObject result = (SoapObject) envelope.getResponse();
+
+            paziente.codiceFiscale = result.getProperty("CodiceFiscale").toString();
+            paziente.nome = result.getProperty("Nome").toString();
+            paziente.cognome = result.getProperty("Cognome").toString();
+            paziente.dataNascita = result.getProperty("DataNascita").toString();
+            paziente.luogoNascita = result.getProperty("LuogoNascita").toString();
+            paziente.residenza = result.getProperty("Residenza").toString();
+            paziente.email = result.getProperty("Email").toString();
+            paziente.nTel = result.getProperty("NTel").toString();
+            paziente.medico = result.getProperty("Medico").toString();
+            paziente.password = result.getProperty("Password").toString();
+
+        }
+        catch (Exception ex)
+        {
+            response = ex.getMessage().toString();
+            paziente = null;
+        }
+        return paziente;
     }
 
     public String Richiesta(String data_richiesta,String tipo,String note_richiesta,String nome_farmaco,Integer quantita_farmaco, String cf_paziente, String cf_medico) {

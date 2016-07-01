@@ -1,9 +1,12 @@
 package com.example.andre.medicopaziente;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by andre on 24/06/2016.
  */
-public class Medico {
+public class Medico implements Parcelable {
     public String codiceFiscale;
     public String nome;
     public String cognome;
@@ -12,6 +15,31 @@ public class Medico {
     public String password;
     public String ambulatorio;
     public String orario;
+    protected Medico()
+    {
+    }
+    protected Medico(Parcel in) {
+        codiceFiscale = in.readString();
+        nome = in.readString();
+        cognome = in.readString();
+        email = in.readString();
+        nTel = in.readString();
+        password = in.readString();
+        ambulatorio = in.readString();
+        orario = in.readString();
+    }
+
+    public static final Creator<Medico> CREATOR = new Creator<Medico>() {
+        @Override
+        public Medico createFromParcel(Parcel in) {
+            return new Medico(in);
+        }
+
+        @Override
+        public Medico[] newArray(int size) {
+            return new Medico[size];
+        }
+    };
 
     public String getCodiceFiscale()
     {
@@ -82,5 +110,22 @@ public class Medico {
     public void setOrario(String orario)
     {
         this.orario  = orario;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(codiceFiscale);
+        dest.writeString(nome);
+        dest.writeString(cognome);
+        dest.writeString(email);
+        dest.writeString(nTel);
+        dest.writeString(password);
+        dest.writeString(ambulatorio);
+        dest.writeString(orario);
     }
 }

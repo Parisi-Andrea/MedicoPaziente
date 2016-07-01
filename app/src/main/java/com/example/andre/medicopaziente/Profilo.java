@@ -48,6 +48,8 @@ public class Profilo extends AppCompatActivity
     private String codiceFiscaleIntent, medicoIntent, nomeIntent, cognomeIntent, nomeCompletoIntent;
     private TextView textViewNome, textViewCF;
     private ArrayList<Richiesta> richiesteMedicoList;
+    private Medico medico;
+    private Paziente paziente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,20 +103,21 @@ public class Profilo extends AppCompatActivity
 
         Intent intent = getIntent();
         String tipoUtente = intent.getStringExtra("tipoUtente");
-
-        codiceFiscaleIntent = intent.getStringExtra("codiceFiscale");
-        nomeIntent = intent.getStringExtra("nome");
-        cognomeIntent = intent.getStringExtra("cognome");
-        nomeCompletoIntent = nomeIntent + " " + cognomeIntent;
-
-        if (tipoUtente.equals("Paziente")) {
-            textViewNome.setText(nomeCompletoIntent);
-            textViewCF.setText(codiceFiscaleIntent);
-            medicoIntent = intent.getStringExtra("medico");
-        } else if (tipoUtente.equals("Medico")) {
-            textViewNome.setText("Dottor: " + nomeCompletoIntent);
-            textViewCF.setText(codiceFiscaleIntent);
+        if(tipoUtente.equals("Medico"))
+        {
+            medico = intent.getParcelableExtra("Medico");
+            textViewCF.setText(medico.getCodiceFiscale());
+            textViewNome.setText("Dott. "+medico.getNome()+ " " + medico.getCognome());
+            paziente = null;
         }
+        else
+        {
+            paziente = intent.getParcelableExtra("Paziente");
+            textViewCF.setText(paziente.getCodiceFiscale());
+            textViewNome.setText(paziente.getNome()+" "+paziente.getCognome());
+            medico = null;
+        }
+
         if (!readImageFromInternalStore(codiceFiscaleIntent)) {
             System.out.println("Errore lettura immagine");
         }
@@ -278,7 +281,13 @@ public class Profilo extends AppCompatActivity
         @Override
         protected Medico doInBackground(Medico... params) {
             CallSoap CS = new CallSoap();
-            Medico medico = CS.GetMedicoInfo(medicoIntent);
+            Medico medico = CS.GetMedicoInfo(codiceFiscaleIntent);
+            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            db.createMedico(medico);
+            db.closeDB();
+
+            Medico andrea = new Medico();
+            andrea = db.getMedico(codiceFiscaleIntent);
             return medico;
         }
 

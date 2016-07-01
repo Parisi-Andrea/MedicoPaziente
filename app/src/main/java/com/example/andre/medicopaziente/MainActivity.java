@@ -59,13 +59,17 @@ public class MainActivity extends AppCompatActivity {
     String tipoUtente,codiceFiscaleExtra,nomeExtra,medicoExtra,cognomeExtra,dataNascitaExtra,luogoNascitaExtra,residenzaExtra,EmailExtra,nTelExtra,passwordExtra;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
+    private Medico test1;
+    private Paziente test2;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        test1 = new Medico();
+        test2 = new Paziente();
         codiceFiscaleTxt = (EditText) findViewById(R.id.email);
         passwordTxt = (EditText) findViewById(R.id.password);
         imageView = (ImageView) findViewById(R.id.imageViewMainActivity);
@@ -197,7 +201,82 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             CallSoap CS = new CallSoap();
-            response = CS.Login(username,password,tipoUtente);
+            if(tipoUtente.equals("Medico")) {
+
+                //Cerco di fare il login sul web service
+
+                test1 = CS.LoginMedico(username, password, tipoUtente);
+
+                //Se ci sono riuscito controlla la password e creo il db
+                if(test1 != null) {
+                    if(test1.getPassword().equals(password))
+                    {
+                        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                        db.createMedico(test1);
+                        db.closeDB();
+                        response = "OK";
+                    }
+                    else
+                    {
+                        response = "KO";
+                    }
+
+
+                }
+                //Se non ho effettuato il login con il web service provo ad eseguirlo con il db interno
+                else if(test1 == null)
+                {
+                    DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                    test1 = db.getMedico(username);
+                    if(test1 != null)
+                    {
+                        if(test1.getPassword().equals(password))
+                        {
+                            response = "OK";
+                        }
+                        else
+                        {
+                            response = "KO";
+                        }
+                    }
+                    else
+                    {
+                        response = "KO";
+                    }
+                }
+            } else if(tipoUtente.equals("Paziente")) {
+                test2 = CS.LoginPaziente(username,password,tipoUtente);
+                if(test2 != null) {
+                    DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                    db.createPaziente(test2);
+                    db.closeDB();
+                    response = "OK";
+                }
+                else if(test2 == null)
+                {
+                    DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                    test2 = db.getPaziente(username);
+                    if(test2 != null)
+                    {
+                        if(test2.getPassword().equals(password))
+                        {
+                            response = "OK";
+                        }
+                        else
+                        {
+                            response = "KO";
+                        }
+                    }
+                    else
+                    {
+                        response = "KO";
+                    }
+                }
+            }
+            else
+            {
+                response = "Problema sconosciuto...";
+            }
             return  response;
 
         }
@@ -209,31 +288,9 @@ public class MainActivity extends AppCompatActivity {
             if(s.contains("OK")) {
                 AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                 alertDialog.setTitle("Operazione Eseguita");
-                alertDialog.setMessage(s);
+                alertDialog.setMessage("Autenticazione effettuata");
                 alertDialog.show();
-                if(tipoUtente.equals("Paziente")) {
-                    codiceFiscaleExtra = Utility.GetFieldCSV(s, 1, "%");
-                    nomeExtra = Utility.GetFieldCSV(s, 2, "%");
-                    cognomeExtra = Utility.GetFieldCSV(s, 3, "%");
-                    dataNascitaExtra = Utility.GetFieldCSV(s, 4, "%");
-                    luogoNascitaExtra = Utility.GetFieldCSV(s, 5, "%");
-                    residenzaExtra = Utility.GetFieldCSV(s, 6, "%");
-                    EmailExtra = Utility.GetFieldCSV(s, 7, "%");
-                    nTelExtra = Utility.GetFieldCSV(s, 8, "%");
-                    passwordExtra = Utility.GetFieldCSV(s, 9, "%");
-                    medicoExtra = Utility.GetFieldCSV(s,10,"%");
 
-
-                }
-                else if(tipoUtente.equals("Medico"))
-                {
-                    codiceFiscaleExtra = Utility.GetFieldCSV(s, 1, "%");
-                    nomeExtra = Utility.GetFieldCSV(s, 2, "%");
-                    cognomeExtra = Utility.GetFieldCSV(s, 3, "%");
-                    EmailExtra = Utility.GetFieldCSV(s, 4, "%");
-                    nTelExtra = Utility.GetFieldCSV(s, 5, "%");
-                    passwordExtra = Utility.GetFieldCSV(s, 6, "%");
-                }
                 Thread background = new Thread() {
                     public  void run () {
                         try {
@@ -262,38 +319,20 @@ public class MainActivity extends AppCompatActivity {
                                     AlertDialog dialog = builder.create();
                                 }
                             }
-                            if(tipoUtente.equals("Paziente"))
-                            {
-                                Intent newPage = new Intent(getBaseContext(), Profilo.class);
-                                newPage.putExtra("codiceFiscale", codiceFiscaleExtra);
-                                newPage.putExtra("nome", nomeExtra);
-                                newPage.putExtra("cognome", cognomeExtra);
-                                newPage.putExtra("dataNascita", dataNascitaExtra);
-                                newPage.putExtra("luogoNascita", luogoNascitaExtra);
-                                newPage.putExtra("residenza", residenzaExtra);
-                                newPage.putExtra("email", EmailExtra);
-                                newPage.putExtra("nTel", nTelExtra);
-                                newPage.putExtra("password", passwordExtra);
-                                newPage.putExtra("tipoUtente",tipoUtente);
-                                newPage.putExtra("medico",medicoExtra);
+                            Intent newPage = new Intent(getBaseContext(), Profilo.class);
+                            if(tipoUtente.equals("Medico")) {
 
-                                finish();
-                                startActivity(newPage);
+                                newPage.putExtra("Medico", test1);
                             }
-                            else if(tipoUtente.equals("Medico"))
+                            else if(tipoUtente.equals("Paziente"))
                             {
-                                Intent newPage = new Intent(getBaseContext(), Profilo.class);
-                                newPage.putExtra("codiceFiscale", codiceFiscaleExtra);
-                                newPage.putExtra("nome", nomeExtra);
-                                newPage.putExtra("cognome", cognomeExtra);
-                                newPage.putExtra("email", EmailExtra);
-                                newPage.putExtra("nTel", nTelExtra);
-                                newPage.putExtra("password", passwordExtra);
-                                newPage.putExtra("tipoUtente",tipoUtente);
-
-                                finish();
-                                startActivity(newPage);
+                                newPage.putExtra("Paziente",test2);
                             }
+
+                            newPage.putExtra("tipoUtente", tipoUtente);
+                            finish();
+                            startActivity(newPage);
+
 
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -308,8 +347,8 @@ public class MainActivity extends AppCompatActivity {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setTitle("Attenzione");
-                    builder.setMessage(s);
-                    builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    builder.setMessage(s+" tre possibili problemi: rete KO, profilo inesistente, username & password sbagliati ");
+                    builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
