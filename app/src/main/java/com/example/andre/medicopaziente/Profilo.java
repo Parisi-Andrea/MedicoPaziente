@@ -1,10 +1,13 @@
 package com.example.andre.medicopaziente;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -50,6 +53,7 @@ public class Profilo extends AppCompatActivity
     private ArrayList<Richiesta> richiesteMedicoList;
     private Medico medico;
     private Paziente paziente;
+    private String exceptionMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,28 +101,16 @@ public class Profilo extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.profilo, menu);
+
         imageView = (CircleImageView) findViewById(R.id.imageViewClickable);
         textViewNome = (TextView) findViewById(R.id.textNome);
         textViewCF = (TextView) findViewById(R.id.textCodiceFiscale);
 
-        Intent intent = getIntent();
-        String tipoUtente = intent.getStringExtra("tipoUtente");
-        if(tipoUtente.equals("Medico"))
-        {
-            medico = intent.getParcelableExtra("Medico");
-            textViewCF.setText(medico.getCodiceFiscale());
-            textViewNome.setText("Dott. "+medico.getNome()+ " " + medico.getCognome());
-            paziente = null;
-        }
-        else
-        {
-            paziente = intent.getParcelableExtra("Paziente");
-            textViewCF.setText(paziente.getCodiceFiscale());
-            textViewNome.setText(paziente.getNome()+" "+paziente.getCognome());
-            medico = null;
+        if (!setUpInfoDrawer()) {
+            return false;
         }
 
-        if (!readImageFromInternalStore(codiceFiscaleIntent)) {
+        if (!readImageFromInternalStore(medico.getCodiceFiscale())) {
             System.out.println("Errore lettura immagine");
         }
 
@@ -178,10 +170,10 @@ public class Profilo extends AppCompatActivity
             case 0: //CAMERA
                 if (resultCode == RESULT_OK) {
                     Bitmap photo = (Bitmap) imageReturnedIntent.getExtras().get("data");
+
+                    saveImage(photo,medico.getCodiceFiscale());
+
                     imageView.setImageBitmap(photo);
-                    if (!saveImageToInternalStorage(photo, codiceFiscaleIntent)) {
-                        System.out.println("Errore nel salvare la foto da camera!");
-                    }
                 }
 
                 break;
@@ -190,9 +182,7 @@ public class Profilo extends AppCompatActivity
                     try {
                         Uri selectedImage = imageReturnedIntent.getData();
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                        if (!saveImageToInternalStorage(bitmap, codiceFiscaleIntent)) {
-                            System.out.println("Errore nel salvare la foto da galleria!");
-                        }
+
                         imageView.setImageURI(selectedImage);
 
                     } catch (IOException e) {
@@ -203,44 +193,71 @@ public class Profilo extends AppCompatActivity
         }
     }
 
+    public boolean saveImage(Bitmap bitmap,String codiceFiscale){
+        File myDir = new File( Environment.getExternalStorageDirectory(),File.separator+"MedicoPaziente");
+
+        myDir.mkdirs();
+
+        String fname = codiceFiscale+".jpg";
+        File file = new File (myDir, fname);
+        if (file.exists ()) {
+            file.delete ();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file); //from here it goes to catch block
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+            String[] paths = {file.toString()};
+            String[] mimeTypes = {"/image/jpeg"};
+            MediaScannerConnection.scanFile(this, paths, mimeTypes, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     public boolean readImageFromInternalStore(String codiceFiscale) {
         boolean element = false;
         try {
-            Bitmap bitmapA;
-            FileInputStream fis = new FileInputStream (new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + File.separator + codiceFiscale + ".jpeg"));
-
-            bitmapA = BitmapFactory.decodeStream(fis);
-            imageView.setImageBitmap(bitmapA);
-            fis.close();
+            File f=new File(Environment.getExternalStorageDirectory()+File.separator+"MedicoPaziente", codiceFiscale+".jpg");
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            imageView.setImageBitmap(b);
             element = true;
-
-        } catch (FileNotFoundException e) {
-            element = false;
+        }
+        catch (FileNotFoundException e)
+        {
             e.printStackTrace();
-        } catch (IOException e) {
             element = false;
-            e.printStackTrace();
         }
         return element;
     }
 
-    public boolean saveImageToInternalStorage(Bitmap image, String codiceFiscale) {
-
+    public boolean setUpInfoDrawer() {
         try {
-            // Use the compress method on the Bitmap object to write image to
-            // the OutputStream
-            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), codiceFiscale + ".jpeg");
+            Intent intent = getIntent();
+            String tipoUtente = intent.getStringExtra("tipoUtente");
+            if (tipoUtente.equals("Medico")) {
+                medico = intent.getParcelableExtra("Medico");
+                textViewCF.setText(medico.getCodiceFiscale());
+                textViewNome.setText("Dott. " + medico.getNome() + " " + medico.getCognome());
+                paziente = null;
+            } else {
+                paziente = intent.getParcelableExtra("Paziente");
+                textViewCF.setText(paziente.getCodiceFiscale());
+                textViewNome.setText(paziente.getNome() + " " + paziente.getCognome());
+                medico = null;
+            }
+        } catch (Exception ex) {
 
-            FileOutputStream fos = new FileOutputStream(file);
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage().toString());
-            Log.e("saveToInternalStorage()", e.getMessage());
             return false;
         }
-
         return true;
     }
+
+
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -278,6 +295,7 @@ public class Profilo extends AppCompatActivity
             progressDialog = ProgressDialog.show(Profilo.this, "Waiting", "Send Request...", true);
             richiesteMedicoList = new ArrayList<>();
         }
+
         @Override
         protected Medico doInBackground(Medico... params) {
             CallSoap CS = new CallSoap();
@@ -298,5 +316,15 @@ public class Profilo extends AppCompatActivity
 
 
         }
+    }
+
+
+    private void showPicInGallery(String newAbsolutePath) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Log.e("Path", "in show pic in gallery");
+        File f = new File(newAbsolutePath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
     }
 }
