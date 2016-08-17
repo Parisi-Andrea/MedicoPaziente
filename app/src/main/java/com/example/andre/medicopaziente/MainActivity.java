@@ -4,63 +4,29 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
-
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 public class MainActivity extends AppCompatActivity {
 
 
     private EditText passwordTxt,codiceFiscaleTxt;
-    private ImageView imageView;
     private Button btnLogIn,btnRegister;
-    private String username,password,response;
+    private String username,password,response,tipoUtente;
     private ProgressDialog progressDialog;
     private CheckBox checkBoxMedico,checkBoxSalva;
-    String tipoUtente,codiceFiscaleExtra,nomeExtra,medicoExtra,cognomeExtra,dataNascitaExtra,luogoNascitaExtra,residenzaExtra,EmailExtra,nTelExtra,passwordExtra;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
-    private Medico test1;
-    private Paziente test2;
+    private Medico docProfile;
+    private Paziente patProfile;
 
 
 
@@ -68,11 +34,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        test1 = new Medico();
-        test2 = new Paziente();
+
+        docProfile = new Medico();
+        patProfile = new Paziente();
+
         codiceFiscaleTxt = (EditText) findViewById(R.id.email);
         passwordTxt = (EditText) findViewById(R.id.password);
-        imageView = (ImageView) findViewById(R.id.imageViewMainActivity);
         btnLogIn = (Button) findViewById(R.id.btnLogin);
         checkBoxMedico = (CheckBox) findViewById(R.id.cbMedico);
         checkBoxSalva = (CheckBox) findViewById(R.id.cbSave);
@@ -99,26 +66,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setImageDimension() {
-
+    private void setImageDimension()
+    {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-
-//        int height = displaymetrics.heightPixels;
-//        int width = displaymetrics.widthPixels;
-//
-//        imageView.setImageResource(R.drawable.logomedium);
-//
-//        imageView.requestLayout();
-//
-//        imageView.getLayoutParams().height = (height / 3);
-//        imageView.getLayoutParams().width = (width / 3)+(width/6);
-//
-//        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
     }
 
-    private void recuperaDatiPref() {
-
+    private void recuperaDatiPref()
+    {
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
 
         if (prefs.contains("codiceFiscale"))
@@ -139,18 +94,33 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    public void registration(View v) {
-//        Snackbar snackbar = Snackbar.make(v, "Working progress",Snackbar.LENGTH_LONG);
-//        snackbar.show();
+    public void registration(View v)
+    {
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Profilo");
+        builder.setMessage("Quale tipo di profilo desidera registrare?");
+        builder.setPositiveButton("Paziente", new DialogInterface.OnClickListener() {
 
+            public void onClick(DialogInterface dialog, int id) {
+                Intent newPage = new Intent(getBaseContext(), PazienteRegistration.class);
+                startActivity(newPage);
 
-        Intent newPage = new Intent(getBaseContext(), Registration.class);
-        //finish();
-        startActivity(newPage);
+            }
+        });
+        builder.setNegativeButton("Medico", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int id) {
+                Intent newPage = new Intent(getBaseContext(), MedicoRegistration.class);
+                startActivity(newPage);
+
+            }
+        });
+        builder.show();
     }
 
-    public void login(View v) {
-
+    public void login(View v)
+    {
         if (!validate()) {
             return;
         }
@@ -170,8 +140,6 @@ public class MainActivity extends AppCompatActivity {
 
         String codiceFiscale = codiceFiscaleTxt.getText().toString();
         String password = passwordTxt.getText().toString();
-
-        //!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 
         if (codiceFiscale.isEmpty() || codiceFiscale.length()!=16 ) {
             codiceFiscaleTxt.setError("inserire un codice fiscale valido");
@@ -193,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
     {
         @Override
         protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(MainActivity.this,"Waiting","Authentication",true);
+            progressDialog = ProgressDialog.show(MainActivity.this,"Attendere","Autenticazione",true);
             username = codiceFiscaleTxt.getText().toString();
             password = passwordTxt.getText().toString();
 
@@ -201,82 +169,91 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             CallSoap CS = new CallSoap();
-            if(tipoUtente.equals("Medico")) {
+            switch (tipoUtente)
+            {
+                case "Medico" :
+                    //Cerco di fare il login sul web service
 
-                //Cerco di fare il login sul web service
+                    docProfile = CS.LoginMedico(username, password, tipoUtente);
 
-                test1 = CS.LoginMedico(username, password, tipoUtente);
+                    //Se ci sono riuscito controlla la password e creo il db interno
 
-                //Se ci sono riuscito controlla la password e creo il db
-                if(test1 != null) {
-                    if(test1.getPassword().equals(password))
+                    if(docProfile != null) {
+                        if(docProfile.getPassword().equals(password))
+                        {
+                            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                            db.createMedico(docProfile);
+                            db.closeDB();
+                            response = "OK";
+                        }
+                        else
+                        {
+                            response = "KO";
+                        }
+                    }
+                    //Se non ho effettuato il login con il web service provo ad eseguirlo con il db interno
+
+                    else
                     {
                         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-                        db.createMedico(test1);
+                        docProfile = db.getMedico(username);
+
+                        if(docProfile != null)
+                        {
+                            if(docProfile.getPassword().equals(password))
+                            {
+                                response = "OK";
+                            }
+                            else
+                            {
+                                response = "KO";
+                            }
+                        }
+                        else
+                        {
+                            response = "KO";
+                        }
+                    }
+                    break;
+
+                case "Paziente" :
+                    patProfile = CS.LoginPaziente(username,password,tipoUtente);
+
+                    if(patProfile != null)
+                    {
+                        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                        db.createPaziente(patProfile);
                         db.closeDB();
                         response = "OK";
                     }
                     else
                     {
-                        response = "KO";
-                    }
+                        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
-
-                }
-                //Se non ho effettuato il login con il web service provo ad eseguirlo con il db interno
-                else if(test1 == null)
-                {
-                    DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-                    test1 = db.getMedico(username);
-                    if(test1 != null)
-                    {
-                        if(test1.getPassword().equals(password))
+                        patProfile = db.getPaziente(username);
+                        if(patProfile != null)
                         {
-                            response = "OK";
+                            if(patProfile.getPassword().equals(password))
+                            {
+                                response = "OK";
+                            }
+                            else
+                            {
+                                response = "KO";
+                            }
                         }
                         else
                         {
                             response = "KO";
                         }
                     }
-                    else
-                    {
-                        response = "KO";
-                    }
-                }
-            } else if(tipoUtente.equals("Paziente")) {
-                test2 = CS.LoginPaziente(username,password,tipoUtente);
-                if(test2 != null) {
-                    DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-                    db.createPaziente(test2);
-                    db.closeDB();
-                    response = "OK";
-                }
-                else if(test2 == null)
-                {
-                    DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-                    test2 = db.getPaziente(username);
-                    if(test2 != null)
-                    {
-                        if(test2.getPassword().equals(password))
-                        {
-                            response = "OK";
-                        }
-                        else
-                        {
-                            response = "KO";
-                        }
-                    }
-                    else
-                    {
-                        response = "KO";
-                    }
-                }
+                    break;
+
+                default:
+                    response = "Problema sconosciuto...";
+                    break;
             }
-            else
-            {
-                response = "Problema sconosciuto...";
-            }
+
             return  response;
 
         }
@@ -295,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
                     public  void run () {
                         try {
 
-                            sleep(1500);
+                            sleep(500);
 
                             if(checkBoxSalva.isChecked()) {
                                 SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
@@ -303,7 +280,9 @@ public class MainActivity extends AppCompatActivity {
                                 editor.putString("password", passwordTxt.getText().toString());
                                 editor.putBoolean("check", checkBoxMedico.isChecked());
                                 editor.putBoolean("rememberMe",checkBoxSalva.isChecked());
+
                                 boolean committato = editor.commit();
+
                                 if(!committato)
                                 {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -316,17 +295,16 @@ public class MainActivity extends AppCompatActivity {
 
                                         }
                                     });
-                                    AlertDialog dialog = builder.create();
                                 }
                             }
                             Intent newPage = new Intent(getBaseContext(), Profilo.class);
                             if(tipoUtente.equals("Medico")) {
 
-                                newPage.putExtra("Medico", test1);
+                                newPage.putExtra("Medico", docProfile);
                             }
                             else if(tipoUtente.equals("Paziente"))
                             {
-                                newPage.putExtra("Paziente",test2);
+                                newPage.putExtra("Paziente",patProfile);
                             }
 
                             newPage.putExtra("tipoUtente", tipoUtente);

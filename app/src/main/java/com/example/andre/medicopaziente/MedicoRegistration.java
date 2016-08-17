@@ -1,46 +1,34 @@
 package com.example.andre.medicopaziente;
+
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+public class MedicoRegistration extends AppCompatActivity {
 
-public class MedicoRegistrationFragment extends Fragment{
-    private EditText  txtCodiceFiscaleMedico,txtNomeMedico,txtCognomeMedico,txtEmailMedico,txtNTelMedico,txtPasswordMedico;
+    private EditText txtCodiceFiscaleMedico,txtNomeMedico,txtCognomeMedico,txtEmailMedico,txtNTelMedico,txtPasswordMedico;
     private String codiceFiscale,nome,cognome,email,nTelefono,password;
     private Button btnregistrazione;
     private ProgressDialog progressDialog;
 
-    public MedicoRegistrationFragment() {
-        // Required empty public constructor
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_medico_registration, container, false);
-
-        btnregistrazione = (Button) view.findViewById(R.id.btnSaveDataMedico);
-        txtCodiceFiscaleMedico = (EditText) view.findViewById(R.id.registerCodFiscalMedico);
-        txtNomeMedico = (EditText) view.findViewById(R.id.registerNameMedico);
-        txtCognomeMedico = (EditText) view.findViewById(R.id.registerCognomeMedico);
-        txtEmailMedico = (EditText) view.findViewById(R.id.registerEmailMedico);
-        txtNTelMedico = (EditText) view.findViewById(R.id.registerTelefonoMedico);
-        txtPasswordMedico = (EditText) view.findViewById(R.id.registerPasswordMedico);
+        setContentView(R.layout.activity_medico_registration);
+        btnregistrazione = (Button) findViewById(R.id.btnSaveDataMedico);
+        txtCodiceFiscaleMedico = (EditText) findViewById(R.id.registerCodFiscalMedico);
+        txtNomeMedico = (EditText) findViewById(R.id.registerNameMedico);
+        txtCognomeMedico = (EditText) findViewById(R.id.registerCognomeMedico);
+        txtEmailMedico = (EditText) findViewById(R.id.registerEmailMedico);
+        txtNTelMedico = (EditText) findViewById(R.id.registerTelefonoMedico);
+        txtPasswordMedico = (EditText) findViewById(R.id.registerPasswordMedico);
 
         btnregistrazione.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +41,6 @@ public class MedicoRegistrationFragment extends Fragment{
                 new AsyncCallSoap().execute();
             }
         });
-        return view;
     }
 
     public class AsyncCallSoap extends AsyncTask<String, Void, String> {
@@ -61,7 +48,7 @@ public class MedicoRegistrationFragment extends Fragment{
         protected void onPreExecute() {
             try
             {
-                progressDialog = new ProgressDialog(getActivity());
+                progressDialog = new ProgressDialog(MedicoRegistration.this);
                 progressDialog.setIndeterminate(false);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.setTitle("Attendere");
@@ -69,7 +56,7 @@ public class MedicoRegistrationFragment extends Fragment{
                 progressDialog.show();
             } catch (Exception ex)
             {
-                ex.getMessage().toString();
+                ex.getMessage();
             }
 
         }
@@ -87,14 +74,14 @@ public class MedicoRegistrationFragment extends Fragment{
         {
             if(s.equals("1"))
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                AlertDialog.Builder builder = new AlertDialog.Builder(MedicoRegistration.this);
                 builder.setTitle("Operazione eseguita");
                 builder.setMessage("Utente registrato correttamente");
                 builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        Intent newPage = new Intent(getActivity(), MainActivity.class);
+                        Intent newPage = new Intent(MedicoRegistration.this, MainActivity.class);
 
                         startActivity(newPage);
                     }
@@ -105,7 +92,7 @@ public class MedicoRegistrationFragment extends Fragment{
             }
             else
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                AlertDialog.Builder builder = new AlertDialog.Builder(MedicoRegistration.this);
                 builder.setTitle("Errore");
                 builder.setMessage("Operazione non eseguita, riprovare...");
                 builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {

@@ -25,6 +25,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
         imageView = (ImageView) findViewById(R.id.imageView2);
+
         imageView.setImageResource(R.drawable.logomedium);
 
         Thread background = new Thread() {

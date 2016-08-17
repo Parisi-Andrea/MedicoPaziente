@@ -1,21 +1,20 @@
 package com.example.andre.medicopaziente;
+
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class PazienteRegistrationFragment extends Fragment {
+public class PazienteRegistration extends AppCompatActivity {
 
     private Button btnregistrazione;
     private String nome,cognome,password,indirizzo,codiceFiscale,medico,email,dataNascita,luogoNascita,telefono;
@@ -23,35 +22,23 @@ public class PazienteRegistrationFragment extends Fragment {
     private EditText txtNome,txtCognome,txtPassword,txtIndirizzo,txtCodiceFiscale,txtMedico,txtEmail,txtDay,txtMonth,txtYear,txtLuogoNascita,txtTelefono;
     private ProgressDialog progressDialog;
 
-    public PazienteRegistrationFragment() {
-        // Required empty public constructor
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_paziente_registration, container, false);
-
-        btnregistrazione = (Button) view.findViewById(R.id.btnSaveData);
-        txtNome = (EditText) view.findViewById(R.id.registerName);
-        txtCognome = (EditText) view.findViewById(R.id.registerCognome);
-        txtPassword = (EditText) view.findViewById(R.id.registerPassword);
-        txtIndirizzo = (EditText) view.findViewById(R.id.registerIndirizzo);
-        txtCodiceFiscale = (EditText) view.findViewById(R.id.registerCodFiscal);
-        txtEmail = (EditText) view.findViewById(R.id.registerEmail);
-        txtMedico = (EditText) view.findViewById(R.id.registerMedico);
-        txtDay = (EditText) view.findViewById(R.id.registerDay);
-        txtMonth = (EditText) view.findViewById(R.id.registerMonth);
-        txtYear = (EditText) view.findViewById(R.id.registerYear);
-        txtLuogoNascita = (EditText) view.findViewById(R.id.registerLuogo);
-        txtTelefono = (EditText) view.findViewById(R.id.registerTelefono);
+        setContentView(R.layout.activity_paziente_registration);
+        btnregistrazione = (Button) findViewById(R.id.btnSaveData);
+        txtNome = (EditText) findViewById(R.id.registerName);
+        txtCognome = (EditText) findViewById(R.id.registerCognome);
+        txtPassword = (EditText) findViewById(R.id.registerPassword);
+        txtIndirizzo = (EditText) findViewById(R.id.registerIndirizzo);
+        txtCodiceFiscale = (EditText) findViewById(R.id.registerCodFiscal);
+        txtEmail = (EditText) findViewById(R.id.registerEmail);
+        txtMedico = (EditText) findViewById(R.id.registerMedico);
+        txtDay = (EditText) findViewById(R.id.registerDay);
+        txtMonth = (EditText) findViewById(R.id.registerMonth);
+        txtYear = (EditText) findViewById(R.id.registerYear);
+        txtLuogoNascita = (EditText) findViewById(R.id.registerLuogo);
+        txtTelefono = (EditText) findViewById(R.id.registerTelefono);
 
 
         btnregistrazione.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +52,6 @@ public class PazienteRegistrationFragment extends Fragment {
                 new AsyncCallSoap().execute();
             }
         });
-    return view;
     }
 
 
@@ -76,7 +62,7 @@ public class PazienteRegistrationFragment extends Fragment {
         protected void onPreExecute() {
             try
             {
-                progressDialog = new ProgressDialog(getActivity());
+                progressDialog = new ProgressDialog(PazienteRegistration.this);
                 progressDialog.setIndeterminate(false);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progressDialog.setTitle("Attendere");
@@ -84,7 +70,7 @@ public class PazienteRegistrationFragment extends Fragment {
                 progressDialog.show();
             } catch (Exception ex)
             {
-                ex.getMessage().toString();
+                ex.getMessage();
             }
 
         }
@@ -102,14 +88,14 @@ public class PazienteRegistrationFragment extends Fragment {
         {
             if(s.equals("1"))
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                AlertDialog.Builder builder = new AlertDialog.Builder(PazienteRegistration.this);
                 builder.setTitle("Operazione eseguita");
                 builder.setMessage("Utente registrato correttamente");
                 builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        Intent newPage = new Intent(getActivity(), MainActivity.class);
+                        Intent newPage = new Intent(PazienteRegistration.this, MainActivity.class);
 
                         startActivity(newPage);
                     }
@@ -120,7 +106,7 @@ public class PazienteRegistrationFragment extends Fragment {
             }
             else
             {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                AlertDialog.Builder builder = new AlertDialog.Builder(PazienteRegistration.this);
                 builder.setTitle("Errore");
                 builder.setMessage("Operazione non eseguita, riprovare...");
                 builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
