@@ -17,6 +17,8 @@ public class Paziente implements Parcelable{
     public String nTel;
     public String password;
     public String medico;
+    public String image;
+
     protected Paziente() {}
     protected Paziente(Parcel in) {
         codiceFiscale = in.readString();
@@ -29,6 +31,7 @@ public class Paziente implements Parcelable{
         nTel = in.readString();
         password = in.readString();
         medico = in.readString();
+        image = in.readString();
     }
 
     public static final Creator<Paziente> CREATOR = new Creator<Paziente>() {
@@ -124,7 +127,14 @@ public class Paziente implements Parcelable{
     {
         this.password = password;
     }
-
+    public String getImage()
+    {
+        return this.image;
+    }
+    public void setImage(String image)
+    {
+        this.image = image;
+    }
     @Override
     public int describeContents() {
         return 0;
@@ -142,5 +152,6 @@ public class Paziente implements Parcelable{
         dest.writeString(nTel);
         dest.writeString(password);
         dest.writeString(medico);
+        dest.writeString(image);
     }
 }

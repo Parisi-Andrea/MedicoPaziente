@@ -29,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -104,7 +105,7 @@ public class Profilo extends AppCompatActivity
         textViewNome = (TextView) findViewById(R.id.textNome);
         textViewCF = (TextView) findViewById(R.id.textCodiceFiscale);
 
-        //Setto le informazioni nel Drawer (nome,cognome, codice fiscale)
+        //Setto le informazioni nel Drawer (nome,cognome, codice fiscale,foto da db)
         if (!setUpInfoDrawer())
         {
             return false;
@@ -121,16 +122,15 @@ public class Profilo extends AppCompatActivity
             {
                 imageView.setImageBitmap(photo);
             }
-        } else
+        } else //Se è paziente, se nel db non c'è la foto cerco di prenderla dalla memoria interna
         {
-            photo = readImageFromInternalStore(paziente.getCodiceFiscale());
-            if (photo == null)
-            {
-                System.out.println("Paziente: Errore lettura immagine");
-            }
-            else
-            {
-                imageView.setImageBitmap(photo);
+            if(paziente.getImage().equals(null)) {
+                photo = readImageFromInternalStore(paziente.getCodiceFiscale());
+                if (photo == null) {
+                    System.out.println("Paziente: Errore lettura immagine");
+                } else {
+                    imageView.setImageBitmap(photo);
+                }
             }
         }
 
@@ -197,7 +197,7 @@ public class Profilo extends AppCompatActivity
 
                     imageView.setImageBitmap(photo);
 
-                    //new AsyncCallSoap().execute();
+                    new AsyncCallSoap().execute();
                 }
 
                 break;
@@ -227,7 +227,12 @@ public class Profilo extends AppCompatActivity
 
                         }
 
+                        //scalo immagine per vederla in circleimageView
+                        int nh = (int) ( photo.getHeight() * (512.0 / photo.getWidth()) );
+                        photo = Bitmap.createScaledBitmap(photo, 512, nh, true);
                         imageView.setImageBitmap(photo);
+
+                        new AsyncCallSoap().execute();
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -236,6 +241,57 @@ public class Profilo extends AppCompatActivity
                 break;
         }
     }
+
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        Fragment fragment = new Fragment();
+
+        int id = item.getItemId();
+
+        if (id == R.id.nav_home) {
+            getSupportActionBar().setTitle("Home");
+            fragment = new HomeFragment();
+        } else if (id == R.id.nav_wait) {
+            getSupportActionBar().setTitle("In Attesa");
+            fragment = new WaitFragment();
+        } else if (id == R.id.nav_response) {
+            getSupportActionBar().setTitle("Risposte");
+        } else if (id == R.id.nav_complete) {
+            getSupportActionBar().setTitle("Completate");
+        } else if (id == R.id.nav_setting) {
+            getSupportActionBar().setTitle("Setting");
+        }
+        transaction.replace(R.id.flFragments, fragment);
+        transaction.commit();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    public class AsyncCallSoap extends AsyncTask<Bitmap, Void, String> {
+
+
+        @Override
+        protected String doInBackground(Bitmap... params) {
+            saveImageDb(photo,paziente.getCodiceFiscale());
+            return "OK";
+        }
+
+        @Override
+        protected void onPreExecute()   {
+            progressDialog = ProgressDialog.show(Profilo.this, "Attendere", "Salvataggio della foto...", true);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            progressDialog.dismiss();
+        }
+    }
+
     public String getPath(Uri uri) {
         String[] projection = { MediaStore.Images.Media.DATA };
         Cursor cursor = managedQuery(uri, projection, null, null, null);
@@ -245,13 +301,13 @@ public class Profilo extends AppCompatActivity
         return cursor.getString(column_index);
     }
 
-    private void copyFile(File sourceFile, File destFile) throws IOException {
+    public void copyFile(File sourceFile, File destFile) throws IOException {
         if (!sourceFile.exists()) {
             return;
         }
 
-        FileChannel source = null;
-        FileChannel destination = null;
+        FileChannel source;
+        FileChannel destination;
         source = new FileInputStream(sourceFile).getChannel();
         destination = new FileOutputStream(destFile).getChannel();
         if (destination != null && source != null) {
@@ -272,12 +328,12 @@ public class Profilo extends AppCompatActivity
             String encodedImage;
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 70, stream);
             byteArray = stream.toByteArray();
             encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
             CallSoap cs = new CallSoap();
-            cs.InsertImage(encodedImage,codiceFiscale);
+            cs.InsertImageToDB(encodedImage,codiceFiscale);
 
         } catch (Exception ex) {
             return false;
@@ -322,7 +378,11 @@ public class Profilo extends AppCompatActivity
         }
         return b;
     }
-
+    public void stringToImageView(ImageView imageView, String encodedImage)   {
+        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        imageView.setImageBitmap(decodedByte);
+    }
     public boolean setUpInfoDrawer() {
         try {
             Intent intent = getIntent();
@@ -338,6 +398,9 @@ public class Profilo extends AppCompatActivity
                 paziente = intent.getParcelableExtra("Paziente");
                 textViewCF.setText(paziente.getCodiceFiscale());
                 textViewNome.setText(paziente.getNome() + " " + paziente.getCognome());
+                if(paziente.getImage()!=null) {
+                    stringToImageView(imageView,paziente.getImage());
+                }
                 medico = null;
             }
         } catch (Exception ex) {
@@ -347,55 +410,4 @@ public class Profilo extends AppCompatActivity
         return true;
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        Fragment fragment = new Fragment();
-
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            getSupportActionBar().setTitle("Home");
-            fragment = new HomeFragment();
-        } else if (id == R.id.nav_wait) {
-            getSupportActionBar().setTitle("In Attesa");
-            fragment = new WaitFragment();
-        } else if (id == R.id.nav_response) {
-            getSupportActionBar().setTitle("Risposte");
-        } else if (id == R.id.nav_complete) {
-            getSupportActionBar().setTitle("Completate");
-        } else if (id == R.id.nav_setting) {
-            getSupportActionBar().setTitle("Setting");
-        }
-        transaction.replace(R.id.flFragments, fragment);
-        transaction.commit();
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-    public class AsyncCallSoap extends AsyncTask<Bitmap, Void, String> {
-
-
-        @Override
-        protected String doInBackground(Bitmap... params) {
-            saveImageDb(photo,paziente.getCodiceFiscale());
-            return "OK";
-        }
-
-        @Override
-        protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(Profilo.this, "Waiting", "Send Request...", true);
-        }
-
-
-
-
-        @Override
-        protected void onPostExecute(String s) {
-            progressDialog.dismiss();
-        }
-    }
 }

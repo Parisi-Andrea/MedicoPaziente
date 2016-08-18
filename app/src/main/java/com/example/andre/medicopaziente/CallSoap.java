@@ -401,6 +401,7 @@ public class CallSoap {
             paziente.nTel = result.getProperty("NTel").toString();
             paziente.medico = result.getProperty("Medico").toString();
             paziente.password = result.getProperty("Password").toString();
+            paziente.image = result.getProperty("Image").toString();
 
         }
         catch (Exception ex)
@@ -485,7 +486,42 @@ public class CallSoap {
         }
         return response;
     }
-    public String InsertImage(String fileEnc, String codFiscale) {
+
+    public String getImageFromDB(String codFiscale) {
+        String SOAP_ACTION = "http://tempuri.org/GetImage";
+        String OPERATION_NAME = "GetImage";
+        String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
+        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
+
+        PropertyInfo PI = new PropertyInfo();
+
+        PI.setName("codiceFiscale");
+        PI.setValue(codFiscale);
+        PI.setType(String.class);
+        request.addProperty(PI);
+
+
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(request);
+        String response = null;
+        try {
+            HttpTransportSE httpTransport = new HttpTransportSE(SOAP_ADDRESS);
+            httpTransport.setXmlVersionTag("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            httpTransport.debug = true;
+            httpTransport.call(SOAP_ACTION, envelope);
+            //response = httpTransport.responseDump;
+            SoapPrimitive tmp = (SoapPrimitive) envelope.getResponse();
+
+            response = tmp.toString();
+        } catch (Exception ex) {
+            response = ex.getMessage().toString();
+        }
+        return response;
+    }
+
+    public String InsertImageToDB(String fileEnc, String codFiscale) {
         String SOAP_ACTION = "http://tempuri.org/InsertImage";
         String OPERATION_NAME = "InsertImage";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
