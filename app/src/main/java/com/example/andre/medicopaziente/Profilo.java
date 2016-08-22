@@ -1,7 +1,6 @@
 package com.example.andre.medicopaziente;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,7 +12,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,14 +29,34 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.exceptions.InvalidPdfException;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -49,7 +67,6 @@ public class Profilo extends AppCompatActivity
     Toolbar toolbar;
     CircleImageView imageView;
     private TextView textViewNome, textViewCF;
-    private ArrayList<Richiesta> richiesteMedicoList;
     private Medico medico;
     private Paziente paziente;
     private Bitmap photo;
@@ -68,7 +85,40 @@ public class Profilo extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //new AsyncCallSoap().execute();
+                System.out.println("PIPPO");
+                try {
+                    String inName = "ricetta.pdf";
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+
+                    Date now = new Date();
+
+                    String fileName = formatter.format(now);
+
+                    String outName = fileName + ".pdf";
+                    String INPUTFILE = Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + inName;
+                    String OUTPUTFILE = Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator +"Ricette" + File.separator + outName;
+                    //Create PdfReader instance.
+                    PdfReader pdfReader = new PdfReader(INPUTFILE);
+                    //Create PdfStamper instance.
+                    PdfStamper pdfStamper = new PdfStamper(pdfReader, new FileOutputStream(OUTPUTFILE));
+
+                    PdfContentByte canvas = pdfStamper.getOverContent(1);
+
+                    ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(paziente.getCognome()+ " " + paziente.getNome()),20, PageSize.A5.getWidth()-25,0);
+                    ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase("0, 100"), 0, 100, 0);
+                    ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase("100, 0"), 100, 0, 0);
+                    ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase("100, 100"), 100, 100, 0);
+
+                    pdfStamper.close();
+                    pdfReader.close();
+
+                    System.out.println("PDF modified successfully.");
+                    Toast.makeText(getApplicationContext(), "PDF modified successfully.", Toast.LENGTH_LONG).show();
+
+                } catch (Exception e) {
+
+                    Toast.makeText(getApplicationContext(), "Error PDF.", Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -124,7 +174,7 @@ public class Profilo extends AppCompatActivity
             }
         } else //Se è paziente, se nel db non c'è la foto cerco di prenderla dalla memoria interna
         {
-            if(paziente.getImage().equals(null)) {
+            if(paziente.getImage() == null) {
                 photo = readImageFromInternalStore(paziente.getCodiceFiscale());
                 if (photo == null) {
                     System.out.println("Paziente: Errore lettura immagine");
@@ -328,7 +378,7 @@ public class Profilo extends AppCompatActivity
             String encodedImage;
 
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 70, stream);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             byteArray = stream.toByteArray();
             encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
@@ -383,6 +433,10 @@ public class Profilo extends AppCompatActivity
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         imageView.setImageBitmap(decodedByte);
     }
+    public Bitmap stringToBitmap(String encodedImage) {
+        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+    }
     public boolean setUpInfoDrawer() {
         try {
             Intent intent = getIntent();
@@ -400,6 +454,10 @@ public class Profilo extends AppCompatActivity
                 textViewNome.setText(paziente.getNome() + " " + paziente.getCognome());
                 if(paziente.getImage()!=null) {
                     stringToImageView(imageView,paziente.getImage());
+                    if(!saveImageInternalStorage(stringToBitmap(paziente.getImage()),paziente.getCodiceFiscale())) {
+                        System.out.println("Errore salvataggio foto da db a locale");
+                    }
+
                 }
                 medico = null;
             }

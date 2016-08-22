@@ -4,6 +4,9 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +17,15 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfWriter;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         setImageDimension();
 
         recuperaDatiPref();
+
+        createPDF();
 
         btnLogIn.setOnClickListener(new OnClickListener() {
             @Override
@@ -325,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setTitle("Attenzione");
-                    builder.setMessage(s+" tre possibili problemi: rete KO, profilo inesistente, username & password sbagliati ");
+                    builder.setMessage(s+" tre possibili problemi: rete KO, profilo inesistente, username o password sbagliati ");
                     builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -337,6 +351,40 @@ public class MainActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     dialog.show();
 
+            }
+        }
+    }
+    public void createPDF() {
+        File file = new File(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + "Ricette" + File.separator + "ricetta.pdf");
+        File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + "Ricette");
+        if (!file.exists()) {
+            dir.mkdirs();
+            Document document = new Document(PageSize.A5.rotate());
+
+            try {
+                PdfWriter.getInstance(document,
+                        new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + "ricetta.pdf"));
+                document.open();
+                //Creo la bitmap dal drawable folder
+                Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ricettarossa);
+                //Scalo la bitmap nelle dimensioni della ricetta
+                Bitmap bMapScaled = Bitmap.createScaledBitmap(largeIcon,(int)PageSize.A5.getHeight() , (int)PageSize.A5.getWidth() , true);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+                bMapScaled.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+                byte[] imageInByte = stream.toByteArray();
+
+                Image image = Image.getInstance(imageInByte);
+
+                image.setAbsolutePosition(0, 0);
+
+                document.add(image);
+
+                document.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
