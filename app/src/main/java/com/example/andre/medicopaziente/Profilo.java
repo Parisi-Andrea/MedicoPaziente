@@ -1,5 +1,4 @@
 package com.example.andre.medicopaziente;
-
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,33 +29,22 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.itextpdf.text.BadElementException;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.exceptions.InvalidPdfException;
-import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
-import com.itextpdf.text.pdf.PdfWriter;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -70,6 +58,7 @@ public class Profilo extends AppCompatActivity
     private Medico medico;
     private Paziente paziente;
     private Bitmap photo;
+    String tipoUtente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,40 +74,8 @@ public class Profilo extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("PIPPO");
-                try {
-                    String inName = "ricetta.pdf";
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+                //creaRicettaRossa(paziente);
 
-                    Date now = new Date();
-
-                    String fileName = formatter.format(now);
-
-                    String outName = fileName + ".pdf";
-                    String INPUTFILE = Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + inName;
-                    String OUTPUTFILE = Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator +"Ricette" + File.separator + outName;
-                    //Create PdfReader instance.
-                    PdfReader pdfReader = new PdfReader(INPUTFILE);
-                    //Create PdfStamper instance.
-                    PdfStamper pdfStamper = new PdfStamper(pdfReader, new FileOutputStream(OUTPUTFILE));
-
-                    PdfContentByte canvas = pdfStamper.getOverContent(1);
-
-                    ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(paziente.getCognome()+ " " + paziente.getNome()),20, PageSize.A5.getWidth()-25,0);
-                    ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase("0, 100"), 0, 100, 0);
-                    ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase("100, 0"), 100, 0, 0);
-                    ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase("100, 100"), 100, 100, 0);
-
-                    pdfStamper.close();
-                    pdfReader.close();
-
-                    System.out.println("PDF modified successfully.");
-                    Toast.makeText(getApplicationContext(), "PDF modified successfully.", Toast.LENGTH_LONG).show();
-
-                } catch (Exception e) {
-
-                    Toast.makeText(getApplicationContext(), "Error PDF.", Toast.LENGTH_LONG).show();
-                }
             }
         });
 
@@ -327,7 +284,8 @@ public class Profilo extends AppCompatActivity
 
         @Override
         protected String doInBackground(Bitmap... params) {
-            saveImageDb(photo,paziente.getCodiceFiscale());
+            if(tipoUtente.equals("Paziente")){  saveImageDb(photo,paziente.getCodiceFiscale());}
+            else if(tipoUtente.equals("Medico")){saveImageDb(photo,medico.getCodiceFiscale());}
             return "OK";
         }
 
@@ -383,7 +341,7 @@ public class Profilo extends AppCompatActivity
             encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
             CallSoap cs = new CallSoap();
-            cs.InsertImageToDB(encodedImage,codiceFiscale);
+            cs.InsertImageToDB(encodedImage,codiceFiscale, tipoUtente);
 
         } catch (Exception ex) {
             return false;
@@ -391,7 +349,7 @@ public class Profilo extends AppCompatActivity
         return true;
     }
     public boolean saveImageInternalStorage(Bitmap bitmap,String codiceFiscale){
-        File myDir = new File( Environment.getExternalStorageDirectory(),File.separator+"MedicoPaziente");
+        File myDir = new File( Environment.getExternalStorageDirectory(),File.separator+"MedicoPaziente"+File.separator+codiceFiscale);
 
         if(!myDir.mkdirs()) {System.out.println("myDir.mkdirs() return false");}
 
@@ -418,7 +376,7 @@ public class Profilo extends AppCompatActivity
     public Bitmap readImageFromInternalStore(String codiceFiscale) {
         Bitmap b;
         try {
-            File f=new File(Environment.getExternalStorageDirectory()+File.separator+"MedicoPaziente", codiceFiscale+".png");
+            File f=new File(Environment.getExternalStorageDirectory()+File.separator+"MedicoPaziente"+File.separator+codiceFiscale, codiceFiscale+".png");
             b = BitmapFactory.decodeStream(new FileInputStream(f));
         }
         catch (FileNotFoundException e)
@@ -440,12 +398,19 @@ public class Profilo extends AppCompatActivity
     public boolean setUpInfoDrawer() {
         try {
             Intent intent = getIntent();
-            String tipoUtente = intent.getStringExtra("tipoUtente");
+            tipoUtente = intent.getStringExtra("tipoUtente");
 
             if (tipoUtente.equals("Medico")) {
                 medico = intent.getParcelableExtra("Medico");
                 textViewCF.setText(medico.getCodiceFiscale());
                 textViewNome.setText("Dott. " + medico.getNome() + " " + medico.getCognome());
+                if(medico.getImage()!=null) {
+                    stringToImageView(imageView,medico.getImage());
+                    if(!saveImageInternalStorage(stringToBitmap(medico.getImage()),medico.getCodiceFiscale())) {
+                        System.out.println("Errore salvataggio foto da db a locale");
+                    }
+
+                }
                 paziente = null;
             }
             else {
@@ -459,6 +424,16 @@ public class Profilo extends AppCompatActivity
                     }
 
                 }
+                File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + paziente.getCodiceFiscale());
+                File dirInt = new File(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + paziente.getCodiceFiscale() + File.separator + "Ricette");
+                if(!dir.exists())
+                {
+                    dir.mkdirs();
+                }
+                if(!dirInt.exists())
+                {
+                    dirInt.mkdirs();
+                }
                 medico = null;
             }
         } catch (Exception ex) {
@@ -466,6 +441,43 @@ public class Profilo extends AppCompatActivity
             return false;
         }
         return true;
+    }
+
+    public void creaRicettaRossa(Paziente paziente) {
+        System.out.println("PIPPO");
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+
+            Date now = new Date();
+
+            String fileName = formatter.format(now);
+
+            String outName = fileName + ".pdf";
+            String INPUTFILE = Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + "RicettaRossa.pdf";
+            String OUTPUTFILE = Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + paziente.getCodiceFiscale() + File.separator + "Ricette" + File.separator + outName;
+            //Create PdfReader instance.
+            PdfReader pdfReader = new PdfReader(INPUTFILE);
+            //Create PdfStamper instance.
+            PdfStamper pdfStamper = new PdfStamper(pdfReader, new FileOutputStream(OUTPUTFILE));
+
+            PdfContentByte canvas = pdfStamper.getOverContent(1);
+
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(paziente.getCognome() + " " + paziente.getNome()), 20, PageSize.A5.getWidth() - 25, 0);
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(paziente.getResidenza()), 20, PageSize.A5.getWidth() - 45, 0);
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(paziente.getCodiceFiscale().replace("", "  ").trim()), PageSize.A5.getHeight() - 275, PageSize.A5.getWidth() - 95, 0);
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase("100, 0"), 100, 0, 0);
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase("100, 100"), 100, 100, 0);
+
+            pdfStamper.close();
+            pdfReader.close();
+
+            System.out.println("PDF modified successfully.");
+            Toast.makeText(getApplicationContext(), "PDF modified successfully.", Toast.LENGTH_LONG).show();
+
+        } catch (Exception e) {
+
+            Toast.makeText(getApplicationContext(), e.getMessage().toString(), Toast.LENGTH_LONG).show();
+        }
     }
 
 }

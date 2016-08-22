@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         recuperaDatiPref();
 
-        createPDF();
+        createPDFRicettaRossa();
 
         btnLogIn.setOnClickListener(new OnClickListener() {
             @Override
@@ -354,16 +354,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    public void createPDF() {
+    public void createPDFRicettaRossa() {
         File file = new File(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + "Ricette" + File.separator + "ricetta.pdf");
-        File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + "Ricette");
+        File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente");
         if (!file.exists()) {
             dir.mkdirs();
             Document document = new Document(PageSize.A5.rotate());
 
             try {
                 PdfWriter.getInstance(document,
-                        new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + "ricetta.pdf"));
+                        new FileOutputStream(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + "RicettaRossa.pdf"));
                 document.open();
                 //Creo la bitmap dal drawable folder
                 Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ricettarossa);

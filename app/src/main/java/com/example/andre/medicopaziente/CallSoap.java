@@ -340,6 +340,7 @@ public class CallSoap {
             medico.password = result.getProperty("Password").toString();
             medico.ambulatorio = result.getProperty("Ambulatorio").toString();
             medico.orario = result.getProperty("Orario").toString();
+            medico.image = result.getProperty("Image").toString();
 
         }
         catch (Exception ex)
@@ -520,10 +521,13 @@ public class CallSoap {
         }
         return response;
     }
+    public String InsertImageToDB(String fileEnc, String codFiscale,String tipoUtente) {
+        String SOAP_ACTION = null;
+        String OPERATION_NAME = null;
 
-    public String InsertImageToDB(String fileEnc, String codFiscale) {
-        String SOAP_ACTION = "http://tempuri.org/InsertImage";
-        String OPERATION_NAME = "InsertImage";
+        SOAP_ACTION = "http://tempuri.org/InsertImage";
+        OPERATION_NAME = "InsertImage";
+
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
         String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
 
@@ -540,6 +544,12 @@ public class CallSoap {
         PI = new PropertyInfo();
         PI.setName("image");
         PI.setValue(fileEnc);
+        PI.setType(String.class);
+        request.addProperty(PI);
+
+        PI = new PropertyInfo();
+        PI.setName("tipoUtente");
+        PI.setValue(tipoUtente);
         PI.setType(String.class);
         request.addProperty(PI);
 
