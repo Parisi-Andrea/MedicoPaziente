@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by andre on 30/06/2016.
  */
@@ -120,6 +122,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+    public boolean createRequest(ArrayList<Richiesta> richiestaArrayList) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            for (int i = 0; i < richiestaArrayList.size(); i++) {
+                Richiesta richiesta = richiestaArrayList.get(i);
+                ContentValues values = new ContentValues();
+
+                values.put(KEY_ID_RICHIESTA, richiesta.getIdRichiesta());
+                values.put(KEY_STATO_RICHIESTA, richiesta.getStato());
+                values.put(KEY_TIPO_RICHIESTA, richiesta.getTipo());
+                values.put(KEY_DATA_RICHIESTA, richiesta.getData_richiesta());
+                values.put(KEY_NOTE_RICHIESTA, richiesta.getNote_richiesta());
+                values.put(KEY_NOME_FARMACO, richiesta.getNome_farmaco());
+                values.put(KEY_QUANTITA_FARMACO, richiesta.getQuantita_farmaco());
+                values.put(KEY_DATA_RISPOSTA_RICHIESTA, richiesta.getData_risposta());
+                values.put(KEY_NOTE_RISPOSTA_RICHIESTA, richiesta.getNote_risposta());
+                values.put(KEY_CF_PAZIENTE_RICHIESTA, richiesta.getCf_paziente());
+                values.put(KEY_CF_MEDICO_RICHIESTA, richiesta.getCf_medico());
+
+                String a = String.valueOf(db.insert(TABLE_RICHIESTA,null,values));
+                if(a.equals("-1")) {
+                    return false;
+                }
+            }
+
+        } catch (SQLiteException s)
+        {
+            s.getMessage();
+            return false;
+        }
+
+        return true;
     }
     public boolean createPaziente(Paziente paziente) {
         try

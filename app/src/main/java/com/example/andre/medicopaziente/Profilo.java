@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -75,11 +76,12 @@ public class Profilo extends AppCompatActivity
 
         if (tipoUtente.equals("Medico")) {
             medico = intent.getParcelableExtra("Medico");
-            new AsyncCallSoapRichieste().execute();
+            //new AsyncCallSoapRichieste().execute();
             paziente = null;
         }
         else if(tipoUtente.equals("Paziente")) {
             paziente = intent.getParcelableExtra("Paziente");
+            new AsyncCallSoapRichieste().execute();
             medico = null;
         }
 
@@ -297,7 +299,8 @@ public class Profilo extends AppCompatActivity
         @Override
         protected ArrayList<Richiesta> doInBackground(String... params) {
             CallSoap cs = new CallSoap();
-            return cs.GetMedicoRequest(medico.getCodiceFiscale(),"A");
+            return cs.GetPazienteRequest(paziente.getCodiceFiscale());
+
         }
         @Override
         protected void onPreExecute()   {
@@ -307,6 +310,13 @@ public class Profilo extends AppCompatActivity
         @Override
         protected void onPostExecute(ArrayList<Richiesta> s) {
             progressDialog.dismiss();
+            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            if(!db.createRequest(s))
+            {
+                int a = 10;
+                a++;
+                System.out.println(a);
+            }
         }
     }
     public class AsyncCallSoap extends AsyncTask<Bitmap, Void, String> {
