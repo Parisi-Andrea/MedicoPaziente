@@ -88,7 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_RICHIESTA = "CREATE TABLE IF NOT EXISTS "
             + TABLE_RICHIESTA + "("
-            + KEY_ID_RICHIESTA + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
+            + KEY_ID_RICHIESTA + " INTEGER PRIMARY KEY NOT NULL,"
             + KEY_STATO_RICHIESTA + " TEXT,"
             + KEY_TIPO_RICHIESTA + " TEXT,"
             + KEY_DATA_RICHIESTA + " TEXT,"

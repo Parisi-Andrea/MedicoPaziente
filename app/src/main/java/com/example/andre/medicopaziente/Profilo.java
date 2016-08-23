@@ -44,6 +44,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -69,6 +70,18 @@ public class Profilo extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Home");
 
+        Intent intent = getIntent();
+        tipoUtente = intent.getStringExtra("tipoUtente");
+
+        if (tipoUtente.equals("Medico")) {
+            medico = intent.getParcelableExtra("Medico");
+            new AsyncCallSoapRichieste().execute();
+            paziente = null;
+        }
+        else if(tipoUtente.equals("Paziente")) {
+            paziente = intent.getParcelableExtra("Paziente");
+            medico = null;
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -278,7 +291,24 @@ public class Profilo extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    public class AsyncCallSoapRichieste extends AsyncTask<String,Void,ArrayList<Richiesta>>
+    {
 
+        @Override
+        protected ArrayList<Richiesta> doInBackground(String... params) {
+            CallSoap cs = new CallSoap();
+            return cs.GetMedicoRequest(medico.getCodiceFiscale(),"A");
+        }
+        @Override
+        protected void onPreExecute()   {
+            progressDialog = ProgressDialog.show(Profilo.this, "Attendere", "Aggiornamento richieste...", true);
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Richiesta> s) {
+            progressDialog.dismiss();
+        }
+    }
     public class AsyncCallSoap extends AsyncTask<Bitmap, Void, String> {
 
 
@@ -287,6 +317,7 @@ public class Profilo extends AppCompatActivity
             if(tipoUtente.equals("Paziente")){  saveImageDb(photo,paziente.getCodiceFiscale());}
             else if(tipoUtente.equals("Medico")){saveImageDb(photo,medico.getCodiceFiscale());}
             return "OK";
+
         }
 
         @Override
