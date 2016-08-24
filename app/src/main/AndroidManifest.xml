@@ -22,12 +22,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Profilo"
+            android:name=".Profilo2"
             android:label="@string/title_activity_profilo"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Registration" />
+
         <activity android:name=".PazienteRegistration" />
-        <activity android:name=".MedicoRegistration"></activity>
+        <activity android:name=".MedicoRegistration"/>
+
+        <activity android:name=".BasicDrawerActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

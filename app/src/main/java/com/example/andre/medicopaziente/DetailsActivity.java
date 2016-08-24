@@ -1,4 +1,4 @@
-package com.example.andre.medicopaziente.annie;
+package com.example.andre.medicopaziente;
 
 import android.content.Intent;
 import android.os.Bundle;

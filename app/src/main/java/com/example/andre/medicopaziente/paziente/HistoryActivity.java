@@ -1,4 +1,4 @@
-package com.example.andre.medicopaziente.annie;
+package com.example.andre.medicopaziente.paziente;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -10,9 +10,12 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.andre.medicopaziente.BasicDrawerActivity;
 import com.example.andre.medicopaziente.R;
 
-
+/**
+ * Created by Annalisa on 10/08/2016.
+ */
 public class HistoryActivity extends BasicDrawerActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 

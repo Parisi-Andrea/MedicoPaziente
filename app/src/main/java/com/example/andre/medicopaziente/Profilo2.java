@@ -1,55 +1,35 @@
 package com.example.andre.medicopaziente;
+
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
-import android.util.Base64;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.ColumnText;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
-import java.io.ByteArrayOutputStream;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
-
-public class Profilo extends AppCompatActivity
+public class Profilo2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    Manager util = new Manager(); //necessario??
 
     private ProgressDialog progressDialog;
     Toolbar toolbar;
@@ -58,7 +38,7 @@ public class Profilo extends AppCompatActivity
     private Medico medico;
     private Paziente paziente;
     private Bitmap photo;
-    String tipoUtente;
+    public String tipoUtente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +67,7 @@ public class Profilo extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        util.setNavigationview(this, this,imageView,textViewNome,textViewCF,medico,paziente,photo);
 
     }
 
@@ -103,10 +83,10 @@ public class Profilo extends AppCompatActivity
         }
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.profilo, menu);
+        //getMenuInflater().inflate(R.menu.profilo, menu);
 
         imageView = (CircleImageView) findViewById(R.id.imageViewClickable);
         textViewNome = (TextView) findViewById(R.id.textNome);
@@ -174,7 +154,7 @@ public class Profilo extends AppCompatActivity
         });
 
         return true;
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -199,8 +179,8 @@ public class Profilo extends AppCompatActivity
 
                     photo = (Bitmap) imageReturnedIntent.getExtras().get("data");
 
-                    if  (medico==null) saveImageInternalStorage(photo, paziente.getCodiceFiscale());
-                    else               saveImageInternalStorage(photo, medico.getCodiceFiscale());
+                    if  (medico==null) util.saveImageInternalStorage(photo, paziente.getCodiceFiscale(),this);
+                    else               util.saveImageInternalStorage(photo, medico.getCodiceFiscale(),this);
 
                     imageView.setImageBitmap(photo);
 
@@ -220,7 +200,7 @@ public class Profilo extends AppCompatActivity
                             String fname = paziente.getCodiceFiscale() + ".png";
                             File file = new File(myDir, fname);
 
-                            copyFile(new File(getPath(imageReturnedIntent.getData())), file);
+                            util.copyFile(new File(util.getPath(imageReturnedIntent.getData(),this)), file);
 
                         }
                         else
@@ -230,7 +210,7 @@ public class Profilo extends AppCompatActivity
                             File file = new File(myDir, fname);
 
 
-                            copyFile(new File(getPath(imageReturnedIntent.getData())), file);
+                            util.copyFile(new File(util.getPath(imageReturnedIntent.getData(), this)), file);
 
                         }
 
@@ -284,14 +264,14 @@ public class Profilo extends AppCompatActivity
 
         @Override
         protected String doInBackground(Bitmap... params) {
-            if(tipoUtente.equals("Paziente")){  saveImageDb(photo,paziente.getCodiceFiscale());}
-            else if(tipoUtente.equals("Medico")){saveImageDb(photo,medico.getCodiceFiscale());}
+            if(tipoUtente.equals("Paziente")){  util.saveImageDb(photo, paziente.getCodiceFiscale());}
+            else if(tipoUtente.equals("Medico")){ util.saveImageDb(photo, medico.getCodiceFiscale());}
             return "OK";
         }
 
         @Override
         protected void onPreExecute()   {
-            progressDialog = ProgressDialog.show(Profilo.this, "Attendere", "Salvataggio della foto...", true);
+            progressDialog = ProgressDialog.show(Profilo2.this, "Attendere", "Salvataggio della foto...", true);
         }
 
         @Override
@@ -299,6 +279,9 @@ public class Profilo extends AppCompatActivity
             progressDialog.dismiss();
         }
     }
+
+
+/*
 
     public String getPath(Uri uri) {
         String[] projection = { MediaStore.Images.Media.DATA };
@@ -348,6 +331,7 @@ public class Profilo extends AppCompatActivity
         }
         return true;
     }
+
     public boolean saveImageInternalStorage(Bitmap bitmap,String codiceFiscale){
         File myDir = new File( Environment.getExternalStorageDirectory(),File.separator+"MedicoPaziente"+File.separator+codiceFiscale);
 
@@ -386,15 +370,18 @@ public class Profilo extends AppCompatActivity
         }
         return b;
     }
+
     public void stringToImageView(ImageView imageView, String encodedImage)   {
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         imageView.setImageBitmap(decodedByte);
     }
+
     public Bitmap stringToBitmap(String encodedImage) {
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
+
     public boolean setUpInfoDrawer() {
         try {
             Intent intent = getIntent();
@@ -479,5 +466,77 @@ public class Profilo extends AppCompatActivity
             Toast.makeText(getApplicationContext(), e.getMessage().toString(), Toast.LENGTH_LONG).show();
         }
     }
+
+    public void setNavigationview(NavigationView nv){
+
+        imageView = (CircleImageView) findViewById(R.id.imageViewClickable);
+        textViewNome = (TextView) findViewById(R.id.textNome);
+        textViewCF = (TextView) findViewById(R.id.textCodiceFiscale);
+
+        //Setto le informazioni nel Drawer (nome,cognome, codice fiscale,foto da db)
+        if (!setUpInfoDrawer())
+        {
+            AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+            alertDialog.setTitle("Errore");
+            alertDialog.setMessage("Info drawer non settate!");
+            alertDialog.show();
+        }
+        //Cerco di recuperare l'immagine profilo salvata nella memoria interna "CodiceFiscale.png"
+        if(medico!=null)
+        {
+            photo = readImageFromInternalStore(medico.getCodiceFiscale());
+            if (photo == null)
+            {
+                System.out.println("Medico: Errore lettura immagine");
+            }
+            else
+            {
+                imageView.setImageBitmap(photo);
+            }
+        } else //Se è paziente, se nel db non c'è la foto cerco di prenderla dalla memoria interna
+        {
+            if(paziente.getImage() == null) {
+                photo = readImageFromInternalStore(paziente.getCodiceFiscale());
+                if (photo == null) {
+                    System.out.println("Paziente: Errore lettura immagine");
+                } else {
+                    imageView.setImageBitmap(photo);
+                }
+            }
+        }
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder =
+                        new AlertDialog.Builder(Profilo.this);
+                builder.setTitle("Foto profilo");
+                builder.setMessage("");
+                builder.setPositiveButton("CAMERA", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(takePicture, 0);
+
+
+                    }
+                });
+                builder.setNegativeButton("GALLERIA", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(pickPhoto, 1);//one can be replaced with any action code
+
+                    }
+                });
+                builder.show();
+
+            }
+        });
+    }
+*/
 
 }

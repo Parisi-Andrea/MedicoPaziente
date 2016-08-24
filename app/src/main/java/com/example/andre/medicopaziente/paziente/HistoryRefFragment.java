@@ -1,4 +1,4 @@
-package com.example.andre.medicopaziente.annie;
+package com.example.andre.medicopaziente.paziente;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.andre.medicopaziente.R;
+import com.example.andre.medicopaziente.DetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
