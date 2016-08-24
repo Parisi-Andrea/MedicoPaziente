@@ -185,7 +185,15 @@ public class MainActivity extends AppCompatActivity {
                     if (docProfile != null) {
                         if (docProfile.getPassword().equals(password)) {
                             DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-                            db.createMedico(docProfile);
+                            if (!db.createMedico(docProfile))
+                            {
+
+                                if(db.updateMedico(docProfile) == -1)
+                                {
+                                    System.out.println("SQLite error: Non è stato possibile creare e/o aggiornare la tabella medico");
+                                }
+
+                            }
                             db.closeDB();
                             response = "OK";
                         } else {
@@ -212,7 +220,15 @@ public class MainActivity extends AppCompatActivity {
                     patProfile = CS.LoginPaziente(username, password, tipoUtente);
                     if (patProfile != null) {
                         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-                        db.createPaziente(patProfile);
+                        if (!db.createPaziente(patProfile))
+                        {
+
+                            if(db.updatePaziente(patProfile) == -1)
+                            {
+                                System.out.println("SQLite error: Non è stato possibile creare e/o aggiornare la tabella paziente");
+                            }
+
+                        }
                         db.closeDB();
                         response = "OK";
                     } else {
@@ -309,7 +325,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createPDFRicettaRossa() {
-        File file = new File(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + "Ricette" + File.separator + "ricetta.pdf");
+
+        File file = new File(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" +File.separator + "RicettaRossa.pdf");
         File dir = new File(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente");
         if (!file.exists()) {
             dir.mkdirs();

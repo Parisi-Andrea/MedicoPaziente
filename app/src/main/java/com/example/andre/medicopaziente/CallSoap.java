@@ -173,7 +173,7 @@ public class CallSoap {
     }
         return medico;
     }
-    public ArrayList<Richiesta> GetPazienteRequest(String codiceFiscale,String stato) {
+    public ArrayList<Richiesta> GetPazienteRequest(String codiceFiscale) {
         ArrayList<Richiesta> richieste = new ArrayList<Richiesta>();
 
         String SOAP_ACTION = "http://tempuri.org/GetPazienteRequest";
@@ -186,12 +186,6 @@ public class CallSoap {
         PropertyInfo PI = new PropertyInfo();
         PI.setName("codiceFiscale");
         PI.setValue(codiceFiscale);
-        PI.setType(String.class);
-        request.addProperty(PI);
-
-        PI = new PropertyInfo();
-        PI.setName("stato");
-        PI.setValue(stato);
         PI.setType(String.class);
         request.addProperty(PI);
 

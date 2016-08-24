@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by andre on 30/06/2016.
  */
@@ -55,10 +57,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_CF_MEDICO_RICHIESTA = "cf_medico";
 
 
+    private static final String KEY_IMAGE = "image";
+
     private static final String KEY_CREATED_AT = "created_at";
 
 
-    private static final String CREATE_TABLE_MEDICO = "CREATE TABLE "
+    private static final String CREATE_TABLE_MEDICO = "CREATE TABLE IF NOT EXISTS "
             + TABLE_MEDICO + "("
             +  KEY_ID + " TEXT PRIMARY KEY,"
             +  KEY_NOME + " TEXT,"
@@ -67,9 +71,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + KEY_NTEL + " TEXT,"
             + KEY_PASSWORD + " TEXT,"
             + KEY_AMBULATORIO_MEDICO + " TEXT,"
-            + KEY_ORARIO_MEDICO + " TEXT" + ");";
+            + KEY_ORARIO_MEDICO + " TEXT,"
+            + KEY_IMAGE +" TEXT" + ");";
 
-    private static final String CREATE_TABLE_PAZIENTE = "CREATE TABLE "
+    private static final String CREATE_TABLE_PAZIENTE = "CREATE TABLE IF NOT EXISTS "
             + TABLE_PAZIENTE + "("
             +  KEY_ID + " TEXT PRIMARY KEY NOT NULL,"
             +  KEY_NOME + " TEXT,"
@@ -80,12 +85,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + KEY_EMAIL + " TEXT,"
             + KEY_NTEL + " TEXT,"
             + KEY_PASSWORD + " TEXT,"
-            + KEY_CF_MEDICO + " TEXT REFERENCES "+ TABLE_MEDICO+" ("+KEY_ID+")"
-            + ");";
+            + KEY_CF_MEDICO + " TEXT REFERENCES "+ TABLE_MEDICO+" ("+KEY_ID+"),"
+            + KEY_IMAGE + " TEXT"+ ");";
 
-    private static final String CREATE_TABLE_RICHIESTA = "CREATE TABLE "
+    private static final String CREATE_TABLE_RICHIESTA = "CREATE TABLE IF NOT EXISTS "
             + TABLE_RICHIESTA + "("
-            + KEY_ID_RICHIESTA + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
+            + KEY_ID_RICHIESTA + " INTEGER PRIMARY KEY NOT NULL,"
             + KEY_STATO_RICHIESTA + " TEXT,"
             + KEY_TIPO_RICHIESTA + " TEXT,"
             + KEY_DATA_RICHIESTA + " TEXT,"
@@ -118,6 +123,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+    public boolean createRequest(ArrayList<Richiesta> richiestaArrayList) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            for (int i = 0; i < richiestaArrayList.size(); i++) {
+                Richiesta richiesta = richiestaArrayList.get(i);
+                ContentValues values = new ContentValues();
+
+                values.put(KEY_ID_RICHIESTA, richiesta.getIdRichiesta());
+                values.put(KEY_STATO_RICHIESTA, richiesta.getStato());
+                values.put(KEY_TIPO_RICHIESTA, richiesta.getTipo());
+                values.put(KEY_DATA_RICHIESTA, richiesta.getData_richiesta());
+                values.put(KEY_NOTE_RICHIESTA, richiesta.getNote_richiesta());
+                values.put(KEY_NOME_FARMACO, richiesta.getNome_farmaco());
+                values.put(KEY_QUANTITA_FARMACO, richiesta.getQuantita_farmaco());
+                values.put(KEY_DATA_RISPOSTA_RICHIESTA, richiesta.getData_risposta());
+                values.put(KEY_NOTE_RISPOSTA_RICHIESTA, richiesta.getNote_risposta());
+                values.put(KEY_CF_PAZIENTE_RICHIESTA, richiesta.getCf_paziente());
+                values.put(KEY_CF_MEDICO_RICHIESTA, richiesta.getCf_medico());
+
+                String a = String.valueOf(db.insert(TABLE_RICHIESTA,null,values));
+                if(a.equals("-1")) {
+                    return false;
+                }
+            }
+
+        } catch (SQLiteException s)
+        {
+            s.getMessage();
+            return false;
+        }
+
+        return true;
+    }
     public boolean createPaziente(Paziente paziente) {
         try
         {
@@ -134,10 +172,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(KEY_EMAIL,paziente.getEmail());
             values.put(KEY_NTEL,paziente.getNTel());
             values.put(KEY_CF_MEDICO,paziente.getMedico());
+            values.put(KEY_IMAGE,paziente.getImage());
+            String i = String.valueOf(db.insert(TABLE_PAZIENTE,null,values));
+            if(i.equals("-1")) {
+                return false;
+            }
 
-            long a = db.insert(TABLE_PAZIENTE,null,values);
-            Log.e(LOG,a+"");
-            int s = 10;
 
         } catch (SQLiteException e)
         {
@@ -160,9 +200,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(KEY_PASSWORD, medico.getPassword());
             values.put(KEY_AMBULATORIO_MEDICO, medico.getAmbulatorio());
             values.put(KEY_ORARIO_MEDICO, medico.getOrario());
+            values.put(KEY_IMAGE,medico.getImage());
 
-            long a = db.insert(TABLE_MEDICO,null,values);
-            Log.e(LOG,a+"");
+            String i = String.valueOf(db.insert(TABLE_MEDICO,null,values));
+            if(i.equals("-1")) {
+                return false;
+            }
+            Log.e(LOG,i);
             int s = 10;
         } catch (SQLiteException e)
         {
@@ -205,6 +249,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             paziente.setLuogoNascita(c.getString(c.getColumnIndex(KEY_LUOGO_NASCITA_PAZIENTE)));
             paziente.setResidenza(c.getString(c.getColumnIndex(KEY_RESIDENZA_PAZIENTE)));
             paziente.setMedico(c.getString(c.getColumnIndex(KEY_CF_MEDICO)));
+            paziente.setImage(c.getString(c.getColumnIndex(KEY_IMAGE)));
 
             return paziente;
         }
@@ -237,6 +282,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             medico.setPassword(c.getString(c.getColumnIndex(KEY_PASSWORD)));
             medico.setAmbulatorio(c.getString(c.getColumnIndex(KEY_AMBULATORIO_MEDICO)));
             medico.setOrario(c.getString(c.getColumnIndex(KEY_ORARIO_MEDICO)));
+            medico.setImage(c.getString(c.getColumnIndex(KEY_IMAGE)));
 
             return medico;
         }
@@ -247,18 +293,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public int updateMedico(Medico medico)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_ID, medico.getCodiceFiscale());
-        values.put(KEY_NOME, medico.getNome());
-        values.put(KEY_COGNOME, medico.getCognome());
-        values.put(KEY_EMAIL, medico.getEmail());
-        values.put(KEY_NTEL, medico.getNTel());
-        values.put(KEY_PASSWORD, medico.getPassword());
-        values.put(KEY_AMBULATORIO_MEDICO, medico.getAmbulatorio());
-        values.put(KEY_ORARIO_MEDICO, medico.getOrario());
+            ContentValues values = new ContentValues();
+            values.put(KEY_ID, medico.getCodiceFiscale());
+            values.put(KEY_NOME, medico.getNome());
+            values.put(KEY_COGNOME, medico.getCognome());
+            values.put(KEY_EMAIL, medico.getEmail());
+            values.put(KEY_NTEL, medico.getNTel());
+            values.put(KEY_PASSWORD, medico.getPassword());
+            values.put(KEY_AMBULATORIO_MEDICO, medico.getAmbulatorio());
+            values.put(KEY_ORARIO_MEDICO, medico.getOrario());
+            values.put(KEY_IMAGE, medico.getImage());
 
-        return db.update(TABLE_MEDICO, values, KEY_ID + "=" + medico.getCodiceFiscale(),null);
+            int a = db.update(TABLE_MEDICO, values, KEY_ID + "='" + medico.getCodiceFiscale()+"'", null);
+            return a;
+        } catch (SQLiteException s)
+        {
+            s.getMessage();
+            return -1;
+        } catch (Exception e)
+        {
+            e.getMessage();
+            return -1;
+        }
     }
+
+    public int updatePaziente(Paziente paziente)
+    {
+        try
+        {
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            ContentValues values = new ContentValues();
+            values.put(KEY_ID, paziente.getCodiceFiscale());
+            values.put(KEY_NOME, paziente.getNome());
+            values.put(KEY_COGNOME, paziente.getCognome());
+            values.put(KEY_DATA_NASCITA_PAZIENTE,paziente.getDataNascita());
+            values.put(KEY_LUOGO_NASCITA_PAZIENTE,paziente.getLuogoNascita());
+            values.put(KEY_RESIDENZA_PAZIENTE,paziente.getResidenza());
+            values.put(KEY_PASSWORD, paziente.getPassword());
+            values.put(KEY_EMAIL,paziente.getEmail());
+            values.put(KEY_NTEL,paziente.getNTel());
+            values.put(KEY_CF_MEDICO,paziente.getMedico());
+            values.put(KEY_IMAGE,paziente.getImage());
+
+            int a = db.update(TABLE_PAZIENTE, values, KEY_ID + "='" + paziente.getCodiceFiscale()+"'",null);
+            return a;
+        } catch (SQLiteException s)
+        {
+            s.getMessage();
+            return -1;
+        } catch (Exception e)
+        {
+            e.getMessage();
+            return -1;
+        }
+    }
+
 }
