@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,6 +14,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -61,6 +63,7 @@ public class Profilo extends AppCompatActivity
     private Paziente paziente;
     private Bitmap photo;
     String tipoUtente;
+    private Utils utils = new Utils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,21 +74,32 @@ public class Profilo extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Home");
 
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        if(!Utils.isConnectedViaWifi(this))
+        {
+            if(!Utils.executePingWebService("192.168.173.1")) {
+                Snackbar snackbar = Snackbar
+                        .make(this.getWindow().getDecorView().findViewById(android.R.id.content), "Warning: I dati possono non essere aggiornati", Snackbar.LENGTH_INDEFINITE);
+
+                snackbar.show();
+                fab.setVisibility(View.GONE);
+            }
+        }
+
         Intent intent = getIntent();
         tipoUtente = intent.getStringExtra("tipoUtente");
 
         if (tipoUtente.equals("Medico")) {
             medico = intent.getParcelableExtra("Medico");
-            //new AsyncCallSoapRichieste().execute();
             paziente = null;
         }
-        else if(tipoUtente.equals("Paziente")) {
+        else {
             paziente = intent.getParcelableExtra("Paziente");
-            new AsyncCallSoapRichieste().execute();
             medico = null;
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,14 +142,14 @@ public class Profilo extends AppCompatActivity
         textViewCF = (TextView) findViewById(R.id.textCodiceFiscale);
 
         //Setto le informazioni nel Drawer (nome,cognome, codice fiscale,foto da db)
-        if (!setUpInfoDrawer())
+        if (!utils.setUpInfoDrawer(this,medico,paziente,textViewCF,textViewNome,imageView))
         {
             return false;
         }
         //Cerco di recuperare l'immagine profilo salvata nella memoria interna "CodiceFiscale.png"
         if(medico!=null)
         {
-            photo = readImageFromInternalStore(medico.getCodiceFiscale());
+            photo = utils.readImageFromInternalStore(medico.getCodiceFiscale());
             if (photo == null)
             {
                 System.out.println("Medico: Errore lettura immagine");
@@ -147,7 +161,7 @@ public class Profilo extends AppCompatActivity
         } else //Se è paziente, se nel db non c'è la foto cerco di prenderla dalla memoria interna
         {
             if(paziente.getImage() == null) {
-                photo = readImageFromInternalStore(paziente.getCodiceFiscale());
+                photo = utils.readImageFromInternalStore(paziente.getCodiceFiscale());
                 if (photo == null) {
                     System.out.println("Paziente: Errore lettura immagine");
                 } else {
@@ -214,8 +228,8 @@ public class Profilo extends AppCompatActivity
 
                     photo = (Bitmap) imageReturnedIntent.getExtras().get("data");
 
-                    if  (medico==null) saveImageInternalStorage(photo, paziente.getCodiceFiscale());
-                    else               saveImageInternalStorage(photo, medico.getCodiceFiscale());
+                    if  (medico==null) utils.saveImageInternalStorage(photo, paziente.getCodiceFiscale(),this);
+                    else               utils.saveImageInternalStorage(photo, medico.getCodiceFiscale(),this);
 
                     imageView.setImageBitmap(photo);
 
@@ -231,27 +245,27 @@ public class Profilo extends AppCompatActivity
 
                         if(medico == null) {
 
-                            File myDir = new File(Environment.getExternalStorageDirectory(), File.separator + "MedicoPaziente");
+                            File myDir = new File(Environment.getExternalStorageDirectory(), File.separator + "MedicoPaziente" + File.separator + paziente.getCodiceFiscale());
                             String fname = paziente.getCodiceFiscale() + ".png";
                             File file = new File(myDir, fname);
 
-                            copyFile(new File(getPath(imageReturnedIntent.getData())), file);
+                            utils.copyFile(new File(utils.getPath(imageReturnedIntent.getData(),this)), file);
 
                         }
                         else
                         {
-                            File myDir = new File(Environment.getExternalStorageDirectory(), File.separator + "MedicoPaziente");
+                            File myDir = new File(Environment.getExternalStorageDirectory(), File.separator + "MedicoPaziente"+ File.separator + medico.getCodiceFiscale());
                             String fname = medico.getCodiceFiscale() + ".png";
                             File file = new File(myDir, fname);
 
 
-                            copyFile(new File(getPath(imageReturnedIntent.getData())), file);
+                            utils.copyFile(new File(utils.getPath(imageReturnedIntent.getData(),this)), file);
 
                         }
 
                         //scalo immagine per vederla in circleimageView
-                        int nh = (int) ( photo.getHeight() * (512.0 / photo.getWidth()) );
-                        photo = Bitmap.createScaledBitmap(photo, 512, nh, true);
+                        int nh = (int) ( photo.getHeight() * (200.0 / photo.getWidth()) );
+                        photo = Bitmap.createScaledBitmap(photo, 200, nh, true);
                         imageView.setImageBitmap(photo);
 
                         new AsyncCallSoap().execute();
@@ -324,8 +338,8 @@ public class Profilo extends AppCompatActivity
 
         @Override
         protected String doInBackground(Bitmap... params) {
-            if(tipoUtente.equals("Paziente")){  saveImageDb(photo,paziente.getCodiceFiscale());}
-            else if(tipoUtente.equals("Medico")){saveImageDb(photo,medico.getCodiceFiscale());}
+            if(tipoUtente.equals("Paziente")){  utils.saveImageDb(photo,paziente.getCodiceFiscale(),tipoUtente);}
+            else if(tipoUtente.equals("Medico")){utils.saveImageDb(photo,medico.getCodiceFiscale(),tipoUtente);}
             return "OK";
 
         }
@@ -341,16 +355,16 @@ public class Profilo extends AppCompatActivity
         }
     }
 
-    public String getPath(Uri uri) {
+    /*public String getPath(Uri uri) {
         String[] projection = { MediaStore.Images.Media.DATA };
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         startManagingCursor(cursor);
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         return cursor.getString(column_index);
-    }
+    }*/
 
-    public void copyFile(File sourceFile, File destFile) throws IOException {
+   /* public void copyFile(File sourceFile, File destFile) throws IOException {
         if (!sourceFile.exists()) {
             return;
         }
@@ -368,9 +382,9 @@ public class Profilo extends AppCompatActivity
         if (destination != null) {
             destination.close();
         }
-    }
+    }*/
 
-    public boolean saveImageDb(Bitmap bitmap,String codiceFiscale){
+/*    public boolean saveImageDb(Bitmap bitmap,String codiceFiscale){
         try
         {
             byte[] byteArray;
@@ -388,8 +402,8 @@ public class Profilo extends AppCompatActivity
             return false;
         }
         return true;
-    }
-    public boolean saveImageInternalStorage(Bitmap bitmap,String codiceFiscale){
+    }*/
+    /*public boolean saveImageInternalStorage(Bitmap bitmap,String codiceFiscale){
         File myDir = new File( Environment.getExternalStorageDirectory(),File.separator+"MedicoPaziente"+File.separator+codiceFiscale);
 
         if(!myDir.mkdirs()) {System.out.println("myDir.mkdirs() return false");}
@@ -412,9 +426,9 @@ public class Profilo extends AppCompatActivity
             return false;
         }
         return true;
-    }
+    }*/
 
-    public Bitmap readImageFromInternalStore(String codiceFiscale) {
+/*    public Bitmap readImageFromInternalStore(String codiceFiscale) {
         Bitmap b;
         try {
             File f=new File(Environment.getExternalStorageDirectory()+File.separator+"MedicoPaziente"+File.separator+codiceFiscale, codiceFiscale+".png");
@@ -426,17 +440,17 @@ public class Profilo extends AppCompatActivity
             e.printStackTrace();
         }
         return b;
-    }
-    public void stringToImageView(ImageView imageView, String encodedImage)   {
+    }*/
+    /*public void stringToImageView(ImageView imageView, String encodedImage)   {
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         imageView.setImageBitmap(decodedByte);
-    }
-    public Bitmap stringToBitmap(String encodedImage) {
+    }*/
+    /*public Bitmap stringToBitmap(String encodedImage) {
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-    }
-    public boolean setUpInfoDrawer() {
+    }*/
+    /*public boolean setUpInfoDrawer() {
         try {
             Intent intent = getIntent();
             tipoUtente = intent.getStringExtra("tipoUtente");
@@ -482,9 +496,9 @@ public class Profilo extends AppCompatActivity
             return false;
         }
         return true;
-    }
+    }*/
 
-    public void creaRicettaRossa(Paziente paziente) {
+    /*public void creaRicettaRossa(Paziente paziente) {
         System.out.println("PIPPO");
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
@@ -520,5 +534,5 @@ public class Profilo extends AppCompatActivity
             Toast.makeText(getApplicationContext(), e.getMessage().toString(), Toast.LENGTH_LONG).show();
         }
     }
-
+*/
 }
