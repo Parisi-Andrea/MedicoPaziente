@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Profilo2"
+            android:name=".Profilo"
             android:label="@string/title_activity_profilo"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -31,6 +31,9 @@
 
         <activity android:name=".BasicDrawerActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".paziente.HistoryActivity"/>
+        <activity android:name=".DetailsActivity"/>
     </application>
 
 </manifest>

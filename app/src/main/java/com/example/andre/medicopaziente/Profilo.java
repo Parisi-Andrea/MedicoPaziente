@@ -1,29 +1,19 @@
 package com.example.andre.medicopaziente;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
-import android.util.Base64;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,26 +21,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.ColumnText;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
-import java.io.ByteArrayOutputStream;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -72,7 +48,7 @@ public class Profilo extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profilo);
+        setContentView(R.layout.activity_basic_drawer);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -91,24 +67,12 @@ public class Profilo extends AppCompatActivity
                 fab.setVisibility(View.GONE);
             }
         }
-
-        Intent intent = getIntent();
-        tipoUtente = intent.getStringExtra("tipoUtente");
-
-        if (tipoUtente.equals("Medico")) {
-            medico = intent.getParcelableExtra("Medico");
-            paziente = null;
-        }
-        else {
-            paziente = intent.getParcelableExtra("Paziente");
-            medico = null;
-        }
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //creaRicettaRossa(paziente);
-
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
 
@@ -120,6 +84,22 @@ public class Profilo extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        Intent intent = getIntent();
+        tipoUtente = intent.getStringExtra("tipoUtente");
+
+        if (tipoUtente.equals("Medico")) {
+            medico = intent.getParcelableExtra("Medico");
+            paziente = null;
+            Menu drawermenu = navigationView.getMenu();
+            drawermenu.removeItem(R.id.nav_request);
+            drawermenu.getItem(3).setTitle("Informazioni Pazienti");
+        }
+        else {
+            paziente = intent.getParcelableExtra("Paziente");
+            medico = null;
+        }
+
         util.setNavigationview(this, this,imageView,textViewNome,textViewCF,medico,paziente,photo);
 
     }

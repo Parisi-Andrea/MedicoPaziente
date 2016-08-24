@@ -238,37 +238,7 @@ public class Manager {
             }
         }
 
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder =
-                        new AlertDialog.Builder(context);
-                builder.setTitle("Foto profilo");
-                builder.setMessage("");
-                builder.setPositiveButton("CAMERA", new DialogInterface.OnClickListener() {
 
-                    public void onClick(DialogInterface dialog, int id) {
-
-                        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        activity.startActivityForResult(takePicture, 0);
-
-
-                    }
-                });
-                builder.setNegativeButton("GALLERIA", new DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialog, int id) {
-
-                        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        activity.startActivityForResult(pickPhoto, 1);//one can be replaced with any action code
-
-                    }
-                });
-                builder.show();
-
-            }
-        });
     }
 
     public void creaRicettaRossa(Paziente paziente, Context applicationContext) {

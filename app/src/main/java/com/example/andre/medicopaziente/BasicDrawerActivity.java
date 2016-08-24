@@ -11,6 +11,9 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -71,15 +74,23 @@ public class BasicDrawerActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        util.setNavigationview(this, this,imageView,textViewNome,textViewCF,medico,paziente,photo);
-        if(login=="doctor"){
-            Menu drawermenu = navigationView.getMenu();
-            drawermenu.removeItem(R.id.nav_request);
-        }
 
         Intent intent = getIntent();
+        tipoUtente = "Paziente";
         int id = intent.getIntExtra(EXTRA_PACK, 0);
         navigationView.setCheckedItem(id);
+
+        /*if (tipoUtente.equals("Medico")) {
+            //medico = intent.getParcelableExtra("Medico");
+            paziente = null;
+            Menu drawermenu = navigationView.getMenu();
+            drawermenu.removeItem(R.id.nav_request);
+            drawermenu.getItem(3).setTitle("Informazioni Pazienti");
+        }
+        else {
+            //paziente = intent.getParcelableExtra("Paziente");
+            medico = null;
+        }*/
 
     }
 
@@ -107,7 +118,7 @@ public class BasicDrawerActivity extends AppCompatActivity
 
                     imageView.setImageBitmap(photo);
 
-                    new AsyncCallSoap().execute();
+                    //new AsyncCallSoap().execute();
                 }
 
                 break;
@@ -142,7 +153,7 @@ public class BasicDrawerActivity extends AppCompatActivity
                         photo = Bitmap.createScaledBitmap(photo, 512, nh, true);
                         imageView.setImageBitmap(photo);
 
-                        new AsyncCallSoap().execute();
+                        //new AsyncCallSoap().execute();
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -156,14 +167,13 @@ public class BasicDrawerActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
 
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
             //activity Home
-            /*Intent intent = new Intent(this, BasicActivity.class);
+            Intent intent = new Intent(this, BasicDrawerActivity.class);
             intent.putExtra(EXTRA_PACK,id);
-            startActivity(intent);*/
+            startActivity(intent);
         } else if (id == R.id.nav_wait) {
             //activity In Attesa
             /*Intent intent = new Intent(this, WaitingActivity.class);
@@ -174,7 +184,7 @@ public class BasicDrawerActivity extends AppCompatActivity
             Intent intent = new Intent(this, HistoryActivity.class);
             intent.putExtra(EXTRA_PACK,id);
             startActivity(intent);
-        } else if (id == R.id.nav_doctor) {
+        } else if (id == R.id.nav_info) {
             //activity Info Dottore
 
         } else if (id == R.id.nav_request) {
@@ -191,7 +201,7 @@ public class BasicDrawerActivity extends AppCompatActivity
     }
 
 
-    public class AsyncCallSoap extends AsyncTask<Bitmap, Void, String> {
+   /* public class AsyncCallSoap extends AsyncTask<Bitmap, Void, String> {
 
 
         @Override
@@ -210,5 +220,5 @@ public class BasicDrawerActivity extends AppCompatActivity
         protected void onPostExecute(String s) {
             progressDialog.dismiss();
         }
-    }
+    }*/
 }

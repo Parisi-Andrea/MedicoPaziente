@@ -67,8 +67,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //login(v);
+
+                //modifiche per run application
                 Intent intent = new Intent(MainActivity.this, BasicDrawerActivity.class);
-                //intent.putExtra(EXTRA_PACK,id);
                 startActivity(intent);
             }
         });
@@ -290,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                                     });
                                 }
                             }
-                            Intent newPage = new Intent(getBaseContext(), Profilo2.class);
+                            Intent newPage = new Intent(getBaseContext(), Profilo.class);
                             if (tipoUtente.equals("Medico")) {
 
                                 newPage.putExtra("Medico", docProfile);

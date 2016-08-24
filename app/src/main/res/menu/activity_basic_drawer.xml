@@ -15,7 +15,7 @@
             android:icon="@drawable/ic_history_black_24dp"
             android:title="Cronologia" />
         <item
-            android:id="@+id/nav_doctor"
+            android:id="@+id/nav_info"
             android:icon="@drawable/ic_contact_phone_black_24dp"
             android:title="Informazioni Medico" />
         <item
