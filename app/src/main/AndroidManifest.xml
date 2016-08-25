@@ -29,10 +29,12 @@
         <activity android:name=".PazienteRegistration" />
         <activity android:name=".MedicoRegistration"/>
 
-        <activity android:name=".BasicDrawerActivity"
+        <activity android:name=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".paziente.HistoryActivity"/>
+        <activity android:name=".WaitingActivity"/>
+
+        <activity android:name=".HistoryActivity"/>
         <activity android:name=".DetailsActivity"/>
     </application>
 

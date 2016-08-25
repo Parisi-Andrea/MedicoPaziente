@@ -69,8 +69,7 @@ public class Richiesta {
     {
         return quantita_farmaco;
     }
-    public void setQuantita_farmaco(int quantita_farmaco)
-    {
+    public void setQuantita_farmaco(int quantita_farmaco) {
         this.quantita_farmaco = quantita_farmaco;
     }
     public String getData_risposta()

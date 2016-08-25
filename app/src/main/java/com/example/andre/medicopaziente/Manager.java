@@ -43,10 +43,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class Manager {
 
-    public String user_type;
-    public void setUserType(String user ){
-        this.user_type = user;
-    }
 
     public String getPath(Uri uri, Activity activity) {
         String[] projection = { MediaStore.Images.Media.DATA };
@@ -89,7 +85,7 @@ public class Manager {
             encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
             CallSoap cs = new CallSoap();
-            cs.InsertImageToDB(encodedImage,codiceFiscale, user_type);
+            cs.InsertImageToDB(encodedImage,codiceFiscale, MainActivity.tipoUtente);
 
         } catch (Exception ex) {
             return false;
@@ -151,9 +147,9 @@ public class Manager {
                                    TextView textViewCF, TextView textViewNome, ImageView imageView) {
         try {
             Intent intent = activity.getIntent();
-            setUserType(intent.getStringExtra("tipoUtente"));
+            MainActivity.tipoUtente = (intent.getStringExtra("tipoUtente"));
 
-            if (user_type.equals("Medico")) {
+            if (MainActivity.tipoUtente.equals("Medico")) {
                 medico = intent.getParcelableExtra("Medico");
                 textViewCF.setText(medico.getCodiceFiscale());
                 textViewNome.setText("Dott. " + medico.getNome() + " " + medico.getCognome());

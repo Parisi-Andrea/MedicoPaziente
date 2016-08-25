@@ -1,9 +1,10 @@
-package com.example.andre.medicopaziente.paziente;
+package com.example.andre.medicopaziente;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,11 @@ import java.util.List;
 /**
  * Created by Annalisa on 16/08/2016.
  */
-public class HistoryApprFragment extends Fragment {
+public class HistoryRefFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     ListView lista;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,8 +45,16 @@ public class HistoryApprFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
         return v;
     }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
 
     class MyDataAdapter extends ArrayAdapter<String> {
         //array paralleli momentanei per simulare dati DB
@@ -57,14 +68,9 @@ public class HistoryApprFragment extends Fragment {
         //metodo di aggiunta dati momentaneo
         public void setData() {
             descriptioList.add("Hai richiesto al medico la prescrizione di...");
-            descriptioList.add("Hai richiesto al medico la visita specialistica in ...");
-            descriptioList.add("Hai richiesto al medico la visita specialistica in ...");
             typeList.add("Prescrizione");
-            typeList.add("Visita");
-            typeList.add("Visita");
             notifyDataSetChanged();
         }
-
 
         @Override
         public int getCount() {

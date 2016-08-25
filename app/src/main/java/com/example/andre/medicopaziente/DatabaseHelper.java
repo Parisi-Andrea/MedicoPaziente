@@ -120,6 +120,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // create new tables
         onCreate(db);
     }
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -291,8 +292,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public int updateMedico(Medico medico)
-    {
+    public int updateMedico(Medico medico) {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
 
@@ -320,8 +320,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public int updatePaziente(Paziente paziente)
-    {
+    public int updatePaziente(Paziente paziente) {
         try
         {
             SQLiteDatabase db = this.getWritableDatabase();

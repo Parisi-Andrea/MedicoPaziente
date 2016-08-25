@@ -32,10 +32,12 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText passwordTxt, codiceFiscaleTxt;
     private Button btnLogIn, btnRegister;
-    private String username, password, response, tipoUtente;
+    private String username, password, response;
     private ProgressDialog progressDialog;
     private CheckBox checkBoxMedico, checkBoxSalva;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
+
+    protected static String tipoUtente;
 
     private Medico docProfile;
     private Paziente patProfile;
@@ -69,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
                 //login(v);
 
                 //modifiche per run application
-                Intent intent = new Intent(MainActivity.this, BasicDrawerActivity.class);
+                tipoUtente = "Paziente";
+                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                 startActivity(intent);
             }
         });
@@ -137,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
         if (checkBoxMedico.isChecked()) {
             tipoUtente = "Medico";
         } else {
-            tipoUtente = "Paziente";
+           tipoUtente = "Paziente";
         }
         new AsyncCallSoap().execute();
     }

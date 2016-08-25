@@ -1,19 +1,14 @@
 package com.example.andre.medicopaziente;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,9 +17,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-
-import com.example.andre.medicopaziente.paziente.HistoryActivity;
 
 import java.io.File;
 
@@ -33,18 +25,20 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class BasicDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public String login;
-    public final static String EXTRA_PACK = "it.unitn.annalisa.medicopazientefinal";
+
+    public final static String EXTRA_PACK = "ID_";
     Manager util = new Manager(); //necessario??
 
-    private ProgressDialog progressDialog;
     Toolbar toolbar;
     CircleImageView imageView;
-    private TextView textViewNome, textViewCF;
+
     private Medico medico;
     private Paziente paziente;
     private Bitmap photo;
-    public String tipoUtente;
+    //public String tipoUtente;
+    //private TextView textViewNome, textViewCF;
+    //private ProgressDialog progressDialog;
+    //public String login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +70,10 @@ public class BasicDrawerActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Intent intent = getIntent();
-        tipoUtente = "Paziente";
-        int id = intent.getIntExtra(EXTRA_PACK, 0);
+        int id = intent.getIntExtra(EXTRA_PACK,0);
         navigationView.setCheckedItem(id);
 
-        /*if (tipoUtente.equals("Medico")) {
+        if (MainActivity.tipoUtente.equals("Medico")) {
             //medico = intent.getParcelableExtra("Medico");
             paziente = null;
             Menu drawermenu = navigationView.getMenu();
@@ -90,7 +83,7 @@ public class BasicDrawerActivity extends AppCompatActivity
         else {
             //paziente = intent.getParcelableExtra("Paziente");
             medico = null;
-        }*/
+        }
 
     }
 
@@ -171,24 +164,29 @@ public class BasicDrawerActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
             //activity Home
-            Intent intent = new Intent(this, BasicDrawerActivity.class);
+            getSupportActionBar().setTitle("Home");
+            Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra(EXTRA_PACK,id);
             startActivity(intent);
         } else if (id == R.id.nav_wait) {
             //activity In Attesa
-            /*Intent intent = new Intent(this, WaitingActivity.class);
+            getSupportActionBar().setTitle("In Attesa");
+            Intent intent = new Intent(this, WaitingActivity.class);
             intent.putExtra(EXTRA_PACK,id);
-            startActivity(intent);*/
+            startActivity(intent);
         } else if (id == R.id.nav_history) {
             //activity Cronologia
+            getSupportActionBar().setTitle("Cronologia");
             Intent intent = new Intent(this, HistoryActivity.class);
             intent.putExtra(EXTRA_PACK,id);
             startActivity(intent);
         } else if (id == R.id.nav_info) {
             //activity Info Dottore
+            getSupportActionBar().setTitle("Dottore");
 
         } else if (id == R.id.nav_request) {
             //activity Invia Richiesta
+
 
         } else if (id == R.id.nav_user) {
             /*Intent intent = new Intent(this, UserActivity.class);
@@ -202,7 +200,6 @@ public class BasicDrawerActivity extends AppCompatActivity
 
 
    /* public class AsyncCallSoap extends AsyncTask<Bitmap, Void, String> {
-
 
         @Override
         protected String doInBackground(Bitmap... params) {
