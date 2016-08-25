@@ -1,15 +1,20 @@
 package com.example.andre.medicopaziente;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,51 +26,74 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.widget.Toast;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
+import java.util.Date;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class Profilo extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    Manager util = new Manager(); //necessario??
-
-    private ProgressDialog progressDialog;
-    Toolbar toolbar;
-    CircleImageView imageView;
-    private TextView textViewNome, textViewCF;
-    private Medico medico;
-    private Paziente paziente;
-    private Bitmap photo;
-    //String tipoUtente;
-    private Utils utils = new Utils();
+    private ProgressDialog progressDialog           = null;
+    Toolbar toolbar                                 = null;
+    CircleImageView imageView                       = null;
+    private TextView textViewNome, textViewCF       = null;
+    private Medico medico                           = null;
+    private Paziente paziente                       = null;
+    private Bitmap photo                            = null;
+    String tipoUtente                               = null;
+    private Utils utils                             = new Utils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_basic_drawer);
+        setContentView(R.layout.activity_profilo);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Home");
 
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        if (!Utils.isConnectedViaWifi(this)) {
-            if (!Utils.executePingWebService("192.168.173.1")) {
-                Snackbar snackbar = Snackbar
-                        .make(this.getWindow().getDecorView().findViewById(android.R.id.content), "Warning: I dati possono non essere aggiornati", Snackbar.LENGTH_INDEFINITE);
+        if(!Utils.isConnectedViaWifi(this))
+        {
+            if(!Utils.executePingWebService("192.168.173.1")) {
 
-                snackbar.show();
+                Utils.createSnackBar(this,"Warning: I dati possono non essere aggiornati",Snackbar.LENGTH_INDEFINITE,Color.RED);
                 fab.setVisibility(View.GONE);
             }
         }
+
+        Intent intent = getIntent();
+        tipoUtente = intent.getStringExtra("tipoUtente");
+
+        if (tipoUtente.equals("Medico")) {
+            medico = intent.getParcelableExtra("Medico");
+            paziente = null;
+        }
+        else {
+            paziente = intent.getParcelableExtra("Paziente");
+            medico = null;
+        }
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,7 +145,7 @@ public class Profilo extends AppCompatActivity
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.profilo, menu);
+        getMenuInflater().inflate(R.menu.profilo, menu);
 
         imageView = (CircleImageView) findViewById(R.id.imageViewClickable);
         textViewNome = (TextView) findViewById(R.id.textNome);
@@ -131,14 +159,13 @@ public class Profilo extends AppCompatActivity
         //Cerco di recuperare l'immagine profilo salvata nella memoria interna "CodiceFiscale.png"
         if(medico!=null)
         {
-            photo = utils.readImageFromInternalStore(medico.getCodiceFiscale());
-            if (photo == null)
-            {
-                System.out.println("Medico: Errore lettura immagine");
-            }
-            else
-            {
-                imageView.setImageBitmap(photo);
+            if(medico.getImage() == null) {
+                photo = utils.readImageFromInternalStore(medico.getCodiceFiscale());
+                if (photo == null) {
+                    System.out.println("Medico: Errore lettura immagine");
+                } else {
+                    imageView.setImageBitmap(photo);
+                }
             }
         } else //Se è paziente, se nel db non c'è la foto cerco di prenderla dalla memoria interna
         {
@@ -159,7 +186,7 @@ public class Profilo extends AppCompatActivity
                         new AlertDialog.Builder(Profilo.this);
                 builder.setTitle("Foto profilo");
                 builder.setMessage("");
-                builder.setPositiveButton("CAMERA", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int id) {
 
@@ -169,7 +196,7 @@ public class Profilo extends AppCompatActivity
 
                     }
                 });
-                builder.setNegativeButton("GALLERIA", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Galleria", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int id) {
 
@@ -210,9 +237,8 @@ public class Profilo extends AppCompatActivity
 
                     photo = (Bitmap) imageReturnedIntent.getExtras().get("data");
 
-                    if (medico == null)
-                        utils.saveImageInternalStorage(photo, paziente.getCodiceFiscale(), this);
-                    else utils.saveImageInternalStorage(photo, medico.getCodiceFiscale(), this);
+                    if  (medico==null) utils.saveImageInternalStorage(photo, paziente.getCodiceFiscale(),this);
+                    else               utils.saveImageInternalStorage(photo, medico.getCodiceFiscale(),this);
 
                     imageView.setImageBitmap(photo);
 
@@ -226,7 +252,7 @@ public class Profilo extends AppCompatActivity
                         Uri selectedImage = imageReturnedIntent.getData();
                         photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
 
-                        if (medico == null) {
+                        if(medico == null) {
 
                             File myDir = new File(Environment.getExternalStorageDirectory(), File.separator + "MedicoPaziente" + File.separator + paziente.getCodiceFiscale());
                             String fname = paziente.getCodiceFiscale() + ".png";
@@ -305,13 +331,14 @@ public class Profilo extends AppCompatActivity
 
         @Override
         protected void onPostExecute(ArrayList<Richiesta> s) {
-            progressDialog.dismiss();
             DatabaseHelper db = new DatabaseHelper(getApplicationContext());
             if (!db.createRequest(s)) {
                 int a = 10;
                 a++;
                 System.out.println(a);
             }
+            progressDialog.dismiss();
+
         }
     }
 
@@ -320,11 +347,9 @@ public class Profilo extends AppCompatActivity
 
         @Override
         protected String doInBackground(Bitmap... params) {
-            if (MainActivity.tipoUtente.equals("Paziente")) {
-                utils.saveImageDb(photo, paziente.getCodiceFiscale(), MainActivity.tipoUtente);
-            } else if (MainActivity.tipoUtente.equals("Medico")) {
-                utils.saveImageDb(photo, medico.getCodiceFiscale(), MainActivity.tipoUtente);
-            }
+
+            if(tipoUtente.equals("Paziente")){  utils.saveImageDb(photo,paziente.getCodiceFiscale(),tipoUtente);}
+            else if(tipoUtente.equals("Medico")){utils.saveImageDb(photo,medico.getCodiceFiscale(),tipoUtente);}
             return "OK";
 
         }
