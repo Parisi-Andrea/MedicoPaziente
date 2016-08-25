@@ -301,7 +301,6 @@ public class MainActivity extends AppCompatActivity {
                             } else if (tipoUtente.equals("Paziente")) {
                                 newPage.putExtra("Paziente", patProfile);
                             }
-                            newPage.putExtra("tipoUtente", tipoUtente);
                             finish();
                             startActivity(newPage);
 

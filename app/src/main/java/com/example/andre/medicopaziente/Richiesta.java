@@ -135,11 +135,27 @@ public class Richiesta implements Parcelable {
         this.cf_medico = cf_medico;
     }
 
-//    @Override
-//    public String toString()
-//    {
-//
-//    }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(idRichiesta);
+        dest.writeString(stato);
+        dest.writeString(tipo);
+        dest.writeString(data_richiesta);
+        dest.writeString(note_richiesta);
+        dest.writeString(nome_farmaco);
+        dest.writeInt(quantita_farmaco);
+        dest.writeString(data_risposta);
+        dest.writeString(note_risposta);
+        dest.writeString(cf_paziente);
+        dest.writeString(cf_medico);
+    }
 
 
 }
