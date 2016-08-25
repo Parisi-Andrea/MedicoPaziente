@@ -55,15 +55,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Profilo extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ProgressDialog progressDialog;
-    Toolbar toolbar;
-    CircleImageView imageView;
-    private TextView textViewNome, textViewCF;
-    private Medico medico;
-    private Paziente paziente;
-    private Bitmap photo;
-    String tipoUtente;
-    private Utils utils = new Utils();
+    private ProgressDialog progressDialog           = null;
+    Toolbar toolbar                                 = null;
+    CircleImageView imageView                       = null;
+    private TextView textViewNome, textViewCF       = null;
+    private Medico medico                           = null;
+    private Paziente paziente                       = null;
+    private Bitmap photo                            = null;
+    String tipoUtente                               = null;
+    private Utils utils                             = new Utils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,16 +74,13 @@ public class Profilo extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Home");
 
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         if(!Utils.isConnectedViaWifi(this))
         {
             if(!Utils.executePingWebService("192.168.173.1")) {
-                Snackbar snackbar = Snackbar
-                        .make(this.getWindow().getDecorView().findViewById(android.R.id.content), "Warning: I dati possono non essere aggiornati", Snackbar.LENGTH_INDEFINITE);
 
-                snackbar.show();
+                Utils.createSnackBar(this,"Warning: I dati possono non essere aggiornati",Snackbar.LENGTH_INDEFINITE,Color.RED);
                 fab.setVisibility(View.GONE);
             }
         }
@@ -149,14 +146,13 @@ public class Profilo extends AppCompatActivity
         //Cerco di recuperare l'immagine profilo salvata nella memoria interna "CodiceFiscale.png"
         if(medico!=null)
         {
-            photo = utils.readImageFromInternalStore(medico.getCodiceFiscale());
-            if (photo == null)
-            {
-                System.out.println("Medico: Errore lettura immagine");
-            }
-            else
-            {
-                imageView.setImageBitmap(photo);
+            if(medico.getImage() == null) {
+                photo = utils.readImageFromInternalStore(medico.getCodiceFiscale());
+                if (photo == null) {
+                    System.out.println("Medico: Errore lettura immagine");
+                } else {
+                    imageView.setImageBitmap(photo);
+                }
             }
         } else //Se è paziente, se nel db non c'è la foto cerco di prenderla dalla memoria interna
         {
@@ -177,7 +173,7 @@ public class Profilo extends AppCompatActivity
                         new AlertDialog.Builder(Profilo.this);
                 builder.setTitle("Foto profilo");
                 builder.setMessage("");
-                builder.setPositiveButton("CAMERA", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int id) {
 
@@ -187,7 +183,7 @@ public class Profilo extends AppCompatActivity
 
                     }
                 });
-                builder.setNegativeButton("GALLERIA", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Galleria", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int id) {
 
@@ -323,7 +319,6 @@ public class Profilo extends AppCompatActivity
 
         @Override
         protected void onPostExecute(ArrayList<Richiesta> s) {
-            progressDialog.dismiss();
             DatabaseHelper db = new DatabaseHelper(getApplicationContext());
             if(!db.createRequest(s))
             {
@@ -331,6 +326,8 @@ public class Profilo extends AppCompatActivity
                 a++;
                 System.out.println(a);
             }
+            progressDialog.dismiss();
+
         }
     }
     public class AsyncCallSoap extends AsyncTask<Bitmap, Void, String> {
@@ -338,6 +335,7 @@ public class Profilo extends AppCompatActivity
 
         @Override
         protected String doInBackground(Bitmap... params) {
+
             if(tipoUtente.equals("Paziente")){  utils.saveImageDb(photo,paziente.getCodiceFiscale(),tipoUtente);}
             else if(tipoUtente.equals("Medico")){utils.saveImageDb(photo,medico.getCodiceFiscale(),tipoUtente);}
             return "OK";
