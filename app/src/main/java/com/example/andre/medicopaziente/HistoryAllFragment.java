@@ -70,7 +70,14 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
+
     class MyListAdapter extends ArrayAdapter<String> {
+
+        //
+        //DEVO IMPLEMENTARE GETITEM PER RITORNARE L'ELEMENTO DA INVIARE TRAMITE INTENT A DetailsActivity
+        //
+
+
         //
         //se guardi nelle altre classi historyfragment sono diverse! ma questo dovrebbe essere
         //il codice da usare con le chiamate al DB dove ritorna un Arraylist
