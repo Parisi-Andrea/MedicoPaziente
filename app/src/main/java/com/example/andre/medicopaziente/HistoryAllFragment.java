@@ -37,7 +37,7 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_list,container,false);
-        lista = (ListView) v.findViewById(R.id.lista_richieste);
+        lista = (ListView) v.findViewById(R.id.lista);
 
         //
         //creato arraylist momentaneo per simulare ritorno dalla query su db!

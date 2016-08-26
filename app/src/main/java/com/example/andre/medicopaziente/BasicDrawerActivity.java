@@ -196,15 +196,18 @@ public class BasicDrawerActivity extends AppCompatActivity
             startActivity(intent);
         } else if (id == R.id.nav_history) {
             //activity Cronologia
-            getSupportActionBar().setTitle("Cronologia");
             Intent intent = new Intent(this, HistoryActivity.class);
             intent.putExtra(EXTRA_PACK, id);
             intent.putExtra("Medico", medico);
             intent.putExtra("Paziente", paziente);
             startActivity(intent);
         } else if (id == R.id.nav_info) {
-            //activity Info Dottore
-            getSupportActionBar().setTitle("Dottore");
+            //activity Info
+            Intent intent = new Intent(this, InfoActivity.class);
+            intent.putExtra(EXTRA_PACK, id);
+            intent.putExtra("Medico", medico);
+            intent.putExtra("Paziente", paziente);
+            startActivity(intent);
 
         } else if (id == R.id.nav_request) {
             //activity Invia Richiesta

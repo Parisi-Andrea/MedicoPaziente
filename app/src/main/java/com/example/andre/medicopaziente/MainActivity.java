@@ -300,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
                                     });
                                 }
                             }
-                            Intent newPage = new Intent(getBaseContext(), Profilo.class);
+                            Intent newPage = new Intent(getBaseContext(), HomeActivity.class);
                             if (tipoUtente.equals("Medico")) {
 
                                 newPage.putExtra("Medico", docProfile);

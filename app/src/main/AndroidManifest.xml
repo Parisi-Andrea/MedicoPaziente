@@ -29,14 +29,16 @@
         <activity android:name=".PazienteRegistration" />
         <activity android:name=".MedicoRegistration"/>
 
-        <activity android:name=".HomeActivity"/>
-
-        <activity android:name=".WaitingActivity"/>
-
         <activity android:name=".BasicDrawerActivity"/>
-
-        <activity android:name=".HistoryActivity"/>
-        <activity android:name=".DetailsActivity"/>
+        <activity android:name=".HomeActivity"
+            android:label="Home"/>
+        <activity android:name=".WaitingActivity"
+            android:label="In Attesa"/>
+        <activity android:name=".HistoryActivity"
+            android:label="Cronologia"/>
+        <activity android:name=".DetailsActivity" />
+        <activity android:name=".InfoActivity"
+            android:label="Info"/>
     </application>
 
 </manifest>

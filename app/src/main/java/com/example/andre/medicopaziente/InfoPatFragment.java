@@ -14,33 +14,29 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.andre.medicopaziente.R;
-import com.example.andre.medicopaziente.DetailsActivity;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Annalisa on 16/08/2016.
+ * Created by Annalisa on 27/08/2016.
  */
-public class HistoryRefFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class InfoPatFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     ListView lista;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_list, container, false);
         lista = (ListView) v.findViewById(R.id.lista);
-        MyDataAdapter adapter = new MyDataAdapter(v.getContext(), R.layout.history_element);
+        MyDataAdapter adapter = new MyDataAdapter(v.getContext(), R.layout.item_listinfo_pat);
         adapter.setData();
         lista.setAdapter(adapter);
         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(lista.getContext(),DetailsActivity.class);
+                Intent intent = new Intent(lista.getContext(), DetailsActivity.class);
                 intent.putExtra("ITEM_CLICKED", position);
                 startActivity(intent);
             }
@@ -55,11 +51,10 @@ public class HistoryRefFragment extends Fragment implements SwipeRefreshLayout.O
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-
     class MyDataAdapter extends ArrayAdapter<String> {
         //array paralleli momentanei per simulare dati DB
-        private List<String> descriptioList = new ArrayList<>();
-        private List<String> typeList = new ArrayList<>();
+        private List<String> pazienti = new ArrayList<>();
+        private List<String> cf = new ArrayList<>();
 
         public MyDataAdapter(Context context, int resource) {
             super(context, resource);
@@ -67,14 +62,19 @@ public class HistoryRefFragment extends Fragment implements SwipeRefreshLayout.O
 
         //metodo di aggiunta dati momentaneo
         public void setData() {
-            descriptioList.add("Hai richiesto al medico la prescrizione di...");
-            typeList.add("Prescrizione");
+            pazienti.add("Mario Rossi");
+            pazienti.add("Alberta Verdi");
+            pazienti.add("Giacomo Bianchi");
+            cf.add("NLSFLP94T45L378G");
+            cf.add("NLSFLP94T45L378G");
+            cf.add("NLSFLP94T45L378G");
             notifyDataSetChanged();
         }
 
+
         @Override
         public int getCount() {
-            return descriptioList.size();
+            return pazienti.size();
         }
 
         @Override
@@ -83,15 +83,12 @@ public class HistoryRefFragment extends Fragment implements SwipeRefreshLayout.O
             View v = inflater.inflate(R.layout.history_element, parent, false);
 
             TextView textView1 = (TextView) v.findViewById(R.id.descrizione);
-            textView1.setText(descriptioList.get(position));
+            textView1.setText(pazienti.get(position));
             TextView textView2 = (TextView) v.findViewById(R.id.tipo);
-            textView2.setText(typeList.get(position));
+            textView2.setText(cf.get(position));
 
-            ImageView img = (ImageView) v.findViewById(R.id.immagine);
-            if(typeList.get(position)=="Prescrizione")
-                img.setImageResource(R.drawable.pill_icon);
-            else if(typeList.get(position)=="Visita")
-                img.setImageResource(R.drawable.calendar);
+            ImageView img = (ImageView) v.findViewById(R.id.imgpaziente);
+            img.setImageResource(R.drawable.immagine1);
             return v;
         }
     }

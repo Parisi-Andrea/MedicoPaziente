@@ -28,7 +28,7 @@ public class WaitingRequestFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_list,container,false);
-        lista = (ListView) v.findViewById(R.id.lista_richieste);
+        lista = (ListView) v.findViewById(R.id.lista);
         MyListAdapter adapter = new MyListAdapter(v.getContext(), R.layout.history_element);
         adapter.setData();
         lista.setAdapter(adapter);

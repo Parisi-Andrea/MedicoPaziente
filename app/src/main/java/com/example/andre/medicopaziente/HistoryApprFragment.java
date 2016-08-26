@@ -32,7 +32,7 @@ public class HistoryApprFragment extends Fragment implements SwipeRefreshLayout.
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_list, container, false);
-        lista = (ListView) v.findViewById(R.id.lista_richieste);
+        lista = (ListView) v.findViewById(R.id.lista);
         MyDataAdapter adapter = new MyDataAdapter(v.getContext(), R.layout.history_element);
         adapter.setData();
         lista.setAdapter(adapter);
