@@ -2,8 +2,11 @@ package com.example.andre.medicopaziente;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 
 /**
  * Created by Annalisa on 24/08/2016.

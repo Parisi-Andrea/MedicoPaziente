@@ -67,13 +67,19 @@ public class MainActivity extends AppCompatActivity {
         btnLogIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //
+                //da rimettere!
+                //
                 //login(v);
 
-                //modifiche per run application
+                //
+                //modifiche per run application! da modificare per versione finale!
+                //
                 tipoUtente = "Paziente";
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                 startActivity(intent);
+                //
+                //
             }
         });
 

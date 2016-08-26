@@ -21,7 +21,7 @@ public class HistoryActivity extends BasicDrawerActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_history);
+
         TabLayout tab = (TabLayout) findViewById(R.id.tabs);
         tab.setVisibility(View.VISIBLE);
 
@@ -54,7 +54,6 @@ public class HistoryActivity extends BasicDrawerActivity{
                     return new HistoryRefFragment();
             }
             return new HistoryAllFragment();
-            //return new RequestFragment();
         }
 
         @Override

@@ -1,5 +1,6 @@
 package com.example.andre.medicopaziente;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,11 +16,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
@@ -41,9 +44,8 @@ public class BasicDrawerActivity extends AppCompatActivity
     private Bitmap photo;
 
     private Utils utils = new Utils();
-    public String tipoUtente;
     private TextView textViewNome, textViewCF;
-    
+
     public String login;
 
     @Override
@@ -51,13 +53,14 @@ public class BasicDrawerActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic_drawer);
 
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Home");
 
-        new AsyncCallSoapRichieste().execute();
-        
+        //
+        //da rimettere!
+        //
+        //new AsyncCallSoapRichieste().execute();
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,12 +69,11 @@ public class BasicDrawerActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
-        
-        if(!Utils.isConnectedViaWifi(this))
-        {
-            if(!Utils.executePingWebService("192.168.173.1")) {
 
-                Utils.createSnackBar(this,"Warning: I dati possono non essere aggiornati",Snackbar.LENGTH_INDEFINITE, Color.RED);
+        if (!Utils.isConnectedViaWifi(this)) {
+            if (!Utils.executePingWebService("192.168.173.1")) {
+
+                Utils.createSnackBar(this, "Non connesso! Dati non aggiornati", Snackbar.LENGTH_LONG, Color.RED);
                 fab.setVisibility(View.GONE);
             }
         }
@@ -87,7 +89,7 @@ public class BasicDrawerActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Intent intent = getIntent();
-        int id = intent.getIntExtra(EXTRA_PACK,0);
+        int id = intent.getIntExtra(EXTRA_PACK, 0);
         navigationView.setCheckedItem(id);
 
         if (MainActivity.tipoUtente.equals("Medico")) {
@@ -96,13 +98,14 @@ public class BasicDrawerActivity extends AppCompatActivity
             Menu drawermenu = navigationView.getMenu();
             drawermenu.removeItem(R.id.nav_request);
             drawermenu.getItem(3).setTitle("Informazioni Pazienti");
-        }
-        else {
+        } else {
             paziente = intent.getParcelableExtra("Paziente");
             medico = null;
         }
-
-        utils.setNavigationview(this,imageView, textViewNome, textViewCF, medico, paziente, photo);
+        //
+        //tolto per non chiamare dati del db per l'header del drawer!
+        //
+        //setNavigationview();
     }
 
     @Override
@@ -124,8 +127,9 @@ public class BasicDrawerActivity extends AppCompatActivity
 
                     photo = (Bitmap) imageReturnedIntent.getExtras().get("data");
 
-                    if  (medico==null) utils.saveImageInternalStorage(photo, paziente.getCodiceFiscale(),this);
-                    else               utils.saveImageInternalStorage(photo, medico.getCodiceFiscale(),this);
+                    if (medico == null)
+                        utils.saveImageInternalStorage(photo, paziente.getCodiceFiscale(), this);
+                    else utils.saveImageInternalStorage(photo, medico.getCodiceFiscale(), this);
 
                     imageView.setImageBitmap(photo);
 
@@ -139,17 +143,16 @@ public class BasicDrawerActivity extends AppCompatActivity
                         Uri selectedImage = imageReturnedIntent.getData();
                         photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
 
-                        if(medico == null) {
+                        if (medico == null) {
 
-                            File myDir = new File(Environment.getExternalStorageDirectory(), File.separator + "MedicoPaziente"+ File.separator + paziente.getCodiceFiscale());
+                            File myDir = new File(Environment.getExternalStorageDirectory(), File.separator + "MedicoPaziente" + File.separator + paziente.getCodiceFiscale());
                             String fname = paziente.getCodiceFiscale() + ".png";
                             File file = new File(myDir, fname);
 
-                            utils.copyFile(new File(utils.getPath(imageReturnedIntent.getData(),this)), file);
+                            utils.copyFile(new File(utils.getPath(imageReturnedIntent.getData(), this)), file);
 
-                        }
-                        else{
-                            File myDir = new File(Environment.getExternalStorageDirectory(), File.separator + "MedicoPaziente"+ File.separator + medico.getCodiceFiscale());
+                        } else {
+                            File myDir = new File(Environment.getExternalStorageDirectory(), File.separator + "MedicoPaziente" + File.separator + medico.getCodiceFiscale());
                             String fname = medico.getCodiceFiscale() + ".png";
                             File file = new File(myDir, fname);
 
@@ -159,7 +162,7 @@ public class BasicDrawerActivity extends AppCompatActivity
                         }
 
                         //scalo immagine per vederla in circleimageView
-                        int nh = (int) ( photo.getHeight() * (512.0 / photo.getWidth()) );// su profilo è 200.0/
+                        int nh = (int) (photo.getHeight() * (512.0 / photo.getWidth()));// su profilo è 200.0/
                         photo = Bitmap.createScaledBitmap(photo, 512, nh, true);//su profilo è 200
                         imageView.setImageBitmap(photo);
 
@@ -183,19 +186,21 @@ public class BasicDrawerActivity extends AppCompatActivity
             //activity Home
             getSupportActionBar().setTitle("Home");
             Intent intent = new Intent(this, HomeActivity.class);
-            intent.putExtra(EXTRA_PACK,id);
+            intent.putExtra(EXTRA_PACK, id);
             startActivity(intent);
         } else if (id == R.id.nav_wait) {
             //activity In Attesa
             getSupportActionBar().setTitle("In Attesa");
             Intent intent = new Intent(this, WaitingActivity.class);
-            intent.putExtra(EXTRA_PACK,id);
+            intent.putExtra(EXTRA_PACK, id);
             startActivity(intent);
         } else if (id == R.id.nav_history) {
             //activity Cronologia
             getSupportActionBar().setTitle("Cronologia");
             Intent intent = new Intent(this, HistoryActivity.class);
-            intent.putExtra(EXTRA_PACK,id);
+            intent.putExtra(EXTRA_PACK, id);
+            intent.putExtra("Medico", medico);
+            intent.putExtra("Paziente", paziente);
             startActivity(intent);
         } else if (id == R.id.nav_info) {
             //activity Info Dottore
@@ -220,15 +225,16 @@ public class BasicDrawerActivity extends AppCompatActivity
 
         @Override
         protected String doInBackground(Bitmap... params) {
-            if(MainActivity.tipoUtente.equals("Paziente")){
-                utils.saveImageDb(photo, paziente.getCodiceFiscale(),MainActivity.tipoUtente);}
-            else if(MainActivity.tipoUtente.equals("Medico")){
-                utils.saveImageDb(photo, medico.getCodiceFiscale(),MainActivity.tipoUtente);}
+            if (MainActivity.tipoUtente.equals("Paziente")) {
+                utils.saveImageDb(photo, paziente.getCodiceFiscale(), MainActivity.tipoUtente);
+            } else if (MainActivity.tipoUtente.equals("Medico")) {
+                utils.saveImageDb(photo, medico.getCodiceFiscale(), MainActivity.tipoUtente);
+            }
             return "OK";
         }
 
         @Override
-        protected void onPreExecute()   {
+        protected void onPreExecute() {
             progressDialog = ProgressDialog.show(BasicDrawerActivity.this, "Attendere", "Salvataggio della foto...", true);
         }
 
@@ -238,7 +244,7 @@ public class BasicDrawerActivity extends AppCompatActivity
         }
     }
 
- public class AsyncCallSoapRichieste extends AsyncTask<String, Void, ArrayList<Richiesta>> {
+    public class AsyncCallSoapRichieste extends AsyncTask<String, Void, ArrayList<Richiesta>> {
 
         @Override
         protected ArrayList<Richiesta> doInBackground(String... params) {
@@ -263,5 +269,41 @@ public class BasicDrawerActivity extends AppCompatActivity
             progressDialog.dismiss();
 
         }
+    }
+
+    public void setNavigationview() {
+
+        imageView = (CircleImageView) findViewById(R.id.imageViewClickable);
+        textViewNome = (TextView) findViewById(R.id.textNome);
+        textViewCF = (TextView) findViewById(R.id.textCodiceFiscale);
+
+        //Setto le informazioni nel Drawer (nome,cognome, codice fiscale,foto da db)
+        if (!utils.setUpInfoDrawer(BasicDrawerActivity.this, medico, paziente, textViewCF, textViewNome, imageView)) {
+            AlertDialog alertDialog = new AlertDialog.Builder(getApplicationContext()).create();
+            alertDialog.setTitle("Errore");
+            alertDialog.setMessage("Info drawer non settate!");
+            alertDialog.show();
+        }
+        //Cerco di recuperare l'immagine profilo salvata nella memoria interna "CodiceFiscale.png"
+        if (medico != null) {
+            photo = utils.readImageFromInternalStore(medico.getCodiceFiscale());
+            if (photo == null) {
+                System.out.println("Medico: Errore lettura immagine");
+            } else {
+                imageView.setImageBitmap(photo);
+            }
+        } else //Se è paziente, se nel db non c'è la foto cerco di prenderla dalla memoria interna
+        {
+            if (paziente.getImage() == null) {
+                photo = utils.readImageFromInternalStore(paziente.getCodiceFiscale());
+                if (photo == null) {
+                    System.out.println("Paziente: Errore lettura immagine");
+                } else {
+                    imageView.setImageBitmap(photo);
+                }
+            }
+        }
+
+
     }
 }

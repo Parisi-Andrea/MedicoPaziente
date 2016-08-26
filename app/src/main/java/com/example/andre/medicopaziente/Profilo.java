@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -34,14 +35,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Profilo extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ProgressDialog progressDialog           = null;
-    Toolbar toolbar                                 = null;
-    CircleImageView imageView                       = null;
-    private TextView textViewNome, textViewCF       = null;
-    private Medico medico                           = null;
-    private Paziente paziente                       = null;
-    private Bitmap photo                            = null;
-    private Utils utils                             = new Utils();
+    private ProgressDialog progressDialog = null;
+    Toolbar toolbar = null;
+    CircleImageView imageView = null;
+    private TextView textViewNome, textViewCF = null;
+    private Medico medico = null;
+    private Paziente paziente = null;
+    private Bitmap photo = null;
+    private Utils utils = new Utils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +57,10 @@ public class Profilo extends AppCompatActivity
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        if(!Utils.isConnectedViaWifi(this))
-        {
-            if(!Utils.executePingWebService("192.168.173.1")) {
+        if (!Utils.isConnectedViaWifi(this)) {
+            if (!Utils.executePingWebService("192.168.173.1")) {
 
-                Utils.createSnackBar(this,"Warning: I dati possono non essere aggiornati",Snackbar.LENGTH_INDEFINITE,Color.RED);
+                Utils.createSnackBar(this, "Warning: I dati possono non essere aggiornati", Snackbar.LENGTH_INDEFINITE, Color.RED);
                 fab.setVisibility(View.GONE);
             }
         }
@@ -70,8 +70,7 @@ public class Profilo extends AppCompatActivity
         if (MainActivity.tipoUtente.equals("Medico")) {
             medico = intent.getParcelableExtra("Medico");
             paziente = null;
-        }
-        else {
+        } else {
             paziente = intent.getParcelableExtra("Paziente");
             medico = null;
         }
@@ -95,7 +94,7 @@ public class Profilo extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        utils.setNavigationview(this,imageView, textViewNome, textViewCF, medico, paziente, photo);
+        setNavigationview();
 
     }
 
@@ -110,7 +109,6 @@ public class Profilo extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
 
 
     @Override
@@ -136,8 +134,9 @@ public class Profilo extends AppCompatActivity
 
                     photo = (Bitmap) imageReturnedIntent.getExtras().get("data");
 
-                    if  (medico==null) utils.saveImageInternalStorage(photo, paziente.getCodiceFiscale(),this);
-                    else               utils.saveImageInternalStorage(photo, medico.getCodiceFiscale(),this);
+                    if (medico == null)
+                        utils.saveImageInternalStorage(photo, paziente.getCodiceFiscale(), this);
+                    else utils.saveImageInternalStorage(photo, medico.getCodiceFiscale(), this);
 
                     imageView.setImageBitmap(photo);
 
@@ -151,7 +150,7 @@ public class Profilo extends AppCompatActivity
                         Uri selectedImage = imageReturnedIntent.getData();
                         photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
 
-                        if(medico == null) {
+                        if (medico == null) {
 
                             File myDir = new File(Environment.getExternalStorageDirectory(), File.separator + "MedicoPaziente" + File.separator + paziente.getCodiceFiscale());
                             String fname = paziente.getCodiceFiscale() + ".png";
@@ -246,8 +245,11 @@ public class Profilo extends AppCompatActivity
         @Override
         protected String doInBackground(Bitmap... params) {
 
-            if(MainActivity.tipoUtente.equals("Paziente")){  utils.saveImageDb(photo,paziente.getCodiceFiscale(),MainActivity.tipoUtente);}
-            else if(MainActivity.tipoUtente.equals("Medico")){utils.saveImageDb(photo,medico.getCodiceFiscale(),MainActivity.tipoUtente);}
+            if (MainActivity.tipoUtente.equals("Paziente")) {
+                utils.saveImageDb(photo, paziente.getCodiceFiscale(), MainActivity.tipoUtente);
+            } else if (MainActivity.tipoUtente.equals("Medico")) {
+                utils.saveImageDb(photo, medico.getCodiceFiscale(), MainActivity.tipoUtente);
+            }
             return "OK";
 
         }
@@ -263,5 +265,39 @@ public class Profilo extends AppCompatActivity
         }
     }
 
+    public void setNavigationview() {
 
+        imageView = (CircleImageView) findViewById(R.id.imageViewClickable);
+        textViewNome = (TextView) findViewById(R.id.textNome);
+        textViewCF = (TextView) findViewById(R.id.textCodiceFiscale);
+
+        //Setto le informazioni nel Drawer (nome,cognome, codice fiscale,foto da db)
+        if (!utils.setUpInfoDrawer(Profilo.this, medico, paziente, textViewCF, textViewNome, imageView)) {
+            AlertDialog alertDialog = new AlertDialog.Builder(getApplicationContext()).create();
+            alertDialog.setTitle("Errore");
+            alertDialog.setMessage("Info drawer non settate!");
+            alertDialog.show();
+        }
+        //Cerco di recuperare l'immagine profilo salvata nella memoria interna "CodiceFiscale.png"
+        if (medico != null) {
+            photo = utils.readImageFromInternalStore(medico.getCodiceFiscale());
+            if (photo == null) {
+                System.out.println("Medico: Errore lettura immagine");
+            } else {
+                imageView.setImageBitmap(photo);
+            }
+        } else //Se è paziente, se nel db non c'è la foto cerco di prenderla dalla memoria interna
+        {
+            if (paziente.getImage() == null) {
+                photo = utils.readImageFromInternalStore(paziente.getCodiceFiscale());
+                if (photo == null) {
+                    System.out.println("Paziente: Errore lettura immagine");
+                } else {
+                    imageView.setImageBitmap(photo);
+                }
+            }
+        }
+
+
+    }
 }

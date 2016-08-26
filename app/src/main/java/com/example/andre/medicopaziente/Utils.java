@@ -268,46 +268,7 @@ public class Utils {
         snackbar.show();
     }
 
-    public void setNavigationview(final Activity activity,
-                                  ImageView imageView, TextView textViewNome, TextView textViewCF,
-                                  Medico medico, Paziente paziente, Bitmap photo){
-
-        imageView = (CircleImageView) activity.findViewById(R.id.imageViewClickable);
-        textViewNome = (TextView) activity.findViewById(R.id.textNome);
-        textViewCF = (TextView) activity.findViewById(R.id.textCodiceFiscale);
-
-        //Setto le informazioni nel Drawer (nome,cognome, codice fiscale,foto da db)
-        if (!setUpInfoDrawer(activity,medico,paziente,textViewCF,textViewNome,imageView))
-        {
-            AlertDialog alertDialog = new AlertDialog.Builder(activity.getApplicationContext()).create();
-            alertDialog.setTitle("Errore");
-            alertDialog.setMessage("Info drawer non settate!");
-            alertDialog.show();
-        }
-        //Cerco di recuperare l'immagine profilo salvata nella memoria interna "CodiceFiscale.png"
-        if(medico!=null)
-        {
-            photo = readImageFromInternalStore(medico.getCodiceFiscale());
-            if (photo == null)
-            {
-                System.out.println("Medico: Errore lettura immagine");
-            }
-            else
-            {
-                imageView.setImageBitmap(photo);
-            }
-        } else //Se è paziente, se nel db non c'è la foto cerco di prenderla dalla memoria interna
-        {
-            if(paziente.getImage() == null) {
-                photo = readImageFromInternalStore(paziente.getCodiceFiscale());
-                if (photo == null) {
-                    System.out.println("Paziente: Errore lettura immagine");
-                } else {
-                    imageView.setImageBitmap(photo);
-                }
-            }
-        }
-
-
-    }
+    //
+    //tolta la funzione setNavigationView! la trovi in BasicDrawerActivity
+    //
 }
