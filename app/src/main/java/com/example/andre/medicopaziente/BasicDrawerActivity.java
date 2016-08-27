@@ -103,9 +103,9 @@ public class BasicDrawerActivity extends AppCompatActivity
             medico = null;
         }
         //
-        //tolto per non chiamare dati del db per l'header del drawer!
+        //tolto setNavigationview
         //
-        //setNavigationview();
+
     }
 
     @Override
@@ -116,6 +116,46 @@ public class BasicDrawerActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+
+    //
+    //rimessa funzione controlla che sia corretta!
+    //
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        imageView = (CircleImageView) findViewById(R.id.imageViewClickable);
+        textViewNome = (TextView) findViewById(R.id.textNome);
+        textViewCF = (TextView) findViewById(R.id.textCodiceFiscale);
+
+        //Setto le informazioni nel Drawer (nome,cognome, codice fiscale,foto da db)
+        if (!utils.setUpInfoDrawer(BasicDrawerActivity.this, medico, paziente, textViewCF, textViewNome, imageView)) {
+            AlertDialog alertDialog = new AlertDialog.Builder(getApplicationContext()).create();
+            alertDialog.setTitle("Errore");
+            alertDialog.setMessage("Info drawer non settate!");
+            alertDialog.show();
+        }
+        //Cerco di recuperare l'immagine profilo salvata nella memoria interna "CodiceFiscale.png"
+        if (medico != null) {
+            photo = utils.readImageFromInternalStore(medico.getCodiceFiscale());
+            if (photo == null) {
+                System.out.println("Medico: Errore lettura immagine");
+            } else {
+                imageView.setImageBitmap(photo);
+            }
+        } else //Se è paziente, se nel db non c'è la foto cerco di prenderla dalla memoria interna
+        {
+            if (paziente.getImage() == null) {
+                photo = utils.readImageFromInternalStore(paziente.getCodiceFiscale());
+                if (photo == null) {
+                    System.out.println("Paziente: Errore lettura immagine");
+                } else {
+                    imageView.setImageBitmap(photo);
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -274,39 +314,4 @@ public class BasicDrawerActivity extends AppCompatActivity
         }
     }
 
-    public void setNavigationview() {
-
-        imageView = (CircleImageView) findViewById(R.id.imageViewClickable);
-        textViewNome = (TextView) findViewById(R.id.textNome);
-        textViewCF = (TextView) findViewById(R.id.textCodiceFiscale);
-
-        //Setto le informazioni nel Drawer (nome,cognome, codice fiscale,foto da db)
-        if (!utils.setUpInfoDrawer(BasicDrawerActivity.this, medico, paziente, textViewCF, textViewNome, imageView)) {
-            AlertDialog alertDialog = new AlertDialog.Builder(getApplicationContext()).create();
-            alertDialog.setTitle("Errore");
-            alertDialog.setMessage("Info drawer non settate!");
-            alertDialog.show();
-        }
-        //Cerco di recuperare l'immagine profilo salvata nella memoria interna "CodiceFiscale.png"
-        if (medico != null) {
-            photo = utils.readImageFromInternalStore(medico.getCodiceFiscale());
-            if (photo == null) {
-                System.out.println("Medico: Errore lettura immagine");
-            } else {
-                imageView.setImageBitmap(photo);
-            }
-        } else //Se è paziente, se nel db non c'è la foto cerco di prenderla dalla memoria interna
-        {
-            if (paziente.getImage() == null) {
-                photo = utils.readImageFromInternalStore(paziente.getCodiceFiscale());
-                if (photo == null) {
-                    System.out.println("Paziente: Errore lettura immagine");
-                } else {
-                    imageView.setImageBitmap(photo);
-                }
-            }
-        }
-
-
-    }
 }

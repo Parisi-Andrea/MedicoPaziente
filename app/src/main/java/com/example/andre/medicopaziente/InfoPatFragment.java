@@ -10,12 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Annalisa on 27/08/2016.
@@ -80,14 +81,14 @@ public class InfoPatFragment extends Fragment implements SwipeRefreshLayout.OnRe
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflater.inflate(R.layout.history_element, parent, false);
+            View v = inflater.inflate(R.layout.item_listinfo_pat, parent, false);
 
-            TextView textView1 = (TextView) v.findViewById(R.id.descrizione);
+            TextView textView1 = (TextView) v.findViewById(R.id.nome_cognome);
             textView1.setText(pazienti.get(position));
-            TextView textView2 = (TextView) v.findViewById(R.id.tipo);
+            TextView textView2 = (TextView) v.findViewById(R.id.cf);
             textView2.setText(cf.get(position));
 
-            ImageView img = (ImageView) v.findViewById(R.id.imgpaziente);
+            CircleImageView img = (CircleImageView) v.findViewById(R.id.imgpaziente);
             img.setImageResource(R.drawable.immagine1);
             return v;
         }

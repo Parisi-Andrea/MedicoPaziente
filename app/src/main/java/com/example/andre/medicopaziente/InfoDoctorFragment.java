@@ -30,9 +30,12 @@ public class InfoDoctorFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_list,container,false);
+        View v = inflater.inflate(R.layout.activity_info_medico,container,false);
+        ImageView image = (ImageView) v.findViewById(R.id.img);
+        image.setImageResource(R.drawable.ali_connors);
         lista = (ListView) v.findViewById(R.id.list_info);
         MyInfoListAdapter adapter= new MyInfoListAdapter(v.getContext(), R.layout.item_listinfo);
+        adapter.setdata();
         lista.setAdapter(adapter);
         return v;
     }
@@ -45,6 +48,10 @@ public class InfoDoctorFragment extends Fragment {
 
         public MyInfoListAdapter(Context context, int res){
             super(context,res);
+
+        }
+
+        public void setdata(){
             description.add("Nome  Cognome");
             description.add("Telefono");
             description.add("Ambulatorio");
@@ -54,8 +61,8 @@ public class InfoDoctorFragment extends Fragment {
             items.add("0461 961361");
             items.add("Rosti - via le man dal cul, 2");
             items.add("Lun - Ven : 9.00 - 15.00");
+            notifyDataSetChanged();
         }
-
         @Override
         public boolean areAllItemsEnabled() {
             return false;
@@ -68,8 +75,8 @@ public class InfoDoctorFragment extends Fragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflater.inflate(R.layout.history_element, parent, false);
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = inflater.inflate(R.layout.item_listinfo, parent, false);
 
             TextView txt1 = (TextView) v.findViewById(R.id.description);
             txt1.setText(description.get(position));

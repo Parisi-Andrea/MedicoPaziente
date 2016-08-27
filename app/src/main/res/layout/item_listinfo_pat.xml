@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="64dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
-    <android.support.v4.widget.CircleImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imgpaziente"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:civ_border_width="1dp"
         app:civ_border_color="#FF000000"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:src="@drawable/immagine1" />
+        android:src="@drawable/immagine1"
+        android:layout_marginRight="16dp"
+        android:layout_gravity="center_vertical"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical">
 
         <TextView
             android:id="@+id/nome_cognome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold" />
+            android:textSize="20sp"/>
 
         <TextView
             android:id="@+id/cf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lines="1" />
+            android:lines="1"/>
 
     </LinearLayout>
 
