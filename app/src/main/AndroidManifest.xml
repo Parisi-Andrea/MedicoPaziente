@@ -2,10 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.andre.medicopaziente">
 
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <permission
+        android:name="com.example.gcm.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
 
     <application
         android:allowBackup="true"
@@ -13,6 +20,31 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/MyMaterialTheme">
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.example.gcm" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".MyGcmListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".MyInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
         <activity android:name=".MainActivity" />
         <activity android:name=".SplashActivity">
             <intent-filter>
@@ -25,9 +57,48 @@
             android:name=".Profilo"
             android:label="@string/title_activity_profilo"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Registration" />
         <activity android:name=".PazienteRegistration" />
         <activity android:name=".MedicoRegistration"></activity>
+        <activity
+            android:name=".RequestManagerFarmaco"
+            android:label="Risposta"
+             />
+
+        <activity
+            android:name=".RequestManagerVisita"
+            android:label="Risposta" />
+
+        <service
+            android:name=".RegistrationIntentService"
+            android:exported="false"></service>
+
+        <activity
+            android:name=".ChooseRequestType"
+            android:label="Nuova Richiesta"></activity>
+
+        <activity
+            android:name=".FarmacoSendRequest"
+            android:label="Richiesta Farmaco"></activity>
+
+        <activity
+            android:name=".VisitaSendRequest"
+            android:label="Richiesta Visita"></activity>
+        <activity
+            android:name=".DettagliRichiestaFarmaco"
+            android:label="Dettagli Richiesta"></activity>
+        <activity
+            android:name=".DettagliRichiestaVisita"
+            android:label="Dettagli Richiesta"></activity>
+        <activity
+            android:name=".DettagliPaziente"
+            android:label="Dettagli Paziente"></activity>
+        <activity
+            android:name=".DettagliMedico"
+            android:label="Dettagli Medico"></activity>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

@@ -55,15 +55,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class Profilo extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ProgressDialog progressDialog           = null;
-    Toolbar toolbar                                 = null;
-    CircleImageView imageView                       = null;
-    private TextView textViewNome, textViewCF       = null;
-    private Medico medico                           = null;
-    private Paziente paziente                       = null;
-    private Bitmap photo                            = null;
-    String tipoUtente                               = null;
-    private Utils utils                             = new Utils();
+    private ProgressDialog progressDialog = null;
+    Toolbar toolbar = null;
+    CircleImageView imageView = null;
+    private TextView textViewNome, textViewCF = null;
+    private Medico medico = null;
+    private Paziente paziente = null;
+    private Bitmap photo = null;
+    String tipoUtente = null;
+    private Utils utils = new Utils();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +76,10 @@ public class Profilo extends AppCompatActivity
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        if(!Utils.isConnectedViaWifi(this))
-        {
-            if(!Utils.executePingWebService("192.168.173.1")) {
+        if (!Utils.isConnectedViaWifi(this)) {
+            if (!Utils.executePingWebService("192.168.173.1")) {
 
-                Utils.createSnackBar(this,"Warning: I dati possono non essere aggiornati",Snackbar.LENGTH_INDEFINITE,Color.RED);
+                Utils.createSnackBar(this, "Warning: I dati possono non essere aggiornati", Snackbar.LENGTH_INDEFINITE, Color.RED);
                 fab.setVisibility(View.GONE);
             }
         }
@@ -91,11 +90,32 @@ public class Profilo extends AppCompatActivity
         if (tipoUtente.equals("Medico")) {
             medico = intent.getParcelableExtra("Medico");
             paziente = null;
-        }
-        else {
+        } else {
             paziente = intent.getParcelableExtra("Paziente");
             medico = null;
         }
+
+        // reindirizzamento sulla richiesta ricevuta
+        // funzione che ritorni la Richiesta dato l'id della richiesta
+        if(intent.getStringExtra("richiesta")!=null) {
+            if (intent.getStringExtra("richiesta").equals("")) {
+                //Intent newPage = new Intent(this, WaitingActivity.class);
+            } else {
+                DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                Richiesta richiesta = db.getRichiesta(Integer.parseInt(intent.getStringExtra("richiesta")));
+                if (richiesta != null) {
+                    if (richiesta.getTipo().equals("farmaco")) {
+                        Intent newPage = new Intent(this, DettagliRichiestaFarmaco.class);
+                        newPage.putExtra("richiesta", richiesta);
+                    } else {
+                        Intent newPage = new Intent(this, DettagliRichiestaVisita.class);
+                        newPage.putExtra("richiesta", richiesta);
+                    }
+                }
+            }
+        }
+
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

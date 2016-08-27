@@ -1,0 +1,61 @@
+{
+  "project_info": {
+    "project_number": "920683470908",
+    "project_id": "pazientemedico"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920683470908:android:c302ba6f79211167",
+        "android_client_info": {
+          "package_name": "com.example.damiano.pazientemedico"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwN305yQmxohJRO9oGPDJ64Vf07DkU6Os"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920683470908:android:9747c5a64d462bd5",
+        "android_client_info": {
+          "package_name": "com.example.andre.medicopaziente"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwN305yQmxohJRO9oGPDJ64Vf07DkU6Os"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

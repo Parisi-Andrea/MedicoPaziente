@@ -15,6 +15,29 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:weightSum="100">
+<!--
+        <Button
+            android:id="@+id/button"
+            android:textColor="#ffffff"
+            android:textSize="13sp"
+            android:text="Ciao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/button2"
+            android:textColor="#55ffff"
+            android:textSize="13sp"
+            android:text="Ciao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/button3"
+            android:textColor="#55ffff"
+            android:textSize="13sp"
+            android:text="Ciao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+-->
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

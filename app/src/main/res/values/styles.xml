@@ -30,4 +30,28 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="FarmacoButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">#00897B</item>
+        <item name="colorButtonNormal">#009688</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="VisitaButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">#FB8C00</item>
+        <item name="colorButtonNormal">#FF9800</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="AccettaButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">#43A047</item>
+        <item name="colorButtonNormal">#4CAF50</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="RifiutaButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">#E53935</item>
+        <item name="colorButtonNormal">#F44336</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
 </resources>
