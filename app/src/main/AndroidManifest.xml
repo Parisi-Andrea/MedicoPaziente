@@ -36,7 +36,8 @@
             android:label="In Attesa"/>
         <activity android:name=".HistoryActivity"
             android:label="Cronologia"/>
-        <activity android:name=".DetailsActivity" />
+        <activity android:name=".DetailsActivity"
+            android:parentActivityName=".HistoryActivity"/>
         <activity android:name=".InfoActivity"
             android:label="Info"/>
     </application>

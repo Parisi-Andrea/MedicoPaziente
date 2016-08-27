@@ -33,9 +33,17 @@ public class HistoryApprFragment extends Fragment implements SwipeRefreshLayout.
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.fragment_list, container, false);
         lista = (ListView) v.findViewById(R.id.lista);
-        MyDataAdapter adapter = new MyDataAdapter(v.getContext(), R.layout.history_element);
-        adapter.setData();
+        //
+        //creato arraylist momentaneo per simulare ritorno dalla query su db!
+        //
+        ArrayList<Richiesta> returnfromDB = riempi();
+        //
+        //l'ultimo paramentro = array list da passare all'adapter!
+        //nelle altre historyfragment non c'è!
+        //
+        MyListAdapter adapter = new MyListAdapter(v.getContext(), R.layout.history_element, returnfromDB);
         lista.setAdapter(adapter);
+        //
         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -54,48 +62,84 @@ public class HistoryApprFragment extends Fragment implements SwipeRefreshLayout.
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
-    class MyDataAdapter extends ArrayAdapter<String> {
-        //array paralleli momentanei per simulare dati DB
-        private List<String> descriptioList = new ArrayList<>();
-        private List<String> typeList = new ArrayList<>();
+    class MyListAdapter extends ArrayAdapter<String> {
 
-        public MyDataAdapter(Context context, int resource) {
-            super(context, resource);
-        }
+        //
+        //DEVO IMPLEMENTARE GETITEM PER RITORNARE L'ELEMENTO DA INVIARE TRAMITE INTENT A DetailsActivity
+        //
 
-        //metodo di aggiunta dati momentaneo
-        public void setData() {
-            descriptioList.add("Hai richiesto al medico la prescrizione di...");
-            descriptioList.add("Hai richiesto al medico la visita specialistica in ...");
-            descriptioList.add("Hai richiesto al medico la visita specialistica in ...");
-            typeList.add("Prescrizione");
-            typeList.add("Visita");
-            typeList.add("Visita");
+
+        //
+        //se guardi nelle altre classi historyfragment sono diverse! ma questo dovrebbe essere
+        //il codice da usare con le chiamate al DB dove ritorna un Arraylist
+        //
+        //versione per dati DB
+        private ArrayList<Richiesta> richieste = new ArrayList<>();
+        String tipo,  nome_farmaco, stato, data_ora;
+        final String descrizione_prescrizione= "Al medico è stato richiesto il farmaco: ";
+        final String descrizione_visita= "Al medico è stata richiesta una visita ";
+
+        public MyListAdapter(Context context, int layout, ArrayList<Richiesta> request){
+            super(context, layout);
+            richieste.addAll(request);
             notifyDataSetChanged();
         }
 
-
         @Override
         public int getCount() {
-            return descriptioList.size();
+            return richieste.size();
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            tipo = richieste.get(position).getTipo();
+            nome_farmaco = richieste.get(position).getNome_farmaco();
+            stato = richieste.get(position).getStato();
+            data_ora = richieste.get(position).getData_richiesta();
+
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = inflater.inflate(R.layout.history_element, parent, false);
 
-            TextView textView1 = (TextView) v.findViewById(R.id.descrizione);
-            textView1.setText(descriptioList.get(position));
             TextView textView2 = (TextView) v.findViewById(R.id.tipo);
-            textView2.setText(typeList.get(position));
+            textView2.setText(tipo);
+
+            TextView textView1 = (TextView) v.findViewById(R.id.descrizione);
+
 
             ImageView img = (ImageView) v.findViewById(R.id.immagine);
-            if(typeList.get(position)=="Prescrizione")
+            if(tipo=="Prescrizione") {
+                textView1.setText(descrizione_prescrizione + nome_farmaco);
                 img.setImageResource(R.drawable.pill_icon);
-            else if(typeList.get(position)=="Visita")
+            }else if(tipo=="Visita") {
                 img.setImageResource(R.drawable.calendar);
+                textView1.setText(descrizione_visita);
+            }
+            ImageView state = (ImageView) v.findViewById(R.id.state);
+            state.setVisibility(View.GONE);
             return v;
         }
     }
+    //
+    //funione momentanea per arraylist sopra!
+    //
+    public ArrayList<Richiesta> riempi(){
+        ArrayList<Richiesta> array = new ArrayList<>();
+        Richiesta elemento = new Richiesta();
+        elemento.setIdRichiesta(1);
+        elemento.setStato("C");
+        elemento.setTipo("Prescrizione");
+        elemento.setData_richiesta("2012/12/12 alle 12:00 ");
+        elemento.setNome_farmaco("Brufen");
+        elemento.setQuantita_farmaco(2);
+        array.add(elemento);
+        elemento.setIdRichiesta(2);
+        array.add(elemento);
+        elemento.setIdRichiesta(3);
+        array.add(elemento);
+        elemento.setIdRichiesta(4);
+        array.add(elemento);
+
+        return array;
+    }
+
 }

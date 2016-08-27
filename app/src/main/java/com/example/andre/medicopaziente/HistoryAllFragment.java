@@ -42,12 +42,13 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
         //
         //creato arraylist momentaneo per simulare ritorno dalla query su db!
         //
-        ArrayList<Richiesta> returnfromDB = riempi();
+        final ArrayList<Richiesta> returnfromDB = riempi();
+        returnfromDB.addAll(riempi2());
         //
         //l'ultimo paramentro = array list da passare all'adapter!
         //nelle altre historyfragment non c'è!
         //
-        MyListAdapter adapter = new MyListAdapter(v.getContext(), R.layout.history_element, returnfromDB);
+        final MyListAdapter adapter = new MyListAdapter(v.getContext(), R.layout.history_element, returnfromDB);
         lista.setAdapter(adapter);
         //
 
@@ -55,7 +56,8 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(lista.getContext(),DetailsActivity.class);
-                intent.putExtra("ITEM_CLICKED", position);
+
+                intent.putExtra("ITEM_CLICKED", returnfromDB.get(position));
                 startActivity(intent);
             }
         });
@@ -71,7 +73,7 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
     }
 
 
-    class MyListAdapter extends ArrayAdapter<String> {
+    class MyListAdapter extends ArrayAdapter<Richiesta> {
 
         //
         //DEVO IMPLEMENTARE GETITEM PER RITORNARE L'ELEMENTO DA INVIARE TRAMITE INTENT A DetailsActivity
@@ -84,7 +86,7 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
         //
         //versione per dati DB
         private ArrayList<Richiesta> richieste = new ArrayList<>();
-        String tipo,  nome_farmaco;
+        String tipo,  nome_farmaco, stato, data_ora;
         final String descrizione_prescrizione= "Al medico è stato richiesto il farmaco: ";
         final String descrizione_visita= "Al medico è stata richiesta una visita ";
 
@@ -102,6 +104,8 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
         public View getView(int position, View convertView, ViewGroup parent) {
             tipo = richieste.get(position).getTipo();
             nome_farmaco = richieste.get(position).getNome_farmaco();
+            stato = richieste.get(position).getStato();
+            data_ora = richieste.get(position).getData_richiesta();
 
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = inflater.inflate(R.layout.history_element, parent, false);
@@ -110,58 +114,25 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
             textView2.setText(tipo);
 
             TextView textView1 = (TextView) v.findViewById(R.id.descrizione);
+
             ImageView img = (ImageView) v.findViewById(R.id.immagine);
-
-            textView1.setText(descrizione_prescrizione + nome_farmaco);
-
-
             if(tipo.equals("Prescrizione")) {
                 textView1.setText(descrizione_prescrizione + nome_farmaco);
                 img.setImageResource(R.drawable.pill_icon);
             }
             else if(tipo.equals("Visita")) {
                 img.setImageResource(R.drawable.calendar);
+                textView1.setText(descrizione_visita);
             }
 
-            /*ImageView state = (ImageView) v.findViewById(R.id.state);
-            if(statereq.get(position)== "a")
-                state.setImageResource(R.drawable.ic_thumb_up_black_24dp);
-            else if(statereq.get(position)=="r")
-                state.setImageResource(R.drawable.ic_thumb_down_black_24dp);*/
+            ImageView state = (ImageView) v.findViewById(R.id.state);
+            if(stato=="C")
+                state.setImageResource(R.mipmap.ic_state_complete);
+            else if(stato=="R")
+                state.setImageResource(R.mipmap.ic_state_refused);
             return v;
         }
     }
-
-    //
-    //è un copia incolla della funzione in BasicDrawer! quindi è da modificare!
-    //
-    /*public class AsyncCallSoapRichieste extends AsyncTask<String, Void, ArrayList<Richiesta>> {
-
-        @Override
-        protected ArrayList<Richiesta> doInBackground(String... params) {
-            CallSoap cs = new CallSoap();
-            return cs.GetPazienteRequest(paziente.getCodiceFiscale());
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(getContext(), "Attendere", "Aggiornamento richieste...", true);
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Richiesta> s) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-            if (!db.createRequest(s)) {
-                int a = 10;
-                a++;
-                System.out.println(a);
-            }
-            progressDialog.dismiss();
-
-        }
-    }*/
-
 
     //
     //funione momentanea per arraylist sopra!
@@ -170,11 +141,29 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
         ArrayList<Richiesta> array = new ArrayList<>();
         Richiesta elemento = new Richiesta();
         elemento.setIdRichiesta(1);
-        elemento.setStato("A");
+        elemento.setStato("C");
         elemento.setTipo("Prescrizione");
         elemento.setData_richiesta("2012/12/12 alle 12:00 ");
         elemento.setNome_farmaco("Brufen");
         elemento.setQuantita_farmaco(2);
+        array.add(elemento);
+        elemento.setIdRichiesta(2);
+        array.add(elemento);
+        elemento.setIdRichiesta(3);
+        array.add(elemento);
+        elemento.setIdRichiesta(4);
+        array.add(elemento);
+
+        return array;
+    }
+    public ArrayList<Richiesta> riempi2(){
+        ArrayList<Richiesta> array = new ArrayList<>();
+        Richiesta elemento = new Richiesta();
+        elemento.setIdRichiesta(1);
+        elemento.setStato("R");
+        elemento.setTipo("Visita");
+        elemento.setData_richiesta("2012/12/12 alle 14:00 ");
+        elemento.setNote_richiesta("Specialistica dermatologica presso LAB1");
         array.add(elemento);
         elemento.setIdRichiesta(2);
         array.add(elemento);
