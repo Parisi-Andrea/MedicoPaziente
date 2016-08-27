@@ -31,8 +31,7 @@ public class InfoDoctorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_info_medico,container,false);
-        ImageView image = (ImageView) v.findViewById(R.id.img);
-        image.setImageResource(R.drawable.ali_connors);
+
         lista = (ListView) v.findViewById(R.id.list_info);
         MyInfoListAdapter adapter= new MyInfoListAdapter(v.getContext(), R.layout.item_listinfo);
         adapter.setdata();
@@ -52,11 +51,13 @@ public class InfoDoctorFragment extends Fragment {
         }
 
         public void setdata(){
+            description.add("immagine");
             description.add("Nome  Cognome");
             description.add("Telefono");
             description.add("Ambulatorio");
             description.add("Orario");
 
+            items.add("immagine");
             items.add("Mario Rossi");
             items.add("0461 961361");
             items.add("Rosti - via le man dal cul, 2");
@@ -76,13 +77,19 @@ public class InfoDoctorFragment extends Fragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflater.inflate(R.layout.item_listinfo, parent, false);
-
-            TextView txt1 = (TextView) v.findViewById(R.id.description);
-            txt1.setText(description.get(position));
-            TextView txt2 = (TextView) v.findViewById(R.id.details);
-            txt2.setText(items.get(position));
-
+            View v;
+            if(position==0){
+               v = inflater.inflate(R.layout.item_listinfo_image, parent, false);
+                ImageView image = (ImageView) v.findViewById(R.id.img);
+                image.setImageResource(R.drawable.ali_connors);
+            }
+            else {
+                v = inflater.inflate(R.layout.item_listinfo, parent, false);
+                TextView txt1 = (TextView) v.findViewById(R.id.description);
+                txt1.setText(description.get(position));
+                TextView txt2 = (TextView) v.findViewById(R.id.details);
+                txt2.setText(items.get(position));
+            }
             return v;
         }
     }
