@@ -21,55 +21,43 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by Annalisa on 27/08/2016.
  */
-public class InfoPatFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class InfoPatFragment extends Fragment{
 
     ListView lista;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View v = inflater.inflate(R.layout.fragment_list, container, false);
-        lista = (ListView) v.findViewById(R.id.lista);
-        MyDataAdapter adapter = new MyDataAdapter(v.getContext(), R.layout.item_listinfo_pat);
-        adapter.setData();
+        View v = inflater.inflate(R.layout.activity_info, container, false);
+        lista = (ListView) v.findViewById(R.id.list_info);
+
+        //
+        //creato arraylist momentaneo per simulare ritorno dalla query su db!
+        //
+        final ArrayList<Paziente> returnfromDB = riempi();
+        //
+        //l'ultimo paramentro = array list da passare all'adapter!
+        //nelle altre historyfragment non c'è!
+        //
+
+        MyDataAdapter adapter = new MyDataAdapter(v.getContext(), R.layout.item_listinfo_pat, returnfromDB);
         lista.setAdapter(adapter);
         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(lista.getContext(), DetailsActivity.class);
-                intent.putExtra("ITEM_CLICKED", position);
-                startActivity(intent);
+
             }
         });
-        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swiperefresh);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
         return v;
     }
 
-    @Override
-    public void onRefresh() {
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-    class MyDataAdapter extends ArrayAdapter<String> {
+    class MyDataAdapter extends ArrayAdapter<Paziente> {
         //array paralleli momentanei per simulare dati DB
-        private List<String> pazienti = new ArrayList<>();
-        private List<String> cf = new ArrayList<>();
+        ArrayList<Paziente> pazienti = new ArrayList<>();
 
-        public MyDataAdapter(Context context, int resource) {
+        public MyDataAdapter(Context context, int resource, ArrayList<Paziente> pazFromDB) {
             super(context, resource);
-        }
-
-        //metodo di aggiunta dati momentaneo
-        public void setData() {
-            pazienti.add("Mario Rossi");
-            pazienti.add("Alberta Verdi");
-            pazienti.add("Giacomo Bianchi");
-            cf.add("NLSFLP94T45L378G");
-            cf.add("NLSFLP94T45L378G");
-            cf.add("NLSFLP94T45L378G");
-            notifyDataSetChanged();
+            pazienti.addAll(pazFromDB);
         }
 
 
@@ -84,13 +72,37 @@ public class InfoPatFragment extends Fragment implements SwipeRefreshLayout.OnRe
             View v = inflater.inflate(R.layout.item_listinfo_pat, parent, false);
 
             TextView textView1 = (TextView) v.findViewById(R.id.nome_cognome);
-            textView1.setText(pazienti.get(position));
+            textView1.setText(pazienti.get(position).getNome()+pazienti.get(position).getCognome());
             TextView textView2 = (TextView) v.findViewById(R.id.cf);
-            textView2.setText(cf.get(position));
+            textView2.setText(pazienti.get(position).getCodiceFiscale());
 
             CircleImageView img = (CircleImageView) v.findViewById(R.id.imgpaziente);
+            //manca il ritorno dell'immagine questo è statico
             img.setImageResource(R.drawable.immagine1);
             return v;
         }
+    }
+
+    //
+    //funzione momentanea
+    //
+    public ArrayList<Paziente> riempi(){
+        ArrayList<Paziente> array = new ArrayList<>();
+        Paziente elemento = new Paziente();
+        elemento.setCodiceFiscale("NLSFLP94T45L378G");
+        elemento.setNome("Annalisa");
+        elemento.setCognome("Filippi");
+        elemento.setDataNascita("05/12/1994");
+        elemento.setLuogoNascita("Trento");
+        elemento.setResidenza("via paludi, 42");
+        elemento.setEmail("annalisa.filippi@mail.it");
+        elemento.setNTel("0461 961361");
+
+        array.add(elemento);
+        array.add(elemento);
+        array.add(elemento);
+        array.add(elemento);
+
+        return array;
     }
 }

@@ -36,7 +36,7 @@ public class HistoryRefFragment extends Fragment implements SwipeRefreshLayout.O
         //
         //creato arraylist momentaneo per simulare ritorno dalla query su db!
         //
-        ArrayList<Richiesta> returnfromDB = riempi2();
+        final ArrayList<Richiesta> returnfromDB = riempi2();
         //
         //l'ultimo paramentro = array list da passare all'adapter!
         //nelle altre historyfragment non c'è!
@@ -48,7 +48,7 @@ public class HistoryRefFragment extends Fragment implements SwipeRefreshLayout.O
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(lista.getContext(),DetailsActivity.class);
-                intent.putExtra("ITEM_CLICKED", position);
+                intent.putExtra("ITEM_CLICKED", returnfromDB.get(position));
                 startActivity(intent);
             }
         });
@@ -63,16 +63,6 @@ public class HistoryRefFragment extends Fragment implements SwipeRefreshLayout.O
     }
 
     class MyListAdapter extends ArrayAdapter<String> {
-
-        //
-        //DEVO IMPLEMENTARE GETITEM PER RITORNARE L'ELEMENTO DA INVIARE TRAMITE INTENT A DetailsActivity
-        //
-
-
-        //
-        //se guardi nelle altre classi historyfragment sono diverse! ma questo dovrebbe essere
-        //il codice da usare con le chiamate al DB dove ritorna un Arraylist
-        //
         //versione per dati DB
         private ArrayList<Richiesta> richieste = new ArrayList<>();
         String tipo,  nome_farmaco, stato, data_ora;
