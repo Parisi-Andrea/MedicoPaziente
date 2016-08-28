@@ -70,14 +70,14 @@ public class MainActivity extends AppCompatActivity {
                 //
                 //da rimettere!
                 //
-                //login(v);
+                login(v);
 
                 //
                 //modifiche per run application! da modificare per versione finale!
                 //
-                tipoUtente = "Paziente";
+                /*tipoUtente = "Paziente";
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                startActivity(intent);
+                startActivity(intent);*/
                 //
                 //
             }

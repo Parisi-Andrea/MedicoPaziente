@@ -122,7 +122,7 @@ public class BasicDrawerActivity extends AppCompatActivity
     //
     //rimessa funzione controlla che sia corretta!
     //
-    /*
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -157,7 +157,7 @@ public class BasicDrawerActivity extends AppCompatActivity
             }
         }
         return true;
-    }*/
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
