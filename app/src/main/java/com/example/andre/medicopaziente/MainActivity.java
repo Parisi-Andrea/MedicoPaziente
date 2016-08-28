@@ -30,17 +30,16 @@ import java.io.FileOutputStream;
 public class MainActivity extends AppCompatActivity {
 
 
-    private EditText passwordTxt, codiceFiscaleTxt;
-    private Button btnLogIn, btnRegister;
-    private String username, password, response;
+    private EditText passwordTxt,codiceFiscaleTxt;
+    private Button btnLogIn,btnRegister;
+    private String username,password,response,tipoUtente;
     private ProgressDialog progressDialog;
-    private CheckBox checkBoxMedico, checkBoxSalva;
+    private CheckBox checkBoxMedico,checkBoxSalva;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-
-    protected static String tipoUtente;
 
     private Medico docProfile;
     private Paziente patProfile;
+
 
 
     @Override
@@ -67,19 +66,8 @@ public class MainActivity extends AppCompatActivity {
         btnLogIn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                //
-                //da rimettere!
-                //
-                //login(v);
+                login(v);
 
-                //
-                //modifiche per run application! da modificare per versione finale!
-                //
-                tipoUtente = "Paziente";
-                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                startActivity(intent);
-                //
-                //
             }
         });
 
@@ -92,30 +80,36 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setImageDimension() {
+    private void setImageDimension()
+    {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
     }
 
-    private void recuperaDatiPref() {
+    private void recuperaDatiPref()
+    {
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
 
-        if (prefs.contains("codiceFiscale")) {
+        if (prefs.contains("codiceFiscale"))
+        {
             codiceFiscaleTxt.setText(prefs.getString("codiceFiscale", ""));
         }
-        if (prefs.contains("password")) {
+        if (prefs.contains("password"))
+        {
             passwordTxt.setText(prefs.getString("password", ""));
         }
-        if (prefs.contains("check")) {
+        if (prefs.contains("check"))
+        {
             checkBoxMedico.setChecked(prefs.getBoolean("check", false));
         }
-        if (prefs.contains("rememberMe")) {
+        if (prefs.contains("rememberMe"))
+        {
             checkBoxSalva.setChecked(prefs.getBoolean("rememberMe", false));
         }
 
     }
-
-    public void registration(View v) {
+    public void registration(View v)
+    {
         AlertDialog.Builder builder =
                 new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Profilo");
@@ -139,14 +133,18 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    public void login(View v) {
+    public void login(View v)
+    {
         if (!validate()) {
             return;
         }
-        if (checkBoxMedico.isChecked()) {
+        if(checkBoxMedico.isChecked())
+        {
             tipoUtente = "Medico";
-        } else {
-           tipoUtente = "Paziente";
+        }
+        else
+        {
+            tipoUtente = "Paziente";
         }
         new AsyncCallSoap().execute();
     }
@@ -157,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
         String codiceFiscale = codiceFiscaleTxt.getText().toString();
         String password = passwordTxt.getText().toString();
 
-        if (codiceFiscale.isEmpty() || codiceFiscale.length() != 16) {
+        if (codiceFiscale.isEmpty() || codiceFiscale.length()!=16 ) {
             codiceFiscaleTxt.setError("inserire un codice fiscale valido");
             valid = false;
         } else {
@@ -173,27 +171,30 @@ public class MainActivity extends AppCompatActivity {
 
         return valid;
     }
-
-    public class AsyncCallSoap extends AsyncTask<String, Void, String> {
+    public class AsyncCallSoap extends AsyncTask<String,Void,String>
+    {
         @Override
         protected void onPreExecute() {
-            progressDialog = ProgressDialog.show(MainActivity.this, "Attendere", "Autenticazione", true);
+            progressDialog = ProgressDialog.show(MainActivity.this,"Attendere","Autenticazione",true);
             username = codiceFiscaleTxt.getText().toString();
             password = passwordTxt.getText().toString();
 
         }
-
         @Override
         protected String doInBackground(String... params) {
             CallSoap CS = new CallSoap();
-            switch (tipoUtente) {
-                case "Medico":
+            switch (tipoUtente)
+            {
+                case "Medico" :
                     //Cerco di fare il login sul web service
+
                     docProfile = CS.LoginMedico(username, password, tipoUtente);
 
                     //Se ci sono riuscito controlla la password e creo il db interno
-                    if (docProfile != null) {
-                        if (docProfile.getPassword().equals(password)) {
+
+                    if(docProfile != null) {
+                        if(docProfile.getPassword().equals(password))
+                        {
                             DatabaseHelper db = new DatabaseHelper(getApplicationContext());
                             if (!db.createMedico(docProfile))
                             {
@@ -206,29 +207,42 @@ public class MainActivity extends AppCompatActivity {
                             }
                             db.closeDB();
                             response = "OK";
-                        } else {
+                        }
+                        else
+                        {
                             response = "KO";
                         }
                     }
                     //Se non ho effettuato il login con il web service provo ad eseguirlo con il db interno
-                    else {
+
+                    else
+                    {
                         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
                         docProfile = db.getMedico(username);
-                        if (docProfile != null) {
-                            if (docProfile.getPassword().equals(password)) {
+
+                        if(docProfile != null)
+                        {
+                            if(docProfile.getPassword().equals(password))
+                            {
                                 response = "OK";
-                            } else {
+                            }
+                            else
+                            {
                                 response = "KO";
                             }
-                        } else {
+                        }
+                        else
+                        {
                             response = "KO";
                         }
                     }
                     break;
 
-                case "Paziente":
-                    patProfile = CS.LoginPaziente(username, password, tipoUtente);
-                    if (patProfile != null) {
+                case "Paziente" :
+                    patProfile = CS.LoginPaziente(username,password,tipoUtente);
+
+                    if(patProfile != null)
+                    {
                         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
                         if (!db.createPaziente(patProfile))
                         {
@@ -241,17 +255,25 @@ public class MainActivity extends AppCompatActivity {
                         }
                         db.closeDB();
                         response = "OK";
-                    } else {
+                    }
+                    else
+                    {
                         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
                         patProfile = db.getPaziente(username);
-                        if (patProfile != null) {
-                            if (patProfile.getPassword().equals(password)) {
+                        if(patProfile != null)
+                        {
+                            if(patProfile.getPassword().equals(password))
+                            {
                                 response = "OK";
-                            } else {
+                            }
+                            else
+                            {
                                 response = "KO";
                             }
-                        } else {
+                        }
+                        else
+                        {
                             response = "KO";
                         }
                     }
@@ -261,33 +283,38 @@ public class MainActivity extends AppCompatActivity {
                     response = "Problema sconosciuto...";
                     break;
             }
-            return response;
+
+            return  response;
+
         }
 
         @Override
         protected void onPostExecute(String s) {
             progressDialog.dismiss();
 
-            if (s.contains("OK")) {
+            if(s.contains("OK")) {
                 AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                 alertDialog.setTitle("Operazione Eseguita");
                 alertDialog.setMessage("Autenticazione effettuata");
                 alertDialog.show();
 
                 Thread background = new Thread() {
-                    public void run() {
+                    public  void run () {
                         try {
+
                             sleep(500);
-                            if (checkBoxSalva.isChecked()) {
+
+                            if(checkBoxSalva.isChecked()) {
                                 SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
                                 editor.putString("codiceFiscale", codiceFiscaleTxt.getText().toString());
                                 editor.putString("password", passwordTxt.getText().toString());
                                 editor.putBoolean("check", checkBoxMedico.isChecked());
-                                editor.putBoolean("rememberMe", checkBoxSalva.isChecked());
+                                editor.putBoolean("rememberMe",checkBoxSalva.isChecked());
 
                                 boolean committato = editor.commit();
 
-                                if (!committato) {
+                                if(!committato)
+                                {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                                     builder.setTitle("Attenzione");
                                     builder.setMessage("Non è stato possibile salvare i dati");
@@ -301,14 +328,19 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             Intent newPage = new Intent(getBaseContext(), Profilo.class);
-                            if (tipoUtente.equals("Medico")) {
+                            if(tipoUtente.equals("Medico")) {
 
                                 newPage.putExtra("Medico", docProfile);
-                            } else if (tipoUtente.equals("Paziente")) {
-                                newPage.putExtra("Paziente", patProfile);
                             }
+                            else if(tipoUtente.equals("Paziente"))
+                            {
+                                newPage.putExtra("Paziente",patProfile);
+                            }
+
+                            newPage.putExtra("tipoUtente", tipoUtente);
                             finish();
                             startActivity(newPage);
+
 
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -316,23 +348,28 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
                 background.start();
-            } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Attenzione");
-                builder.setMessage(s + " tre possibili problemi: rete KO, profilo inesistente, username o password sbagliati ");
-                builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                progressDialog.dismiss();
-                dialog.show();
+
+
+            }
+            else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Attenzione");
+                    builder.setMessage(s+" tre possibili problemi: rete KO, profilo inesistente, username o password sbagliati ");
+                    builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    progressDialog.dismiss();
+                    dialog.show();
+
             }
         }
     }
-
     public void createPDFRicettaRossa() {
 
         File file = new File(Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" +File.separator + "RicettaRossa.pdf");
@@ -348,7 +385,7 @@ public class MainActivity extends AppCompatActivity {
                 //Creo la bitmap dal drawable folder
                 Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ricettarossa);
                 //Scalo la bitmap nelle dimensioni della ricetta
-                Bitmap bMapScaled = Bitmap.createScaledBitmap(largeIcon, (int) PageSize.A5.getHeight(), (int) PageSize.A5.getWidth(), true);
+                Bitmap bMapScaled = Bitmap.createScaledBitmap(largeIcon,(int)PageSize.A5.getHeight() , (int)PageSize.A5.getWidth() , true);
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
 

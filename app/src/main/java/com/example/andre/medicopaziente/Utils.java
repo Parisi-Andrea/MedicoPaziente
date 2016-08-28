@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.view.View;
 import android.widget.ImageView;
@@ -37,8 +36,6 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by andre on 24/08/2016.
@@ -72,12 +69,12 @@ public class Utils {
         return false;
     }
 
+
     public static boolean isConnectedViaWifi(Activity activity) {
         ConnectivityManager connectivityManager = (ConnectivityManager) activity.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         return mWifi.isConnected();
     }
-
     public void creaRicettaRossa(Paziente paziente, Activity activity) {
         //System.out.println("PIPPO");
         try {
@@ -115,6 +112,7 @@ public class Utils {
         }
         return;
     }
+
 
     public boolean setUpInfoDrawer(Activity activity, Medico medico, Paziente paziente, TextView textViewCF,
                                    TextView textViewNome, ImageView imageView) {
@@ -160,12 +158,12 @@ public class Utils {
         return true;
     }
 
+
     public void stringToImageView(ImageView imageView, String encodedImage)   {
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         imageView.setImageBitmap(decodedByte);
     }
-
     public Bitmap stringToBitmap(String encodedImage) {
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
@@ -267,8 +265,4 @@ public class Utils {
         textView.setTextColor(color);
         snackbar.show();
     }
-
-    //
-    //tolta la funzione setNavigationView! la trovi in BasicDrawerActivity
-    //
 }

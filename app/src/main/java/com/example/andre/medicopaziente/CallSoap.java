@@ -611,20 +611,37 @@ public class CallSoap {
         return response;
     }
 
-    public String getImageFromDB(String codFiscale) {
-        String SOAP_ACTION = "http://tempuri.org/GetImage";
-        String OPERATION_NAME = "GetImage";
+    public String Risposta(int id,String data_risposta,String note_risposta,String stato) {
+        String SOAP_ACTION = "http://tempuri.org/Risposta";
+        String OPERATION_NAME = "Risposta";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
         String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
         PropertyInfo PI = new PropertyInfo();
-
-        PI.setName("codiceFiscale");
-        PI.setValue(codFiscale);
+        PI.setName("data_risposta");
+        PI.setValue(data_risposta);
         PI.setType(String.class);
         request.addProperty(PI);
 
+        PI = new PropertyInfo();
+        PI.setName("note_risposta");
+        PI.setValue(note_risposta);
+        PI.setType(String.class);
+        request.addProperty(PI);
+
+        PI = new PropertyInfo();
+        PI.setName("stato");
+        PI.setValue(stato);
+        PI.setType(String.class);
+        request.addProperty(PI);
+
+        PI = new PropertyInfo();
+        PI.setName("id");
+        PI.setValue(id);
+        PI.setType(int.class);
+        request.addProperty(PI);
 
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
         envelope.dotNet = true;
