@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class CallSoap {
 
-    String ipAddress = "http://192.168.173.1:80";
+    String ipAddress = "http://192.168.137.1:80";
 
     /****************************************************************************
      *
@@ -47,7 +47,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/PazienteRegistration";
         String OPERATION_NAME = "PazienteRegistration";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -134,7 +134,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/UpdateProfilo";
         String OPERATION_NAME = "UpdateProfilo";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -218,7 +218,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/GetPazienteInfo";
         String OPERATION_NAME = "GetPazienteInfo";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -264,7 +264,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/GetMedicoInfo";
         String OPERATION_NAME = "GetMedicoInfo";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -806,5 +806,58 @@ public class CallSoap {
             response = ex.getMessage().toString();
         }
         return response;
+    }
+    public ArrayList<Paziente> GetAllPazientiForMedico(String codiceFiscale) {
+        ArrayList<Paziente> pazienti = new ArrayList<Paziente>();
+
+        String SOAP_ACTION = "http://tempuri.org/GetAllPazientiForMedico";
+        String OPERATION_NAME = "GetAllPazientiForMedico";
+        String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
+        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+
+        SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
+
+        PropertyInfo PI = new PropertyInfo();
+        PI.setName("codiceFiscale");
+        PI.setValue(codiceFiscale);
+        PI.setType(String.class);
+        request.addProperty(PI);
+
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(request);
+        String response = null;
+        try {
+            HttpTransportSE httpTransport = new HttpTransportSE(SOAP_ADDRESS);
+            httpTransport.setXmlVersionTag("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            httpTransport.debug = true;
+            httpTransport.call(SOAP_ACTION, envelope);
+            //String tmp = httpTransport.responseDump;
+            //SoapObject tmp = (SoapObject) envelope.getResponse();
+            SoapObject result = (SoapObject) envelope.getResponse();
+            int cols = result.getPropertyCount();
+            for (int i = 0; i < cols; i++) {
+                Object objectResponse = (Object) result.getProperty(i);
+                SoapObject r = (SoapObject) objectResponse;
+                Paziente paziente = new Paziente();
+
+                paziente.codiceFiscale = result.getProperty("CodiceFiscale").toString();
+                paziente.nome = result.getProperty("Nome").toString();
+                paziente.cognome = result.getProperty("Cognome").toString();
+                paziente.dataNascita = result.getProperty("DataNascita").toString();
+                paziente.luogoNascita = result.getProperty("LuogoNascita").toString();
+                paziente.residenza = result.getProperty("Residenza").toString();
+                paziente.email = result.getProperty("Email").toString();
+                paziente.nTel = result.getProperty("NTel").toString();
+                paziente.image = result.getProperty("Image").toString();
+
+                pazienti.add(i, paziente);
+
+
+            }
+        } catch (Exception ex) {
+            response = ex.getMessage().toString();
+        }
+        return pazienti;
     }
 }

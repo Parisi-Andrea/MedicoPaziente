@@ -62,9 +62,13 @@ public class RequestManagerVisita extends AppCompatActivity {
 
         Intent intent = getIntent();
         final Richiesta richiesta = intent.getParcelableExtra("richiesta");
-        try {
-            new AsyncCallSoap().execute(richiesta.getCf_paziente());
-        }catch (Exception e){
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        paziente = db.getPaziente(richiesta.cf_paziente);
+        if(paziente==null) {
+            try {
+                new AsyncCallSoap().execute(richiesta.getCf_paziente());
+            } catch (Exception e) {
+            }
         }
 
         if(paziente!=null && paziente.getCodiceFiscale()!=null) {

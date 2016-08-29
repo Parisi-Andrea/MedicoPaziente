@@ -157,7 +157,6 @@ public class DettagliMedico extends AppCompatActivity {
             String response;
             CallSoap CS = new CallSoap();
             response = CS.UpdateProfilo(params[0], params[1], null, params[2], params[3], params[4], params[5], params[6]);
-            response="1";
             return response;
         }
 

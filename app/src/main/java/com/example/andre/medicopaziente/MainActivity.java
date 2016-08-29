@@ -123,13 +123,28 @@ public class MainActivity extends AppCompatActivity {
                 //
                 //da rimettere!
                 //
+
+                //Intent intent1 = new Intent(v.getContext(), RegistrationIntentService.class);//DA ELIMINARE
+                //intent1.putExtra("codiceFiscale", "CHNDMN94B11L378G");
+                //startService(intent1);
                 login(v);
 
                 //
                 //modifiche per run application! da modificare per versione finale!
                 //
-                /*tipoUtente = "Paziente";
+                /*  = "Paziente";
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                Paziente paziente = new Paziente();
+                paziente.setNome("Damiano");
+                paziente.setCognome("Chini");
+                paziente.setNTel("0461246485");
+                paziente.setResidenza("Zambana");
+                paziente.setLuogoNascita("Trento");
+                paziente.setCodiceFiscale("CHNDMN94B11L378G");
+                paziente.setEmail("chinidamiano@gmail.com");
+                paziente.setMedico("CHNDMN94B11L378G");
+                paziente.setDataNascita("11-02-1994");
+                intent.putExtra("Paziente", paziente);
                 startActivity(intent);*/
                 //
                 //
@@ -353,7 +368,7 @@ public class MainActivity extends AppCompatActivity {
                                     });
                                 }
                             }
-                            Intent newPage = new Intent(getBaseContext(), Profilo.class);
+                            Intent newPage = new Intent(getBaseContext(), HomeActivity.class);
                             if (notificationIntent!=null && notificationIntent.getStringExtra("richiesta")!=null){
                                 newPage.putExtra("richiesta", notificationIntent.getStringExtra("richiesta"));
                             }

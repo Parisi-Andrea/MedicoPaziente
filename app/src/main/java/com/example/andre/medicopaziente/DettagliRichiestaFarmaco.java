@@ -42,11 +42,16 @@ public class DettagliRichiestaFarmaco extends AppCompatActivity {
 
         Intent intent = getIntent();
         final Richiesta richiesta = intent.getParcelableExtra("richiesta");
-        try {
-            new AsyncCallSoapInfoPaziente().execute(richiesta.getCf_paziente());
-        }catch (Exception e){
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        Paziente paziente = db.getPaziente(richiesta.cf_paziente);
+        if(paziente!=null) {
+            richiedente.setText(paziente.getNome() + " " + paziente.getCognome());
+        }else {
+            try {
+                new AsyncCallSoapInfoPaziente().execute(richiesta.getCf_paziente());
+            } catch (Exception e) {
+            }
         }
-
 
 
         TextView cf_richiedente = (TextView) findViewById(R.id.cf_richiedente);

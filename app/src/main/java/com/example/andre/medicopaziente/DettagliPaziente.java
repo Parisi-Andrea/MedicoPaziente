@@ -41,7 +41,7 @@ public class DettagliPaziente extends AppCompatActivity {
         Intent intent = getIntent();
         final Paziente paziente = intent.getParcelableExtra("paziente");
 
-        if (intent.getBooleanExtra("medico", false)==true){
+        if (!MainActivity.tipoUtente.equals("Paziente")){
             findViewById(R.id.no_modifica).setVisibility(View.GONE);
         }
 
@@ -154,7 +154,6 @@ public class DettagliPaziente extends AppCompatActivity {
             String response;
             CallSoap CS = new CallSoap();
             response = CS.UpdateProfilo(params[0], params[1], params[2], params[3], params[4], params[5], null, null);
-            response="1";
             return response;
         }
 

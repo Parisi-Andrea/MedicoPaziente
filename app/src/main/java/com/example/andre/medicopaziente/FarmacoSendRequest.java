@@ -28,7 +28,7 @@ public class FarmacoSendRequest extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
     private Toolbar toolbar;
-
+    private Paziente paziente;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class FarmacoSendRequest extends AppCompatActivity {
         Button sendRequest = (Button)findViewById(R.id.sendRequest);
 
         Intent intent = getIntent();
-        Paziente paziente = intent.getExtras().getParcelable("paziente");
+        paziente = intent.getExtras().getParcelable("paziente");
         final String cf_paziente = paziente.getCodiceFiscale();
         final String cf_medico = paziente.getMedico();;
 
@@ -82,7 +82,7 @@ public class FarmacoSendRequest extends AppCompatActivity {
                 SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd 'alle' HH:mm:ss");
                 final String formattedDate = df.format(c.getTime());
 
-                new AsyncCallSoap().execute(formattedDate,"farmaco", notes, medicine, medicineNum.toString(), cf_paziente, cf_medico);
+                new AsyncCallSoap().execute(formattedDate,"Prescrizione", notes, medicine, medicineNum.toString(), cf_paziente, cf_medico);
             }
         });
 
@@ -147,7 +147,8 @@ public class FarmacoSendRequest extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        Intent newPage = new Intent(FarmacoSendRequest.this, MainActivity.class);
+                        Intent newPage = new Intent(FarmacoSendRequest.this, HomeActivity.class);
+                        newPage.putExtra("Paziente", paziente);
                         FarmacoSendRequest.this.finish();
                         startActivity(newPage);
                     }

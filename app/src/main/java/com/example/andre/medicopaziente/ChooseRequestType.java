@@ -23,7 +23,7 @@ public class ChooseRequestType extends AppCompatActivity {
 
         final Paziente paziente;
         Bundle bundle = getIntent().getExtras();
-        paziente = bundle.getParcelable("paziente");
+        paziente = bundle.getParcelable("Paziente");
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
