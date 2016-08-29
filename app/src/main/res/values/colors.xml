@@ -13,4 +13,8 @@
     <color name="textColor">#000000</color>
     <color name="userDetailsBackground">#B2DFDB</color>
 
+    <color name="listdividers">#DDDDDD</color>
+    <color name="itemInfoBackground">#E0F2F1</color>
+    <color name="redRef">#FF0000</color>
+    <color name="greenConf">#00FF00</color>
 </resources>

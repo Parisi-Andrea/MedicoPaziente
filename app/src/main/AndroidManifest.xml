@@ -57,6 +57,7 @@
             android:name=".Profilo"
             android:label="@string/title_activity_profilo"
             android:theme="@style/AppTheme.NoActionBar" />
+<<<<<<< HEAD
         <activity android:name=".PazienteRegistration" />
         <activity android:name=".MedicoRegistration"></activity>
         <activity
@@ -99,6 +100,25 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+=======
+
+        <activity android:name=".PazienteRegistration" />
+        <activity android:name=".MedicoRegistration"/>
+
+        <activity android:name=".BasicDrawerActivity"/>
+        <activity android:name=".HomeActivity"
+            android:label="Home"/>
+        <activity android:name=".WaitingActivity"
+            android:label="In Attesa"/>
+        <activity android:name=".HistoryActivity"
+            android:label="Cronologia"/>
+        <activity android:name=".DetailsActivity"
+            android:parentActivityName=".HistoryActivity"/>
+        <activity android:name=".DetailsInAttesa"
+            android:parentActivityName=".WaitingActivity"/>
+        <activity android:name=".InfoActivity"
+            android:label="Info"/>
+>>>>>>> refs/remotes/origin/AnnieMerge
     </application>
 
 </manifest>
