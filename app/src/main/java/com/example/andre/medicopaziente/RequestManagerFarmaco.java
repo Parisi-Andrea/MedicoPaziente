@@ -265,7 +265,7 @@ public class RequestManagerFarmaco extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String response;
             CallSoap CS = new CallSoap();
-            //response = CS.Risposta(params[0],params[1],params[2],params[3]);
+            response = CS.Risposta(Integer.parseInt(params[0]),params[1],params[2],params[3]);
             // TODO: DA RIMUOVERE!
             response="1";
             if(response.equals("1")){

@@ -28,7 +28,7 @@ public class RegistrationIntentService extends IntentService {
         Registration regService = builder.build();
         try {
             regService.register(token).execute();
-            SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences prefs = getApplicationContext().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
             prefs.edit().putBoolean("GCMRegistration", true);
         }catch(Exception e){
         }

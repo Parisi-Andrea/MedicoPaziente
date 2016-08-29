@@ -11,6 +11,6 @@
     <color name="navigationBarColor">#000000</color>
     <color name="listDivider">#E0E0E0</color>
     <color name="textColor">#000000</color>
-    <color name="userDetailsBackground">#000000</color>
+    <color name="userDetailsBackground">#B2DFDB</color>
 
 </resources>

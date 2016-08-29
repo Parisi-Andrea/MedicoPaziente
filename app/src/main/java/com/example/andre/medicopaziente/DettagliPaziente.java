@@ -46,10 +46,12 @@ public class DettagliPaziente extends AppCompatActivity {
         }
 
         String fotoPaziente = paziente.getImage();
-        Utils utils = new Utils();
-        Bitmap photo = utils.stringToBitmap(fotoPaziente);
-        ImageView userImage = (ImageView) findViewById(R.id.userimage);
-        userImage.setImageBitmap(photo);
+        if(fotoPaziente!=null) {
+            Utils utils = new Utils();
+            Bitmap photo = utils.stringToBitmap(fotoPaziente);
+            ImageView userImage = (ImageView) findViewById(R.id.userimage);
+            userImage.setImageBitmap(photo);
+        }
 
         TextView cf_richiedente = (TextView) findViewById(R.id.cf);
         cf_richiedente.setText(paziente.getCodiceFiscale());

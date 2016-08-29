@@ -2,6 +2,7 @@ package com.example.andre.medicopaziente;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -115,6 +116,19 @@ public class Profilo extends AppCompatActivity
             }
         }
 
+        // registrazione su GCM se non è già stata fatta sul dispositivo in uso
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE);
+        if(pref.getBoolean("GCMRegistration",false)== false){
+            Intent gcmIntent = new Intent(getApplicationContext(), RegistrationIntentService.class);
+            String cf = null;
+            if(medico!=null){
+                cf = medico.getCodiceFiscale();
+            } else if(paziente!=null){
+                cf = paziente.getCodiceFiscale();
+            }
+            gcmIntent.putExtra("codiceFiscale", cf);
+            startService(intent);
+        }
 
 
         fab.setOnClickListener(new View.OnClickListener() {

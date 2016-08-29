@@ -42,10 +42,12 @@ public class DettagliMedico extends AppCompatActivity {
         final Medico medico = intent.getParcelableExtra("medico");
 
         String fotoMedico = medico.getImage();
-        Utils utils = new Utils();
-        Bitmap photo = utils.stringToBitmap(fotoMedico);
-        ImageView userImage = (ImageView) findViewById(R.id.userimage);
-        userImage.setImageBitmap(photo);
+        if(fotoMedico!=null) {
+            Utils utils = new Utils();
+            Bitmap photo = utils.stringToBitmap(fotoMedico);
+            ImageView userImage = (ImageView) findViewById(R.id.userimage);
+            userImage.setImageBitmap(photo);
+        }
 
         TextView cf_medico = (TextView) findViewById(R.id.cf);
         cf_medico.setText(medico.getCodiceFiscale());
