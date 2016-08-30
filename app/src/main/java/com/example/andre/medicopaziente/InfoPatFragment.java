@@ -31,9 +31,7 @@ public class InfoPatFragment extends Fragment{
         View v = inflater.inflate(R.layout.activity_info, container, false);
         lista = (ListView) v.findViewById(R.id.list_info);
 
-        //
-        //creato arraylist momentaneo per simulare ritorno dalla query su db!
-        //
+    
         final ArrayList<Paziente> returnfromDB = riempi();
         //
         //l'ultimo paramentro = array list da passare all'adapter!
@@ -85,28 +83,14 @@ public class InfoPatFragment extends Fragment{
         }
     }
 
-    //
-    //funzione momentanea
-    //
+
     public ArrayList<Paziente> riempi(){
         DatabaseHelper db = new DatabaseHelper(getContext());
-        ArrayList<Paziente> array = db.getPazientiMedico(((InfoActivity) getActivity()).medico.getCodiceFiscale());
-        array = new ArrayList<>();
-        Paziente elemento = new Paziente();
-        elemento.setCodiceFiscale("NLSFLP94T45L378G");
-        elemento.setNome("Annalisa");
-        elemento.setCognome("Filippi");
-        elemento.setDataNascita("05/12/1994");
-        elemento.setLuogoNascita("Trento");
-        elemento.setResidenza("via paludi, 42");
-        elemento.setEmail("annalisa.filippi@mail.it");
-        elemento.setNTel("0461 961361");
-
-        array.add(elemento);
-        array.add(elemento);
-        array.add(elemento);
-        array.add(elemento);
-
-        return array;
+        ArrayList<Paziente> array = db.getPazientiMedico(((InfoActivity)getActivity()).medico.getCodiceFiscale());
+        if(array!=null) {
+            return array;
+        }else{
+            return new ArrayList<Paziente>();
+        }
     }
 }
