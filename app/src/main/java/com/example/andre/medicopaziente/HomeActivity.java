@@ -61,7 +61,10 @@ public class HomeActivity extends BasicDrawerActivity {
                 img.setImageResource(R.drawable.immagine1);
             else
                 u.stringToImageView(img,medico.getImage());
-            info_medico.setText(medico.getNome() + " " + medico.getCognome());
+            if(medico!=null)
+                info_medico.setText(medico.getNome() + " " + medico.getCognome());
+            else
+                info_medico.setText("");
             ultimarichiestavisita_spec = getultimaRichiesta(db.getTipoRichieste(paziente.getCodiceFiscale(), "Visita specialistica"));
             ultimarichiestavisita_con = getultimaRichiesta(db.getTipoRichieste(paziente.getCodiceFiscale(), "Visita di controllo"));
             ultimarichiestaprescr = getultimaRichiesta(db.getTipoRichieste(paziente.getCodiceFiscale(), "Prescrizione"));
