@@ -174,7 +174,8 @@
                 android:layout_width="match_parent"
                 android:text="Stampa Promemoria"
                 android:background="@color/color_cardview_info"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                android:layout_marginBottom="70dp"/>
         </LinearLayout>
     </ScrollView>
 </android.support.design.widget.CoordinatorLayout>
