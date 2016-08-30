@@ -277,7 +277,6 @@ public class RequestManagerVisita extends AppCompatActivity {
             String response;
             CallSoap CS = new CallSoap();
             response = CS.Risposta(Integer.parseInt(params[0]),params[1],params[2],params[3]);
-            response="1";
             if(response.equals("1")){
                 try {
                     String dest = params[4] + "m2p";

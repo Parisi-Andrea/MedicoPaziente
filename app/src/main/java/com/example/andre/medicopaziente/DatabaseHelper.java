@@ -806,5 +806,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return null;
         }
     }
+    public ArrayList<Paziente> getPazientiMedico(String cfMedico) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "Select * FROM " + TABLE_PAZIENTE + " WHERE "
+                +   KEY_CF_MEDICO + " =  \"" + cfMedico + "\"";
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        if(c.getCount()<=0)
+        {
+            return null;
+        }
+        if(c!=null) {
+            ArrayList<Paziente> res= new ArrayList<>();
+            c.moveToFirst();
+            do {
+                Paziente paziente = new Paziente();
+
+                paziente.setCodiceFiscale(c.getString(c.getColumnIndex(KEY_ID)));
+                paziente.setNome(c.getString(c.getColumnIndex(KEY_NOME)));
+                paziente.setCognome(c.getString(c.getColumnIndex(KEY_COGNOME)));
+                paziente.setEmail(c.getString(c.getColumnIndex(KEY_EMAIL)));
+                paziente.setNTel(c.getString(c.getColumnIndex(KEY_NTEL)));
+                paziente.setPassword(c.getString(c.getColumnIndex(KEY_PASSWORD)));
+                paziente.setDataNascita(c.getString(c.getColumnIndex(KEY_DATA_NASCITA_PAZIENTE)));
+                paziente.setLuogoNascita(c.getString(c.getColumnIndex(KEY_LUOGO_NASCITA_PAZIENTE)));
+                paziente.setResidenza(c.getString(c.getColumnIndex(KEY_RESIDENZA_PAZIENTE)));
+                paziente.setMedico(c.getString(c.getColumnIndex(KEY_CF_MEDICO)));
+                paziente.setImage(c.getString(c.getColumnIndex(KEY_IMAGE)));
+
+                res.add(paziente);
+            }while(c.moveToNext());
+            return res;
+        }
+        else {
+            return null;
+        }
+    }
 
 }

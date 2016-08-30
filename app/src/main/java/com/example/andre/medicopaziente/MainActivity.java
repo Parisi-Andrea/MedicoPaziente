@@ -123,10 +123,6 @@ public class MainActivity extends AppCompatActivity {
                 //
                 //da rimettere!
                 //
-
-                //Intent intent1 = new Intent(v.getContext(), RegistrationIntentService.class);//DA ELIMINARE
-                //intent1.putExtra("codiceFiscale", "CHNDMN94B11L378G");
-                //startService(intent1);
                 login(v);
 
                 //

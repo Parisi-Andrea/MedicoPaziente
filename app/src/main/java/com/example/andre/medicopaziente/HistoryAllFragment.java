@@ -1,10 +1,7 @@
 package com.example.andre.medicopaziente;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.drm.DrmStore;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,11 +15,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.andre.medicopaziente.R;
-import com.example.andre.medicopaziente.DetailsActivity;
-
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Annalisa on 16/08/2016.

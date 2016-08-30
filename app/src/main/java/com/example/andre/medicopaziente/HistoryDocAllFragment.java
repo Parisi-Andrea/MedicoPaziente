@@ -1,10 +1,185 @@
 package com.example.andre.medicopaziente;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * Created by Annalisa on 28/08/2016.
  */
-public class HistoryDocAllFragment extends Fragment{
+public class HistoryDocAllFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    ListView lista;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_list, container, false);
+        lista = (ListView) v.findViewById(R.id.lista);
+
+        //
+        //creato arraylist momentaneo per simulare ritorno dalla query su db!
+        //
+        final ArrayList<Richiesta> requestsfromDB = new ArrayList<>();
+        requestsfromDB.add(riempi3());
+        requestsfromDB.add(riempi1());
+        requestsfromDB.add(riempi2());
+        //
+        //l'ultimo paramentro = array list da passare all'adapter!
+        //
+        final MyListAdapter adapter = new MyListAdapter(v.getContext(), R.layout.history_element, requestsfromDB);
+        lista.setAdapter(adapter);
+        //
+
+        lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(lista.getContext(), DetailsDocActivity.class);
+                intent.putExtra("ITEM_CLICKED", requestsfromDB.get(position));
+                startActivity(intent);
+            }
+        });
+        mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+
+        return v;
+    }
+
+    @Override
+    public void onRefresh() {
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+
+    class MyListAdapter extends ArrayAdapter<String> {
+        //versione per dati DB
+        private ArrayList<Richiesta> richieste = new ArrayList<>();
+        String tipo, nome_farmaco, stato, data_ora, nome_cognomePaziente, cf_paziente;
+
+        static final String descrizione_prescrizione = "Richiesta prescrizione farmaco: ";
+        static final String descrizione_visita_spec = "Richiesta una visita specialistica in ";
+        static final String descrizione_visita = "Richiesta una visita di controllo";
+
+        public MyListAdapter(Context context, int layout, ArrayList<Richiesta> request) {
+            super(context, layout);
+            richieste.addAll(request);
+        }
+
+        @Override
+        public int getCount() {
+            return richieste.size();
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = inflater.inflate(R.layout.history_element, parent, false);
+            TextView titolo = (TextView) v.findViewById(R.id.tipo);
+            TextView descrizione = (TextView) v.findViewById(R.id.descrizione);
+            ImageView img = (ImageView) v.findViewById(R.id.immagine);
+
+            Paziente paziente = getpaziente();//da cambiare con chiamata DB
+            /*if(paziente==null){
+                titolo.setVisibility(View.GONE);
+                descrizione.setVisibility(View.GONE);
+                img.setVisibility(View.GONE);
+            }
+            else {*/
+                tipo = richieste.get(position).getTipo();
+                nome_farmaco = richieste.get(position).getNome_farmaco();
+                stato = richieste.get(position).getStato();
+                data_ora = richieste.get(position).getData_richiesta();
+                nome_cognomePaziente = paziente.getNome() + " " + paziente.getCognome();
+                cf_paziente = paziente.getCodiceFiscale();
+
+                titolo.setText(nome_cognomePaziente + " - " + cf_paziente);
+                if (tipo.equals("Prescrizione")) {
+                    descrizione.setText(descrizione_prescrizione + nome_farmaco);
+                    img.setImageResource(R.drawable.pill_icon);
+                } else if (tipo.equals("Visita di controllo")) {
+                    img.setImageResource(R.drawable.calendar);
+                    descrizione.setText(descrizione_visita);
+                } else if (tipo.equals("Visita specialistica")) {
+                    img.setImageResource(R.drawable.calendar);
+                    descrizione.setText(descrizione_visita_spec + nome_farmaco);
+                }
+
+                ImageView state = (ImageView) v.findViewById(R.id.state);
+                if (stato == "C")
+                    state.setImageResource(R.mipmap.ic_state_complete);
+                else if (stato == "R")
+                    state.setImageResource(R.mipmap.ic_state_refused);
+            //}
+            return v;
+        }
+    }
+
+    //
+    //funione momentanea per arraylist sopra!
+    //
+    public Richiesta riempi3() {
+        ArrayList<Richiesta> array = new ArrayList<>();
+        Richiesta elemento = new Richiesta();
+        elemento.setIdRichiesta(1);
+        elemento.setStato("C");
+        elemento.setTipo("Prescrizione");
+        elemento.setData_richiesta("2016/07/02 alle 08:30 ");
+        elemento.setNome_farmaco("Brufen");
+        elemento.setQuantita_farmaco(2);
+        elemento.setCf_paziente("NLSFLP94T45L378G");
+
+        return elemento;
+    }
+    public Richiesta riempi2() {
+        Richiesta elemento = new Richiesta();
+        elemento.setIdRichiesta(2);
+        elemento.setStato("R");
+        elemento.setTipo("Visita specialistica");
+        elemento.setNote_richiesta("Specialistica dermatologica presso dottoressa A.TASIN ");
+        elemento.setData_richiesta("2016/05/06 alle 15:30 ");
+        elemento.setCf_paziente("MRORSS94T05E378A");
+
+        return elemento;
+    }
+    public Richiesta riempi1() {
+        Richiesta elemento = new Richiesta();
+
+        elemento.setIdRichiesta(3);
+        elemento.setStato("R");
+        elemento.setTipo("Visita di controllo");
+        elemento.setData_richiesta("2016/07/02 alle 08:30 ");
+        elemento.setNome_farmaco("dermatologica");
+        elemento.setCf_paziente("MRORSS94T05E378A");
+
+
+        return elemento;
+    }
+
+    public Paziente getpaziente() {
+        Paziente elemento = new Paziente();
+        elemento.setCodiceFiscale("NLSFLP94T45L378G");
+        elemento.setNome("Lia");
+        elemento.setCognome("Filippi");
+        elemento.setDataNascita("05/12/1994");
+        elemento.setLuogoNascita("Trento");
+        elemento.setResidenza("via paludi, 42");
+        elemento.setEmail("annalisa.filippi@mail.it");
+        elemento.setNTel("0461 961361");
+
+        return elemento;
+    }
 }

@@ -45,7 +45,9 @@ public class InfoPatFragment extends Fragment{
         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intent = new Intent(getContext(), InfoDettagliPazActivity.class);
+                intent.putExtra("Paziente",returnfromDB.get(position) );
+                startActivity(intent);
             }
         });
         return v;
@@ -72,7 +74,7 @@ public class InfoPatFragment extends Fragment{
             View v = inflater.inflate(R.layout.item_listinfo_pat, parent, false);
 
             TextView textView1 = (TextView) v.findViewById(R.id.nome_cognome);
-            textView1.setText(pazienti.get(position).getNome()+pazienti.get(position).getCognome());
+            textView1.setText(pazienti.get(position).getNome()+ " " +pazienti.get(position).getCognome());
             TextView textView2 = (TextView) v.findViewById(R.id.cf);
             textView2.setText(pazienti.get(position).getCodiceFiscale());
 
@@ -87,7 +89,9 @@ public class InfoPatFragment extends Fragment{
     //funzione momentanea
     //
     public ArrayList<Paziente> riempi(){
-        ArrayList<Paziente> array = new ArrayList<>();
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        ArrayList<Paziente> array = db.getPazientiMedico(((InfoActivity) getActivity()).medico.getCodiceFiscale());
+        array = new ArrayList<>();
         Paziente elemento = new Paziente();
         elemento.setCodiceFiscale("NLSFLP94T45L378G");
         elemento.setNome("Annalisa");

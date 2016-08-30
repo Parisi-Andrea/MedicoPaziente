@@ -113,8 +113,13 @@
             android:parentActivityName=".HistoryActivity"/>
         <activity android:name=".DetailsInAttesa"
             android:parentActivityName=".WaitingActivity"/>
+        <activity android:name=".DetailsDocActivity"
+            android:parentActivityName=".HistoryActivity"/>
+        <activity android:name=".DetailsInAttesaDoc"
+            android:parentActivityName=".WaitingActivity"/>
         <activity android:name=".InfoActivity"
             android:label="Info"/>
+        <activity android:name=".InfoDettagliPazActivity" />
     </application>
 
 </manifest>

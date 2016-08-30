@@ -3,19 +3,25 @@ package com.example.andre.medicopaziente;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by Annalisa on 11/08/2016.
+ * Created by Annalisa on 29/08/2016.
  */
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsDocActivity extends AppCompatActivity {
+    Utils u = new Utils();
+    DatabaseHelper db = new DatabaseHelper(this);
+
+    static final String descrizione_prescrizione = "Richiesta prescrizione farmaco: ";
+    static final String descrizione_visita_spec = "Richiesta una visita specialistica in ";
+    static final String descrizione_visita = "Richiesta una visita di controllo";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,9 +35,8 @@ public class DetailsActivity extends AppCompatActivity {
         String nome_farmaco = item_richiesta.getNome_farmaco();
         int quantita = item_richiesta.getQuantita_farmaco();
 
-
         if (tipo.equals("Prescrizione")) {
-            setContentView(R.layout.details_richiesta_prescrizione);
+            setContentView(R.layout.details_doc_prescrizione);
 
             TextView txttipo = (TextView) findViewById(R.id.titolo_dett);
             TextView txtdescrizione = (TextView) findViewById(R.id.descrizione_dett);
@@ -40,15 +45,16 @@ public class DetailsActivity extends AppCompatActivity {
             TextView txtnote = (TextView) findViewById(R.id.note_richiesta_dett);
             ImageView imageView = (ImageView) findViewById(R.id.immagine_dett);
 
-
             imageView.setImageResource(R.drawable.pill_icon);
             TextView txtfarmaco = (TextView) findViewById(R.id.farmaco_dett);
             TextView txtquant = (TextView) findViewById(R.id.quant_farmaco_dett);
 
             txttipo.setText(tipo);
-            txtdescrizione.setText("Al medico è stato richiesto il farmaco:" + nome_farmaco);
+            txtdescrizione.setText(descrizione_prescrizione + nome_farmaco);
             txtdata.setText(data_richiesta);
-            if (stato.equals("C"))
+            if (stato.equals("A"))
+                txtstato.setText("In Attesa");
+            else if (stato.equals("C"))
                 txtstato.setText("Completata");
             else if (stato.equals("R"))
                 txtstato.setText("Rifiutata");
@@ -60,7 +66,7 @@ public class DetailsActivity extends AppCompatActivity {
                 txtnote.setText(note_richiesta);
 
         } else {
-            setContentView(R.layout.details_richiesta_visita);
+            setContentView(R.layout.details_doc_visita);
 
             TextView txttipo = (TextView) findViewById(R.id.titolo_dett);
             TextView txtdescrizione = (TextView) findViewById(R.id.descrizione_dett);
@@ -73,9 +79,9 @@ public class DetailsActivity extends AppCompatActivity {
 
             txttipo.setText(tipo);
             if (tipo.equals("Visita di controllo"))
-                txtdescrizione.setText("Al medico è stata richiesta una visita");
+                txtdescrizione.setText(descrizione_visita);
             else
-                txtdescrizione.setText("Al medico è stata richiesta una visita specialistica in "+nome_farmaco);
+                txtdescrizione.setText(descrizione_visita_spec+nome_farmaco);
             txtdata.setText(data_richiesta);
             if (stato.equals("C")) {
                 txtstato.setText("Completata");
@@ -89,7 +95,13 @@ public class DetailsActivity extends AppCompatActivity {
 
         }
 
-
+        TextView txtpaziente = (TextView) findViewById(R.id.paziente);
+        ImageView pazienteimg = (ImageView) findViewById(R.id.paziente_img);
+        final Paziente paz = getpaziente();
+        if(!(paz==null)) {
+            txtpaziente.setText(paz.getNome() + paz.getCognome());
+            //pazienteimg.setImageBitmap(u.stringToBitmap(paz.getImage()));
+        }
         if (stato.equals("C") || stato.equals("R")) {
             ViewGroup content = (ViewGroup) findViewById(R.id.riepilogo_risposta);
             getLayoutInflater().inflate(R.layout.risposta, content, true);
@@ -110,8 +122,6 @@ public class DetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -121,5 +131,29 @@ public class DetailsActivity extends AppCompatActivity {
             });
 
         }
+        ImageButton btninfo = (ImageButton) findViewById(R.id.btninfo);
+        assert btninfo != null;
+        btninfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(DetailsDocActivity.this, InfoDettagliPazActivity.class);
+                intent1.putExtra("Paziente", paz);
+                startActivity(intent1);
+            }
+        });
     }
+    public Paziente getpaziente() {
+        Paziente elemento = new Paziente();
+        elemento.setCodiceFiscale("NLSFLP94T45L378G");
+        elemento.setNome("Lia");
+        elemento.setCognome("Filippi");
+        elemento.setDataNascita("05/12/1994");
+        elemento.setLuogoNascita("Trento");
+        elemento.setResidenza("via paludi, 42");
+        elemento.setEmail("annalisa.filippi@mail.it");
+        elemento.setNTel("0461 961361");
+
+        return elemento;
+    }
+
 }

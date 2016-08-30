@@ -231,8 +231,8 @@ public class Profilo extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            getSupportActionBar().setTitle("Home");
-            fragment = new HomeFragment();
+            //getSupportActionBar().setTitle("Home");
+            //fragment = new HomeFragment();
         } else if (id == R.id.nav_wait) {
             getSupportActionBar().setTitle("In Attesa");
             fragment = new WaitFragment();
