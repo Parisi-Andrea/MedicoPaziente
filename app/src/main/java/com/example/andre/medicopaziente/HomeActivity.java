@@ -83,7 +83,10 @@ public class HomeActivity extends BasicDrawerActivity {
                 info_visita_spec.setText("Nessuna visita specialistica richiesta.");
         } else {
             medico = intent.getParcelableExtra("Medico");
-            img.setImageBitmap(photo);
+            if(photo==null || photo.equals(""))
+                img.setImageResource(R.drawable.immagine1);
+            else
+                img.setImageBitmap(photo);
             info_medico.setText(medico.getNome() + " " + medico.getCognome());
 
             ultimarichiestavisita_spec = getultimaRichiesta(db.getTipoRichieste(medico.getCodiceFiscale(), "Visita specialistica"));
@@ -131,20 +134,22 @@ public class HomeActivity extends BasicDrawerActivity {
         prescrizione.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1;
-                if (ultimarichiestaprescr.getStato().equals("A")) {
-                    if (MainActivity.tipoUtente.equals("Medico")) {
-                        intent1 = new Intent(HomeActivity.this, RequestManagerFarmaco.class);
-                        intent1.putExtra("richiesta", ultimarichiestaprescr);
+                if(ultimarichiestaprescr!=null) {
+                    Intent intent1;
+                    if (ultimarichiestaprescr.getStato().equals("A")) {
+                        if (MainActivity.tipoUtente.equals("Medico")) {
+                            intent1 = new Intent(HomeActivity.this, RequestManagerFarmaco.class);
+                            intent1.putExtra("richiesta", ultimarichiestaprescr);
+                        } else {
+                            intent1 = new Intent(HomeActivity.this, DetailsInAttesa.class);
+                            intent1.putExtra("ITEM_CLICKED", ultimarichiestaprescr);
+                        }
                     } else {
-                        intent1 = new Intent(HomeActivity.this, DetailsInAttesa.class);
+                        intent1 = new Intent(HomeActivity.this, DetailsActivity.class);
                         intent1.putExtra("ITEM_CLICKED", ultimarichiestaprescr);
                     }
-                } else {
-                    intent1 = new Intent(HomeActivity.this, DetailsActivity.class);
-                    intent1.putExtra("ITEM_CLICKED", ultimarichiestaprescr);
+                    startActivity(intent1);
                 }
-                startActivity(intent1);
             }
         });
         CardView viscontrollo = (CardView) findViewById(R.id.card_view_vis);
@@ -152,20 +157,22 @@ public class HomeActivity extends BasicDrawerActivity {
         viscontrollo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1;
-                if (ultimarichiestavisita_con.getStato().equals("A")) {
-                    if (MainActivity.tipoUtente.equals("Medico")) {
-                        intent1 = new Intent(HomeActivity.this, RequestManagerVisita.class);
-                        intent1.putExtra("richiesta", ultimarichiestavisita_con);
+                if(ultimarichiestavisita_con!=null) {
+                    Intent intent1;
+                    if (ultimarichiestavisita_con.getStato().equals("A")) {
+                        if (MainActivity.tipoUtente.equals("Medico")) {
+                            intent1 = new Intent(HomeActivity.this, RequestManagerVisita.class);
+                            intent1.putExtra("richiesta", ultimarichiestavisita_con);
+                        } else {
+                            intent1 = new Intent(HomeActivity.this, DetailsInAttesa.class);
+                            intent1.putExtra("ITEM_CLICKED", ultimarichiestavisita_con);
+                        }
                     } else {
-                        intent1 = new Intent(HomeActivity.this, DetailsInAttesa.class);
+                        intent1 = new Intent(HomeActivity.this, DetailsActivity.class);
                         intent1.putExtra("ITEM_CLICKED", ultimarichiestavisita_con);
                     }
-                } else {
-                    intent1 = new Intent(HomeActivity.this, DetailsActivity.class);
-                    intent1.putExtra("ITEM_CLICKED", ultimarichiestavisita_con);
+                    startActivity(intent1);
                 }
-                startActivity(intent1);
             }
         });
         CardView visspec = (CardView) findViewById(R.id.card_view_spec);
@@ -173,20 +180,22 @@ public class HomeActivity extends BasicDrawerActivity {
         visspec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1;
-                if (ultimarichiestavisita_spec.getStato().equals("A")) {
-                    if (MainActivity.tipoUtente.equals("Medico")) {
-                        intent1 = new Intent(HomeActivity.this, RequestManagerVisita.class);
-                        intent1.putExtra("richiesta", ultimarichiestavisita_spec);
+                if(ultimarichiestavisita_spec!=null) {
+                    Intent intent1;
+                    if (ultimarichiestavisita_spec.getStato().equals("A")) {
+                        if (MainActivity.tipoUtente.equals("Medico")) {
+                            intent1 = new Intent(HomeActivity.this, RequestManagerVisita.class);
+                            intent1.putExtra("richiesta", ultimarichiestavisita_spec);
+                        } else {
+                            intent1 = new Intent(HomeActivity.this, DetailsInAttesa.class);
+                            intent1.putExtra("ITEM_CLICKED", ultimarichiestavisita_spec);
+                        }
                     } else {
-                        intent1 = new Intent(HomeActivity.this, DetailsInAttesa.class);
+                        intent1 = new Intent(HomeActivity.this, DetailsActivity.class);
                         intent1.putExtra("ITEM_CLICKED", ultimarichiestavisita_spec);
                     }
-                } else {
-                    intent1 = new Intent(HomeActivity.this, DetailsActivity.class);
-                    intent1.putExtra("ITEM_CLICKED", ultimarichiestavisita_spec);
+                    startActivity(intent1);
                 }
-                startActivity(intent1);
             }
         });
     }
@@ -199,13 +208,12 @@ public class HomeActivity extends BasicDrawerActivity {
     }
 
     public Medico riempiMedico() {
-        Medico momentaneo = new Medico();
-        momentaneo.setNome("Ali");
-        momentaneo.setCognome("Connors");
-        momentaneo.setEmail("mario.rossi@mail.it");
-        momentaneo.setNTel("0461 961361");
-        momentaneo.setAmbulatorio("Rosti - via le man dal cul, 2");
-        momentaneo.setOrario("Lun-Ven 9.00-15.00");
-        return momentaneo;
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        if (MainActivity.tipoUtente.equals("Paziente")) {
+            Medico res = db.getMedico(paziente.getMedico());
+            return res;
+        } else {
+            return medico;
+        }
     }
 }
