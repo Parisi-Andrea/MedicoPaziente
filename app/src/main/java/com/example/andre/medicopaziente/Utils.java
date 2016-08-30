@@ -269,7 +269,6 @@ public class Utils {
     }
 
     public void creaRicettaRossa(Paziente paziente, Activity activity,Richiesta richiesta) {
-        //System.out.println("PIPPO");
         try {
             /*SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
 
