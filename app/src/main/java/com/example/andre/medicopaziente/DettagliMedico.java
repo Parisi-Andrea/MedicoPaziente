@@ -39,7 +39,7 @@ public class DettagliMedico extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        final Medico medico = intent.getParcelableExtra("medico");
+        final Medico medico = intent.getParcelableExtra("Medico");
 
         String fotoMedico = medico.getImage();
         if(fotoMedico!=null) {
