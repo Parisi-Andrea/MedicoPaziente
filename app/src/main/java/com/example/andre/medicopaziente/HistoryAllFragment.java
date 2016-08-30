@@ -69,6 +69,7 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
         String tipo,  nome_farmaco, stato, data_ora;
         final String descrizione_prescrizione= "Al medico è stato richiesto il farmaco: ";
         final String descrizione_visita= "Al medico è stata richiesta una visita ";
+        final String descrizione_visita_spec= "Al medico è stata richiesta una visita specialistica: ";
 
         public MyListAdapter(Context context, int layout, ArrayList<Richiesta> request){
             super(context, layout);
@@ -100,9 +101,12 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
                 textView1.setText(descrizione_prescrizione + nome_farmaco);
                 img.setImageResource(R.drawable.pill_icon);
             }
-            else if(tipo.equals("Visita")) {
+            else if(tipo.equals("Visita di controllo")) {
                 img.setImageResource(R.drawable.calendar);
                 textView1.setText(descrizione_visita);
+            } else{
+                img.setImageResource(R.drawable.calendar);
+                textView1.setText(descrizione_visita_spec + nome_farmaco);
             }
 
             ImageView state = (ImageView) v.findViewById(R.id.state);

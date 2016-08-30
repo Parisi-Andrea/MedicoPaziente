@@ -35,6 +35,8 @@ public class RequestManagerVisita extends AppCompatActivity {
     Paziente paziente;
     ImageView image;
     TextView nome_paziente;
+    Richiesta richiesta;
+    Medico medico;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +63,8 @@ public class RequestManagerVisita extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        final Richiesta richiesta = intent.getParcelableExtra("richiesta");
+        richiesta = intent.getParcelableExtra("richiesta");
+        medico = intent.getParcelableExtra("Medico");
 
         // guardo se le informazioni del paziente sono nel db interno, altrimenti guardo nel server remoto
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
@@ -115,10 +118,10 @@ public class RequestManagerVisita extends AppCompatActivity {
         dataRichiesta.setText(richiesta.getData_richiesta());
 
         TextView tipoVisitaRichiesta = (TextView) findViewById(R.id.tipo_visita_richiesta);
-        tipoVisitaRichiesta.setText(richiesta.getNome_farmaco());
+        tipoVisitaRichiesta.setText(richiesta.getTipo());
 
         TextView nomeVisitaSpecialistica = (TextView) findViewById(R.id.nome_visita_specialistica);
-        nomeVisitaSpecialistica.setText(String.valueOf(richiesta.getQuantita_farmaco()));
+        nomeVisitaSpecialistica.setText(String.valueOf(richiesta.getNome_farmaco()));
 
         TextView patientId = (TextView) findViewById(R.id.patient_id);
         patientId.setText(richiesta.getCf_paziente());
@@ -161,8 +164,11 @@ public class RequestManagerVisita extends AppCompatActivity {
                         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                         String note_risposta = edittext.getText().toString();
                         Calendar c = Calendar.getInstance();
-                        SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd 'alle' HH:mm:ss");
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
                         final String formattedDate = df.format(c.getTime());
+                        richiesta.setStato("A");
+                        richiesta.setData_risposta(formattedDate);
+                        richiesta.setNote_risposta(note_risposta);
 
                         new AsyncSendResponseCallSoap().execute(Integer.toString(richiesta.getIdRichiesta()), formattedDate, note_risposta, "C" /*accettata*/, richiesta.getCf_paziente(), richiesta.getNome_farmaco(), richiesta.getTipo());
                     }
@@ -192,8 +198,11 @@ public class RequestManagerVisita extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String note_risposta = edittext.getText().toString();
                         Calendar c = Calendar.getInstance();
-                        SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd 'alle' HH:mm:ss");
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 'alle' HH:mm:ss");
                         final String formattedDate = df.format(c.getTime());
+                        richiesta.setStato("R");
+                        richiesta.setData_risposta(formattedDate);
+                        richiesta.setNote_risposta(note_risposta);
 
                         new AsyncSendResponseCallSoap().execute(Integer.toString(richiesta.getIdRichiesta()), formattedDate, note_risposta, "R" /*rifiutata*/, richiesta.getCf_paziente(), richiesta.getNome_farmaco(), richiesta.getTipo());
 
@@ -321,11 +330,14 @@ public class RequestManagerVisita extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        Intent newPage = new Intent(getBaseContext(), MainActivity.class);
+                        Intent newPage = new Intent(getBaseContext(), HomeActivity.class);
+                        newPage.putExtra("Medico", medico);
                         finish();
                         startActivity(newPage);
                     }
                 });
+                DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                db.updateRequest(richiesta);
                 AlertDialog dialog= builder.create();
                 progressDialog.dismiss();
                 dialog.show();

@@ -132,7 +132,7 @@ public class DetailsInAttesaDoc extends AppCompatActivity {
         });
 
         ViewGroup content = (ViewGroup) findViewById(R.id.riepilogo_richiesta);
-        getLayoutInflater().inflate(R.layout.doctor_button, content, true);
+        //getLayoutInflater().inflate(R.layout.doctor_button, content, true);
         final AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
         Button accetta = (Button) findViewById(R.id.accetta_richiesta);

@@ -35,6 +35,8 @@ public class RequestManagerFarmaco extends AppCompatActivity {
     Paziente paziente;
     ImageView image;
     TextView nome_paziente;
+    Richiesta richiesta;
+    Medico medico;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +62,8 @@ public class RequestManagerFarmaco extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        final Richiesta richiesta = intent.getParcelableExtra("richiesta");
+        richiesta = intent.getParcelableExtra("richiesta");
+        medico = intent.getParcelableExtra("Medico");
 
         // guardo se le informazioni del paziente sono nel db interno, altrimenti guardo nel server remoto
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
@@ -151,8 +154,11 @@ public class RequestManagerFarmaco extends AppCompatActivity {
                         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
                         String note_risposta = edittext.getText().toString();
                         Calendar c = Calendar.getInstance();
-                        SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd 'alle' HH:mm:ss");
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
                         final String formattedDate = df.format(c.getTime());
+                        richiesta.setStato("A");
+                        richiesta.setData_risposta(formattedDate);
+                        richiesta.setNote_risposta(note_risposta);
 
                         new AsyncSendResponseCallSoap().execute(Integer.toString(richiesta.getIdRichiesta()),formattedDate, note_risposta, "C", richiesta.getCf_paziente(), richiesta.getNome_farmaco());
                     }
@@ -182,8 +188,11 @@ public class RequestManagerFarmaco extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String note_risposta = edittext.getText().toString();
                         Calendar c = Calendar.getInstance();
-                        SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd 'alle' HH:mm:ss");
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 'alle' HH:mm:ss");
                         final String formattedDate = df.format(c.getTime());
+                        richiesta.setStato("R");
+                        richiesta.setData_risposta(formattedDate);
+                        richiesta.setNote_risposta(note_risposta);
 
                         new AsyncSendResponseCallSoap().execute(Integer.toString(richiesta.getIdRichiesta()),formattedDate, note_risposta, "R", richiesta.getCf_paziente(), richiesta.getNome_farmaco());
 
@@ -309,12 +318,15 @@ public class RequestManagerFarmaco extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        Intent newPage = new Intent(getBaseContext(), MainActivity.class);
+                        Intent newPage = new Intent(getBaseContext(), HomeActivity.class);
+                        newPage.putExtra("Medico", medico);
                         finish();
                         startActivity(newPage);
                     }
                 });
-                AlertDialog dialog= builder.create();
+                DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                db.updateRequest(richiesta);
+                AlertDialog dialog = builder.create();
                 progressDialog.dismiss();
                 dialog.show();
             }

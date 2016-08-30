@@ -144,7 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(KEY_CF_PAZIENTE_RICHIESTA, richiesta.getCf_paziente());
                 values.put(KEY_CF_MEDICO_RICHIESTA, richiesta.getCf_medico());
 
-                String a = String.valueOf(db.insert(TABLE_RICHIESTA,null,values));
+                String a = String.valueOf(db.replace(TABLE_RICHIESTA,null,values));
                 if(a.equals("-1")) {
                     res = false;
                 }
@@ -176,7 +176,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(KEY_NTEL,paziente.getNTel());
             values.put(KEY_CF_MEDICO,paziente.getMedico());
             values.put(KEY_IMAGE,paziente.getImage());
-            String i = String.valueOf(db.insert(TABLE_PAZIENTE,null,values));
+            String i = String.valueOf(db.replace(TABLE_PAZIENTE,null,values));
             if(i.equals("-1")) {
                 res= false;
             }
@@ -209,7 +209,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(KEY_NTEL,paziente.getNTel());
                 values.put(KEY_CF_MEDICO,paziente.getMedico());
                 values.put(KEY_IMAGE,paziente.getImage());
-                String a = String.valueOf(db.insert(TABLE_PAZIENTE,null,values));
+                String a = String.valueOf(db.replace(TABLE_PAZIENTE,null,values));
                 if(a.equals("-1")) {
                     res = false;
                 }
@@ -847,6 +847,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         else {
             return null;
+        }
+    }
+    public String updateRequest(Richiesta richiesta) {
+        try {
+
+            SQLiteDatabase db = this.getWritableDatabase();
+
+            String selectQuery = "DELETE FROM " + TABLE_RICHIESTA + " WHERE "
+                    +   KEY_ID_RICHIESTA + " = " + richiesta.getIdRichiesta();
+
+            Log.e(LOG, selectQuery);
+
+            db.rawQuery(selectQuery, null);
+
+            ContentValues values = new ContentValues();
+
+            values.put(KEY_ID_RICHIESTA, richiesta.getIdRichiesta());
+            values.put(KEY_STATO_RICHIESTA, richiesta.getStato());
+            values.put(KEY_TIPO_RICHIESTA, richiesta.getTipo());
+            values.put(KEY_DATA_RICHIESTA, richiesta.getData_richiesta());
+            values.put(KEY_NOTE_RICHIESTA, richiesta.getNote_richiesta());
+            values.put(KEY_NOME_FARMACO, richiesta.getNome_farmaco());
+            values.put(KEY_QUANTITA_FARMACO, richiesta.getQuantita_farmaco());
+            values.put(KEY_DATA_RISPOSTA_RICHIESTA, richiesta.getData_risposta());
+            values.put(KEY_NOTE_RISPOSTA_RICHIESTA, richiesta.getNote_risposta());
+            values.put(KEY_CF_PAZIENTE_RICHIESTA, richiesta.getCf_paziente());
+            values.put(KEY_CF_MEDICO_RICHIESTA, richiesta.getCf_medico());
+
+            String a = String.valueOf(db.insert(TABLE_RICHIESTA, null, values));
+            return a;
+        } catch (SQLiteException s)
+        {
+            s.getMessage();
+            return "-1";
+        } catch (Exception e)
+        {
+            e.getMessage();
+            return "-1";
         }
     }
 

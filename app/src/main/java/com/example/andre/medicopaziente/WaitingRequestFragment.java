@@ -96,13 +96,13 @@ public class WaitingRequestFragment extends Fragment implements SwipeRefreshLayo
             TextView textView1 = (TextView) v.findViewById(R.id.descrizione);
             ImageView img = (ImageView) v.findViewById(R.id.immagine);
 
-            if(tipo=="Prescrizione") {
+            if(tipo.equals("Prescrizione")) {
                 textView1.setText(descrizione_prescrizione + nome_farmaco);
                 img.setImageResource(R.drawable.pill_icon);
-            }else if(tipo=="Visita di contollo") {
+            }else if(tipo.equals("Visita di contollo")) {
                 img.setImageResource(R.drawable.calendar);
                 textView1.setText(descrizione_visita);
-            } else if(tipo=="Visita specialistica"){
+            } else if(tipo.equals("Visita specialistica")){
                 img.setImageResource(R.drawable.calendar);
                 textView1.setText(descrizione_visita_specialistica+nome_farmaco);
             }

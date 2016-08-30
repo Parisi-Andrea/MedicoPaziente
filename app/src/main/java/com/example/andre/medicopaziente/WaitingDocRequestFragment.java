@@ -46,11 +46,13 @@ public class WaitingDocRequestFragment extends Fragment implements SwipeRefreshL
                 if (returnfromDB.get(position).getTipo().equals("Prescrizione")) {
                     Intent intent = new Intent(lista.getContext(),RequestManagerFarmaco.class);
                     intent.putExtra("richiesta", returnfromDB.get(position));
+                    intent.putExtra("Medico", ((WaitingActivity)getActivity()).medico);
                     startActivity(intent);
                 }
                 else {
                     Intent intent = new Intent(lista.getContext(), RequestManagerVisita.class);
                     intent.putExtra("richiesta", returnfromDB.get(position));
+                    intent.putExtra("Medico", ((WaitingActivity)getActivity()).medico);
                     startActivity(intent);
                 }
             }
@@ -70,7 +72,7 @@ public class WaitingDocRequestFragment extends Fragment implements SwipeRefreshL
         private ArrayList<Richiesta> richieste = new ArrayList<>();
         String tipo,  nome_farmaco, stato, data_ora;
         static final String descrizione_prescrizione = "Richiesta prescrizione farmaco: ";
-        static final String descrizione_visita_spec = "Richiesta una visita specialistica in ";
+        static final String descrizione_visita_spec = "Richiesta una visita specialistica ";
         static final String descrizione_visita = "Richiesta una visita di controllo";
 
         public MyListAdapter(Context context, int layout, ArrayList<Richiesta> request){
@@ -119,7 +121,7 @@ public class WaitingDocRequestFragment extends Fragment implements SwipeRefreshL
  
     public ArrayList<Richiesta> getRequests(){
         DatabaseHelper db = new DatabaseHelper(getContext());
-        ArrayList<Richiesta> array = db.getAttesaMedico(((WaitingActivity)getActivity()).medico.getCodiceFiscale());
+        ArrayList<Richiesta> array = db.getAttesaMedico(((WaitingActivity) getActivity()).medico.getCodiceFiscale());
         return array;
     }
 }

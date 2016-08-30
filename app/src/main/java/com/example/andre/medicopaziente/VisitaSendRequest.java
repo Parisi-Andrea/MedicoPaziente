@@ -72,7 +72,7 @@ public class VisitaSendRequest extends AppCompatActivity implements AdapterView.
         sendRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (visitaSpecialistica.getText().toString().length()==0) {
+                if (spinner.getSelectedItem().toString().equals("Visita specialistica") && visitaSpecialistica.getText().toString().length()==0) {
                     AlertDialog alertDialog = new AlertDialog.Builder(VisitaSendRequest.this).create();
                     alertDialog.setTitle("ATTENZIONE");
                     alertDialog.setMessage("Specificare il nome della visita specialistica da prescrivere...");
@@ -81,7 +81,7 @@ public class VisitaSendRequest extends AppCompatActivity implements AdapterView.
                 }
                 final String nomeCompletoVisita;
                 if (spinner.getSelectedItem().toString().equals("Visita specialistica")){
-                    nomeCompletoVisita = "Visita specialistica: " + visitaSpecialistica.getText().toString();
+                    nomeCompletoVisita = visitaSpecialistica.getText().toString();
                 }else{
                     nomeCompletoVisita = "Visita di controllo";
                 }
@@ -93,7 +93,7 @@ public class VisitaSendRequest extends AppCompatActivity implements AdapterView.
                 }
                 final String notes = noteVisita.getText().toString();
                 Calendar c = Calendar.getInstance();
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 'alle' HH:mm:ss");
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss");
                 final String formattedDate = df.format(c.getTime());
 
                 new AsyncCallSoap().execute(formattedDate,tipo_richiesta, notes, nomeCompletoVisita, "1", cf_paziente, cf_medico);

@@ -66,7 +66,7 @@ public class HistoryDocRefFragment extends Fragment implements SwipeRefreshLayou
         String tipo, nome_farmaco, stato, data_ora, nome_cognomePaziente, cf_paziente;
 
         static final String descrizione_prescrizione = "Richiesta prescrizione farmaco: ";
-        static final String descrizione_visita_spec = "Richiesta una visita specialistica in ";
+        static final String descrizione_visita_spec = "Richiesta una visita specialistica: ";
         static final String descrizione_visita = "Richiesta una visita di controllo";
 
         public MyListAdapter(Context context, int layout, ArrayList<Richiesta> request) {
@@ -98,10 +98,15 @@ public class HistoryDocRefFragment extends Fragment implements SwipeRefreshLayou
                 nome_farmaco = richieste.get(position).getNome_farmaco();
                 stato = richieste.get(position).getStato();
                 data_ora = richieste.get(position).getData_richiesta();
-                nome_cognomePaziente = paziente.getNome() + " " + paziente.getCognome();
-                cf_paziente = paziente.getCodiceFiscale();
+                if(paziente!=null) {
+                    nome_cognomePaziente = paziente.getNome() + " " + paziente.getCognome();
+                    titolo.setText(nome_cognomePaziente + " - " + cf_paziente);
+                } else{
+                    titolo.setText(" -- ");
+                }
 
-                titolo.setText(nome_cognomePaziente + " - " + cf_paziente);
+                cf_paziente = richieste.get(position).getCf_paziente();
+
                 if (tipo.equals("Prescrizione")) {
                     descrizione.setText(descrizione_prescrizione + nome_farmaco);
                     img.setImageResource(R.drawable.pill_icon);
