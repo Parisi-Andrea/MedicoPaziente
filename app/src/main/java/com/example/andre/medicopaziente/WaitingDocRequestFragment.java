@@ -43,9 +43,16 @@ public class WaitingDocRequestFragment extends Fragment implements SwipeRefreshL
         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(lista.getContext(),DetailsInAttesa.class);
-                intent.putExtra("ITEM_CLICKED", returnfromDB.get(position));
-                startActivity(intent);
+                if (returnfromDB.get(position).getTipo().equals("Prescrizione")) {
+                    Intent intent = new Intent(lista.getContext(),RequestManagerFarmaco.class);
+                    intent.putExtra("richiesta", returnfromDB.get(position));
+                    startActivity(intent);
+                }
+                else {
+                    Intent intent = new Intent(lista.getContext(), RequestManagerVisita.class);
+                    intent.putExtra("richiesta", returnfromDB.get(position));
+                    startActivity(intent);
+                }
             }
         });
         mSwipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swiperefresh);
