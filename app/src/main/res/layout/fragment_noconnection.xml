@@ -8,9 +8,8 @@
         android:id="@+id/detailsText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="WAIT"
+        android:text="Non sei connesso. Impossibile caricare dati."
         android:layout_marginTop="60dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_gravity="top|left" />
+        android:layout_gravity="top|center" />
 
 </FrameLayout>

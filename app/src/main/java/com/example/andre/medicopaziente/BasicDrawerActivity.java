@@ -2,6 +2,7 @@ package com.example.andre.medicopaziente;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -34,6 +35,7 @@ public class BasicDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public final static String EXTRA_PACK = "ID_";
+    public boolean connesso = true;
 
     private ProgressDialog progressDialog;
     Toolbar toolbar;
@@ -41,7 +43,7 @@ public class BasicDrawerActivity extends AppCompatActivity
 
     private Medico medico;
     private Paziente paziente;
-    private Bitmap photo;
+    public Bitmap photo;
 
     private Utils utils = new Utils();
     private TextView textViewNome, textViewCF;
@@ -62,17 +64,26 @@ public class BasicDrawerActivity extends AppCompatActivity
         //new AsyncCallSoapRichieste().execute();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        assert fab != null;//inserito per l'ide!
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if(MainActivity.tipoUtente.equals("Paziente")) {
+                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+                else{
+                    Intent intent = new Intent(BasicDrawerActivity.this, WaitingActivity.class);
+                    intent.putExtra("Medico", medico);
+                    intent.putExtra("Paziente", paziente);
+                    startActivity(intent);
+                }
             }
         });
 
         if (!Utils.isConnectedViaWifi(this)) {
             if (!Utils.executePingWebService("192.168.173.1")) {
-
+                connesso = false;
                 Utils.createSnackBar(this, "Non connesso! Dati non aggiornati", Snackbar.LENGTH_LONG, Color.RED);
                 fab.setVisibility(View.GONE);
             }
@@ -92,20 +103,17 @@ public class BasicDrawerActivity extends AppCompatActivity
         int id = intent.getIntExtra(EXTRA_PACK, 0);
         navigationView.setCheckedItem(id);
 
-        if (MainActivity.tipoUtente.equals("Medico")) {
-            medico = intent.getParcelableExtra("Medico");
-            paziente = null;
-            Menu drawermenu = navigationView.getMenu();
-            drawermenu.removeItem(R.id.nav_request);
-            drawermenu.getItem(3).setTitle("Informazioni Pazienti");
-        } else {
-            paziente = intent.getParcelableExtra("Paziente");
-            medico = null;
-        }
-        //
-        //tolto setNavigationview
-        //
-
+            if (MainActivity.tipoUtente.equals("Medico")) {
+                medico = intent.getParcelableExtra("Medico");
+                paziente = null;
+                fab.setImageResource(R.drawable.ic_hourglass_full_white_24dp);
+                Menu drawermenu = navigationView.getMenu();
+                drawermenu.removeItem(R.id.nav_request);
+                drawermenu.getItem(3).setTitle("Informazioni Pazienti");
+            } else {
+                paziente = intent.getParcelableExtra("Paziente");
+                medico = null;
+            }
     }
 
     @Override
@@ -156,6 +164,37 @@ public class BasicDrawerActivity extends AppCompatActivity
                 }
             }
         }
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder =
+                        new AlertDialog.Builder(BasicDrawerActivity.this);
+                builder.setTitle("Foto profilo");
+                builder.setMessage("");
+                builder.setPositiveButton("Camera", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        startActivityForResult(takePicture, 0);
+
+
+                    }
+                });
+                builder.setNegativeButton("Galleria", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        startActivityForResult(pickPhoto, 1);//one can be replaced with any action code
+
+                    }
+                });
+                builder.show();
+
+            }
+        });
         return true;
     }
 
@@ -203,8 +242,8 @@ public class BasicDrawerActivity extends AppCompatActivity
                         }
 
                         //scalo immagine per vederla in circleimageView
-                        int nh = (int) (photo.getHeight() * (512.0 / photo.getWidth()));// su profilo è 200.0/
-                        photo = Bitmap.createScaledBitmap(photo, 512, nh, true);//su profilo è 200
+                        int nh = (int) (photo.getHeight() * (200.0 / photo.getWidth()));// su profilo è 200.0/
+                        photo = Bitmap.createScaledBitmap(photo, 200, nh, true);//su profilo è 200
                         imageView.setImageBitmap(photo);
 
                         new AsyncCallSoap().execute();
@@ -228,12 +267,16 @@ public class BasicDrawerActivity extends AppCompatActivity
             getSupportActionBar().setTitle("Home");
             Intent intent = new Intent(this, HomeActivity.class);
             intent.putExtra(EXTRA_PACK, id);
+            intent.putExtra("Medico", medico);
+            intent.putExtra("Paziente", paziente);
             startActivity(intent);
         } else if (id == R.id.nav_wait) {
             //activity In Attesa
             getSupportActionBar().setTitle("In Attesa");
             Intent intent = new Intent(this, WaitingActivity.class);
             intent.putExtra(EXTRA_PACK, id);
+            intent.putExtra("Medico", medico);
+            intent.putExtra("Paziente", paziente);
             startActivity(intent);
         } else if (id == R.id.nav_history) {
             //activity Cronologia

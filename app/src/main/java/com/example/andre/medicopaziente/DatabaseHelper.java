@@ -351,4 +351,430 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+
+
+
+
+    public Richiesta getRichiesta(Integer idRichiesta) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "Select * FROM " + TABLE_RICHIESTA + " WHERE "
+                +   KEY_ID_RICHIESTA + " =  " + idRichiesta;
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        if(c.getCount()<=0)
+        {
+            return null;
+        }
+        if(c!=null) {
+            c.moveToFirst();
+            Richiesta richiesta = new Richiesta();
+
+
+            richiesta.setIdRichiesta(c.getInt(c.getColumnIndex(KEY_ID_RICHIESTA)));
+            richiesta.setStato(c.getString(c.getColumnIndex(KEY_STATO_RICHIESTA)));
+            richiesta.setTipo(c.getString(c.getColumnIndex(KEY_TIPO_RICHIESTA)));
+            richiesta.setData_richiesta(c.getString(c.getColumnIndex(KEY_DATA_RICHIESTA)));
+            richiesta.setNote_richiesta(c.getString(c.getColumnIndex(KEY_NOTE_RICHIESTA)));
+            richiesta.setNome_farmaco(c.getString(c.getColumnIndex(KEY_NOME_FARMACO)));
+            richiesta.setQuantita_farmaco(c.getInt(c.getColumnIndex(KEY_QUANTITA_FARMACO)));
+            richiesta.setData_risposta(c.getString(c.getColumnIndex(KEY_DATA_RISPOSTA_RICHIESTA)));
+            richiesta.setNote_risposta(c.getString(c.getColumnIndex(KEY_NOTE_RISPOSTA_RICHIESTA)));
+            richiesta.setCf_paziente(c.getString(c.getColumnIndex(KEY_CF_PAZIENTE_RICHIESTA)));
+            richiesta.setCf_medico(c.getString(c.getColumnIndex(KEY_CF_MEDICO_RICHIESTA)));
+
+            return richiesta;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<Richiesta> getAllPaziente(String cfPaziente) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "Select * FROM " + TABLE_RICHIESTA + " WHERE "
+                +   KEY_CF_PAZIENTE_RICHIESTA + " =  \"" + cfPaziente + "\" ORDER BY " + KEY_DATA_RICHIESTA + " DESC";
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        if(c.getCount()<=0)
+        {
+            return null;
+        }
+        if(c!=null) {
+            ArrayList<Richiesta> res= new ArrayList<Richiesta>();
+            c.moveToFirst();
+            do {
+                Richiesta richiesta = new Richiesta();
+
+
+                richiesta.setIdRichiesta(c.getInt(c.getColumnIndex(KEY_ID_RICHIESTA)));
+                richiesta.setStato(c.getString(c.getColumnIndex(KEY_STATO_RICHIESTA)));
+                richiesta.setTipo(c.getString(c.getColumnIndex(KEY_TIPO_RICHIESTA)));
+                richiesta.setData_richiesta(c.getString(c.getColumnIndex(KEY_DATA_RICHIESTA)));
+                richiesta.setNote_richiesta(c.getString(c.getColumnIndex(KEY_NOTE_RICHIESTA)));
+                richiesta.setNome_farmaco(c.getString(c.getColumnIndex(KEY_NOME_FARMACO)));
+                richiesta.setQuantita_farmaco(c.getInt(c.getColumnIndex(KEY_QUANTITA_FARMACO)));
+                richiesta.setData_risposta(c.getString(c.getColumnIndex(KEY_DATA_RISPOSTA_RICHIESTA)));
+                richiesta.setNote_risposta(c.getString(c.getColumnIndex(KEY_NOTE_RISPOSTA_RICHIESTA)));
+                richiesta.setCf_paziente(c.getString(c.getColumnIndex(KEY_CF_PAZIENTE_RICHIESTA)));
+                richiesta.setCf_medico(c.getString(c.getColumnIndex(KEY_CF_MEDICO_RICHIESTA)));
+
+                res.add(richiesta);
+            }while(c.moveToNext());
+            return res;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<Richiesta> getAllMedico(String cfMedico) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "Select * FROM " + TABLE_RICHIESTA + " WHERE "
+                +   KEY_CF_MEDICO_RICHIESTA + " =  \"" + cfMedico + "\" ORDER BY " + KEY_DATA_RICHIESTA + " DESC";
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        if(c.getCount()<=0)
+        {
+            return null;
+        }
+        if(c!=null) {
+            ArrayList<Richiesta> res= new ArrayList<Richiesta>();
+            c.moveToFirst();
+            do {
+                Richiesta richiesta = new Richiesta();
+
+
+                richiesta.setIdRichiesta(c.getInt(c.getColumnIndex(KEY_ID_RICHIESTA)));
+                richiesta.setStato(c.getString(c.getColumnIndex(KEY_STATO_RICHIESTA)));
+                richiesta.setTipo(c.getString(c.getColumnIndex(KEY_TIPO_RICHIESTA)));
+                richiesta.setData_richiesta(c.getString(c.getColumnIndex(KEY_DATA_RICHIESTA)));
+                richiesta.setNote_richiesta(c.getString(c.getColumnIndex(KEY_NOTE_RICHIESTA)));
+                richiesta.setNome_farmaco(c.getString(c.getColumnIndex(KEY_NOME_FARMACO)));
+                richiesta.setQuantita_farmaco(c.getInt(c.getColumnIndex(KEY_QUANTITA_FARMACO)));
+                richiesta.setData_risposta(c.getString(c.getColumnIndex(KEY_DATA_RISPOSTA_RICHIESTA)));
+                richiesta.setNote_risposta(c.getString(c.getColumnIndex(KEY_NOTE_RISPOSTA_RICHIESTA)));
+                richiesta.setCf_paziente(c.getString(c.getColumnIndex(KEY_CF_PAZIENTE_RICHIESTA)));
+                richiesta.setCf_medico(c.getString(c.getColumnIndex(KEY_CF_MEDICO_RICHIESTA)));
+
+                res.add(richiesta);
+            }while(c.moveToNext());
+            return res;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<Richiesta> getAttesaPaziente(String cfPaziente) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "Select * FROM " + TABLE_RICHIESTA + " WHERE "
+                +   KEY_CF_PAZIENTE_RICHIESTA + " =  \"" + cfPaziente + "\" AND "
+                + KEY_STATO_RICHIESTA + " =  \"" + "A" + "\" ORDER BY " + KEY_DATA_RICHIESTA + " DESC";
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        if(c.getCount()<=0)
+        {
+            return null;
+        }
+        if(c!=null) {
+            ArrayList<Richiesta> res= new ArrayList<Richiesta>();
+            c.moveToFirst();
+            do {
+                Richiesta richiesta = new Richiesta();
+
+
+                richiesta.setIdRichiesta(c.getInt(c.getColumnIndex(KEY_ID_RICHIESTA)));
+                richiesta.setStato(c.getString(c.getColumnIndex(KEY_STATO_RICHIESTA)));
+                richiesta.setTipo(c.getString(c.getColumnIndex(KEY_TIPO_RICHIESTA)));
+                richiesta.setData_richiesta(c.getString(c.getColumnIndex(KEY_DATA_RICHIESTA)));
+                richiesta.setNote_richiesta(c.getString(c.getColumnIndex(KEY_NOTE_RICHIESTA)));
+                richiesta.setNome_farmaco(c.getString(c.getColumnIndex(KEY_NOME_FARMACO)));
+                richiesta.setQuantita_farmaco(c.getInt(c.getColumnIndex(KEY_QUANTITA_FARMACO)));
+                richiesta.setData_risposta(c.getString(c.getColumnIndex(KEY_DATA_RISPOSTA_RICHIESTA)));
+                richiesta.setNote_risposta(c.getString(c.getColumnIndex(KEY_NOTE_RISPOSTA_RICHIESTA)));
+                richiesta.setCf_paziente(c.getString(c.getColumnIndex(KEY_CF_PAZIENTE_RICHIESTA)));
+                richiesta.setCf_medico(c.getString(c.getColumnIndex(KEY_CF_MEDICO_RICHIESTA)));
+
+                res.add(richiesta);
+            }while(c.moveToNext());
+            return res;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<Richiesta> getCompletatePaziente(String cfPaziente) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "Select * FROM " + TABLE_RICHIESTA + " WHERE "
+                +   KEY_CF_PAZIENTE_RICHIESTA + " =  \"" + cfPaziente + "\" AND "
+                + KEY_STATO_RICHIESTA + " =  \"" + "C" + "\" ORDER BY " + KEY_DATA_RISPOSTA_RICHIESTA + " DESC";
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        if(c.getCount()<=0)
+        {
+            return null;
+        }
+        if(c!=null) {
+            ArrayList<Richiesta> res= new ArrayList<Richiesta>();
+            c.moveToFirst();
+            do {
+                Richiesta richiesta = new Richiesta();
+
+
+                richiesta.setIdRichiesta(c.getInt(c.getColumnIndex(KEY_ID_RICHIESTA)));
+                richiesta.setStato(c.getString(c.getColumnIndex(KEY_STATO_RICHIESTA)));
+                richiesta.setTipo(c.getString(c.getColumnIndex(KEY_TIPO_RICHIESTA)));
+                richiesta.setData_richiesta(c.getString(c.getColumnIndex(KEY_DATA_RICHIESTA)));
+                richiesta.setNote_richiesta(c.getString(c.getColumnIndex(KEY_NOTE_RICHIESTA)));
+                richiesta.setNome_farmaco(c.getString(c.getColumnIndex(KEY_NOME_FARMACO)));
+                richiesta.setQuantita_farmaco(c.getInt(c.getColumnIndex(KEY_QUANTITA_FARMACO)));
+                richiesta.setData_risposta(c.getString(c.getColumnIndex(KEY_DATA_RISPOSTA_RICHIESTA)));
+                richiesta.setNote_risposta(c.getString(c.getColumnIndex(KEY_NOTE_RISPOSTA_RICHIESTA)));
+                richiesta.setCf_paziente(c.getString(c.getColumnIndex(KEY_CF_PAZIENTE_RICHIESTA)));
+                richiesta.setCf_medico(c.getString(c.getColumnIndex(KEY_CF_MEDICO_RICHIESTA)));
+
+                res.add(richiesta);
+            }while(c.moveToNext());
+            return res;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<Richiesta> getRifiutatePaziente(String cfPaziente) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "Select * FROM " + TABLE_RICHIESTA + " WHERE "
+                +   KEY_CF_PAZIENTE_RICHIESTA + " =  \"" + cfPaziente + "\" AND "
+                + KEY_STATO_RICHIESTA + " =  \"" + "R" + "\" ORDER BY " + KEY_DATA_RISPOSTA_RICHIESTA + " DESC";
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        if(c.getCount()<=0)
+        {
+            return null;
+        }
+        if(c!=null) {
+            ArrayList<Richiesta> res= new ArrayList<Richiesta>();
+            c.moveToFirst();
+            do {
+                Richiesta richiesta = new Richiesta();
+
+
+                richiesta.setIdRichiesta(c.getInt(c.getColumnIndex(KEY_ID_RICHIESTA)));
+                richiesta.setStato(c.getString(c.getColumnIndex(KEY_STATO_RICHIESTA)));
+                richiesta.setTipo(c.getString(c.getColumnIndex(KEY_TIPO_RICHIESTA)));
+                richiesta.setData_richiesta(c.getString(c.getColumnIndex(KEY_DATA_RICHIESTA)));
+                richiesta.setNote_richiesta(c.getString(c.getColumnIndex(KEY_NOTE_RICHIESTA)));
+                richiesta.setNome_farmaco(c.getString(c.getColumnIndex(KEY_NOME_FARMACO)));
+                richiesta.setQuantita_farmaco(c.getInt(c.getColumnIndex(KEY_QUANTITA_FARMACO)));
+                richiesta.setData_risposta(c.getString(c.getColumnIndex(KEY_DATA_RISPOSTA_RICHIESTA)));
+                richiesta.setNote_risposta(c.getString(c.getColumnIndex(KEY_NOTE_RISPOSTA_RICHIESTA)));
+                richiesta.setCf_paziente(c.getString(c.getColumnIndex(KEY_CF_PAZIENTE_RICHIESTA)));
+                richiesta.setCf_medico(c.getString(c.getColumnIndex(KEY_CF_MEDICO_RICHIESTA)));
+
+                res.add(richiesta);
+            }while(c.moveToNext());
+            return res;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<Richiesta> getAttesaMedico(String cfMedico) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "Select * FROM " + TABLE_RICHIESTA + " WHERE "
+                +   KEY_CF_MEDICO_RICHIESTA + " =  \"" + cfMedico + "\" AND "
+                + KEY_STATO_RICHIESTA + " =  \"" + "A" + "\" ORDER BY " + KEY_DATA_RICHIESTA + " DESC";
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        if(c.getCount()<=0)
+        {
+            return null;
+        }
+        if(c!=null) {
+            ArrayList<Richiesta> res= new ArrayList<Richiesta>();
+            c.moveToFirst();
+            do {
+                Richiesta richiesta = new Richiesta();
+
+
+                richiesta.setIdRichiesta(c.getInt(c.getColumnIndex(KEY_ID_RICHIESTA)));
+                richiesta.setStato(c.getString(c.getColumnIndex(KEY_STATO_RICHIESTA)));
+                richiesta.setTipo(c.getString(c.getColumnIndex(KEY_TIPO_RICHIESTA)));
+                richiesta.setData_richiesta(c.getString(c.getColumnIndex(KEY_DATA_RICHIESTA)));
+                richiesta.setNote_richiesta(c.getString(c.getColumnIndex(KEY_NOTE_RICHIESTA)));
+                richiesta.setNome_farmaco(c.getString(c.getColumnIndex(KEY_NOME_FARMACO)));
+                richiesta.setQuantita_farmaco(c.getInt(c.getColumnIndex(KEY_QUANTITA_FARMACO)));
+                richiesta.setData_risposta(c.getString(c.getColumnIndex(KEY_DATA_RISPOSTA_RICHIESTA)));
+                richiesta.setNote_risposta(c.getString(c.getColumnIndex(KEY_NOTE_RISPOSTA_RICHIESTA)));
+                richiesta.setCf_paziente(c.getString(c.getColumnIndex(KEY_CF_PAZIENTE_RICHIESTA)));
+                richiesta.setCf_medico(c.getString(c.getColumnIndex(KEY_CF_MEDICO_RICHIESTA)));
+
+                res.add(richiesta);
+            }while(c.moveToNext());
+            return res;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<Richiesta> getCompletateMedico(String cfMedico) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "Select * FROM " + TABLE_RICHIESTA + " WHERE "
+                +   KEY_CF_MEDICO_RICHIESTA + " =  \"" + cfMedico + "\" AND "
+                + KEY_STATO_RICHIESTA + " =  \"" + "C" + "\" ORDER BY " + KEY_DATA_RISPOSTA_RICHIESTA + " DESC";
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        if(c.getCount()<=0)
+        {
+            return null;
+        }
+        if(c!=null) {
+            ArrayList<Richiesta> res= new ArrayList<Richiesta>();
+            c.moveToFirst();
+            do {
+                Richiesta richiesta = new Richiesta();
+
+
+                richiesta.setIdRichiesta(c.getInt(c.getColumnIndex(KEY_ID_RICHIESTA)));
+                richiesta.setStato(c.getString(c.getColumnIndex(KEY_STATO_RICHIESTA)));
+                richiesta.setTipo(c.getString(c.getColumnIndex(KEY_TIPO_RICHIESTA)));
+                richiesta.setData_richiesta(c.getString(c.getColumnIndex(KEY_DATA_RICHIESTA)));
+                richiesta.setNote_richiesta(c.getString(c.getColumnIndex(KEY_NOTE_RICHIESTA)));
+                richiesta.setNome_farmaco(c.getString(c.getColumnIndex(KEY_NOME_FARMACO)));
+                richiesta.setQuantita_farmaco(c.getInt(c.getColumnIndex(KEY_QUANTITA_FARMACO)));
+                richiesta.setData_risposta(c.getString(c.getColumnIndex(KEY_DATA_RISPOSTA_RICHIESTA)));
+                richiesta.setNote_risposta(c.getString(c.getColumnIndex(KEY_NOTE_RISPOSTA_RICHIESTA)));
+                richiesta.setCf_paziente(c.getString(c.getColumnIndex(KEY_CF_PAZIENTE_RICHIESTA)));
+                richiesta.setCf_medico(c.getString(c.getColumnIndex(KEY_CF_MEDICO_RICHIESTA)));
+
+                res.add(richiesta);
+            }while(c.moveToNext());
+            return res;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<Richiesta> getRifiutateMedico(String cfMedico) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "Select * FROM " + TABLE_RICHIESTA + " WHERE "
+                +   KEY_CF_MEDICO_RICHIESTA + " =  \"" + cfMedico + "\" AND "
+                + KEY_STATO_RICHIESTA + " =  \"" + "R" + "\" ORDER BY " + KEY_DATA_RISPOSTA_RICHIESTA + " DESC";
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        if(c.getCount()<=0)
+        {
+            return null;
+        }
+        if(c!=null) {
+            ArrayList<Richiesta> res= new ArrayList<Richiesta>();
+            c.moveToFirst();
+            do {
+                Richiesta richiesta = new Richiesta();
+
+
+                richiesta.setIdRichiesta(c.getInt(c.getColumnIndex(KEY_ID_RICHIESTA)));
+                richiesta.setStato(c.getString(c.getColumnIndex(KEY_STATO_RICHIESTA)));
+                richiesta.setTipo(c.getString(c.getColumnIndex(KEY_TIPO_RICHIESTA)));
+                richiesta.setData_richiesta(c.getString(c.getColumnIndex(KEY_DATA_RICHIESTA)));
+                richiesta.setNote_richiesta(c.getString(c.getColumnIndex(KEY_NOTE_RICHIESTA)));
+                richiesta.setNome_farmaco(c.getString(c.getColumnIndex(KEY_NOME_FARMACO)));
+                richiesta.setQuantita_farmaco(c.getInt(c.getColumnIndex(KEY_QUANTITA_FARMACO)));
+                richiesta.setData_risposta(c.getString(c.getColumnIndex(KEY_DATA_RISPOSTA_RICHIESTA)));
+                richiesta.setNote_risposta(c.getString(c.getColumnIndex(KEY_NOTE_RISPOSTA_RICHIESTA)));
+                richiesta.setCf_paziente(c.getString(c.getColumnIndex(KEY_CF_PAZIENTE_RICHIESTA)));
+                richiesta.setCf_medico(c.getString(c.getColumnIndex(KEY_CF_MEDICO_RICHIESTA)));
+
+                res.add(richiesta);
+            }while(c.moveToNext());
+            return res;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<Richiesta> getTipoRichieste(String tipo) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "Select * FROM " + TABLE_RICHIESTA + " WHERE "
+                +   KEY_TIPO_RICHIESTA + " =  \"" + tipo + "\" ORDER BY " + KEY_DATA_RICHIESTA + " DESC";
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        if(c.getCount()<=0)
+        {
+            return null;
+        }
+        if(c!=null) {
+            ArrayList<Richiesta> res= new ArrayList<Richiesta> ();
+            c.moveToFirst();
+            do {
+                Richiesta richiesta = new Richiesta();
+
+
+                richiesta.setIdRichiesta(c.getInt(c.getColumnIndex(KEY_ID_RICHIESTA)));
+                richiesta.setStato(c.getString(c.getColumnIndex(KEY_STATO_RICHIESTA)));
+                richiesta.setTipo(c.getString(c.getColumnIndex(KEY_TIPO_RICHIESTA)));
+                richiesta.setData_richiesta(c.getString(c.getColumnIndex(KEY_DATA_RICHIESTA)));
+                richiesta.setNote_richiesta(c.getString(c.getColumnIndex(KEY_NOTE_RICHIESTA)));
+                richiesta.setNome_farmaco(c.getString(c.getColumnIndex(KEY_NOME_FARMACO)));
+                richiesta.setQuantita_farmaco(c.getInt(c.getColumnIndex(KEY_QUANTITA_FARMACO)));
+                richiesta.setData_risposta(c.getString(c.getColumnIndex(KEY_DATA_RISPOSTA_RICHIESTA)));
+                richiesta.setNote_risposta(c.getString(c.getColumnIndex(KEY_NOTE_RISPOSTA_RICHIESTA)));
+                richiesta.setCf_paziente(c.getString(c.getColumnIndex(KEY_CF_PAZIENTE_RICHIESTA)));
+                richiesta.setCf_medico(c.getString(c.getColumnIndex(KEY_CF_MEDICO_RICHIESTA)));
+
+                res.add(richiesta);
+            }while(c.moveToNext());
+            return res;
+        }
+        else {
+            return null;
+        }
+    }
+
 }

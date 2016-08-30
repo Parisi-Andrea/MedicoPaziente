@@ -45,15 +45,32 @@ public class HistoryActivity extends BasicDrawerActivity{
 
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
+            //if (!connesso && MainActivity.tipoUtente.equals("Medico"))
+             //   return new NoConnectionFragment();
+            //else{
+                if(MainActivity.tipoUtente.equals("Paziente")){
+                    switch (position) {
+                        case 0:
+                            return new HistoryAllFragment();
+                        case 1:
+                            return new HistoryApprFragment();
+                        case 2:
+                            return new HistoryRefFragment();
+                    }
                     return new HistoryAllFragment();
-                case 1:
-                    return new HistoryApprFragment();
-                case 2:
-                    return new HistoryRefFragment();
-            }
-            return new HistoryAllFragment();
+                }
+                else{
+                    switch (position) {
+                        case 0:
+                            return new HistoryDocAllFragment();
+                        case 1:
+                            return new HistoryDocApprFragment();
+                        case 2:
+                            return new HistoryDocRefFragment();
+                    }
+                    return new HistoryDocAllFragment();
+                }
+            //}
         }
 
         @Override

@@ -45,7 +45,9 @@ public class InfoPatFragment extends Fragment{
         lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Intent intent = new Intent(getContext(), InfoDettagliPazActivity.class);
+                intent.putExtra("InfoPaziente",returnfromDB.get(position) );
+                startActivity(intent);
             }
         });
         return v;

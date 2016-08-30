@@ -70,14 +70,25 @@ public class MainActivity extends AppCompatActivity {
                 //
                 //da rimettere!
                 //
-                login(v);
+                //login(v);
 
                 //
                 //modifiche per run application! da modificare per versione finale!
                 //
-                /*tipoUtente = "Paziente";
+                tipoUtente = "Medico";
+                Medico elemento = new Medico();
+                elemento.setCodiceFiscale("MRORSS94T05E378A");
+                elemento.setNome("Mario");
+                elemento.setCognome("Rossi");
+                //elemento.setDataNascita("05/12/1994");
+                //elemento.setLuogoNascita("Trento");
+                //elemento.setResidenza("via paludi, 104");
+                elemento.setEmail("mario.rossi@mail.it");
+                elemento.setNTel("0461 961361");
+                //elemento.setMedico("FLPNLS94T45L378G");
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                startActivity(intent);*/
+                intent.putExtra("Medico", elemento);
+                startActivity(intent);
                 //
                 //
             }
