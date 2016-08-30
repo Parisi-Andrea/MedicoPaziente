@@ -61,7 +61,7 @@ public class FarmacoSendRequest extends AppCompatActivity {
         Button sendRequest = (Button)findViewById(R.id.sendRequest);
 
         Intent intent = getIntent();
-        paziente = intent.getExtras().getParcelable("paziente");
+        paziente = intent.getExtras().getParcelable("Paziente");
         final String cf_paziente = paziente.getCodiceFiscale();
         final String cf_medico = paziente.getMedico();;
 

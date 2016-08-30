@@ -39,7 +39,7 @@ public class DettagliPaziente extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        final Paziente paziente = intent.getParcelableExtra("paziente");
+        final Paziente paziente = intent.getParcelableExtra("Paziente");
 
         if (!MainActivity.tipoUtente.equals("Paziente")){
             findViewById(R.id.no_modifica).setVisibility(View.GONE);
@@ -125,7 +125,7 @@ public class DettagliPaziente extends AppCompatActivity {
                 findViewById(R.id.no_modifica).setVisibility(View.GONE);
                 findViewById(R.id.modifica).setVisibility(View.VISIBLE);
 
-                new AsyncCallSoap().execute(paziente.getCodiceFiscale(),"paziente",edit_residenza.getText().toString(), edit_email.getText().toString(), edit_tel.getText().toString(), paziente.getPassword());
+                new AsyncCallSoap().execute(paziente.getCodiceFiscale(),"Paziente",edit_residenza.getText().toString(), edit_email.getText().toString(), edit_tel.getText().toString(), paziente.getPassword());
 
             }
         });

@@ -70,6 +70,8 @@ public class BasicDrawerActivity extends AppCompatActivity
             } else {
                 new AsyncCallSoapGetMedico().execute();
             }*/
+
+            // registrazione sul server GCM se non è già stata fatta sul dispositivo in uso
             SharedPreferences pref = getApplicationContext().getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE);
             if(pref.getBoolean("GCMRegistration", false)== false){
                 Intent gcmIntent = new Intent(this,RegistrationIntentService.class);
@@ -127,27 +129,31 @@ public class BasicDrawerActivity extends AppCompatActivity
             paziente = intent.getParcelableExtra("Paziente");
             medico = null;
         }
-         // registrazione su GCM se non è già stata fatta sul dispositivo in uso
 
         //
         //tolto setNavigationview
         //
 
-        // reindirizzamento sulla richiesta ricevuta
-        // funzione che ritorni la Richiesta dato l'id della richiesta
+        // reindirizzamento sulla richiesta ricevuta il paziente, e sulla lista delle richieste in attesa il medico
         if(intent.getStringExtra("richiesta")!=null) {
-            if (intent.getStringExtra("richiesta").equals("")) {
-                //Intent newPage = new Intent(this, WaitingActivity.class);
+            if (intent.getStringExtra("richiesta").equals("") && MainActivity.tipoUtente.equals("Medico")) {
+                Intent newPage = new Intent(this, WaitingActivity.class);
+                newPage.putExtra("Medico", medico);
+                startActivity(newPage);
             } else {
                 DatabaseHelper db = new DatabaseHelper(getApplicationContext());
                 Richiesta richiesta = db.getRichiesta(Integer.parseInt(intent.getStringExtra("richiesta")));
                 if (richiesta != null) {
-                    if (richiesta.getTipo().equals("farmaco")) {
+                    if (richiesta.getTipo().equals("Prescrizione")) {
                         Intent newPage = new Intent(this, DettagliRichiestaFarmaco.class);
                         newPage.putExtra("richiesta", richiesta);
+                        newPage.putExtra("Paziente", paziente);
+                        startActivity(newPage);
                     } else {
                         Intent newPage = new Intent(this, DettagliRichiestaVisita.class);
                         newPage.putExtra("richiesta", richiesta);
+                        newPage.putExtra("Paziente", paziente);
+                        startActivity(newPage);
                     }
                 }
             }

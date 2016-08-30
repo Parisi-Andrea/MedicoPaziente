@@ -37,7 +37,7 @@ public class ChooseRequestType extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), FarmacoSendRequest.class);
-                intent.putExtra("paziente", paziente);
+                intent.putExtra("Paziente", paziente);
                 startActivity(intent);
             }
         });
@@ -46,7 +46,7 @@ public class ChooseRequestType extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), VisitaSendRequest.class);
-                intent.putExtra("paziente", paziente);
+                intent.putExtra("Paziente", paziente);
                 startActivity(intent);
             }
         });

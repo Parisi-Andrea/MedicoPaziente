@@ -128,7 +128,7 @@ public class DettagliMedico extends AppCompatActivity {
             public void onClick(View v) {
                 findViewById(R.id.no_modifica).setVisibility(View.GONE);
                 findViewById(R.id.modifica).setVisibility(View.VISIBLE);
-                new AsyncCallSoap().execute(medico.getCodiceFiscale(), "medico", edit_email.getText().toString(), edit_tel.getText().toString(), medico.getPassword(), edit_ambulatorio.getText().toString(),edit_orario.getText().toString());
+                new AsyncCallSoap().execute(medico.getCodiceFiscale(), "Medico", edit_email.getText().toString(), edit_tel.getText().toString(), medico.getPassword(), edit_ambulatorio.getText().toString(),edit_orario.getText().toString());
 
             }
         });

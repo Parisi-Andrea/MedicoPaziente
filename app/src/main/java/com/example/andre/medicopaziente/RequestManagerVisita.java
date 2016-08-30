@@ -62,6 +62,8 @@ public class RequestManagerVisita extends AppCompatActivity {
 
         Intent intent = getIntent();
         final Richiesta richiesta = intent.getParcelableExtra("richiesta");
+
+        // guardo se le informazioni del paziente sono nel db interno, altrimenti guardo nel server remoto
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
         paziente = db.getPaziente(richiesta.cf_paziente);
         if(paziente==null) {
@@ -84,8 +86,7 @@ public class RequestManagerVisita extends AppCompatActivity {
             public void onClick(View v) {
                 if(paziente!=null && paziente.getCodiceFiscale()!=null) {
                     Intent intent = new Intent(v.getContext(), DettagliPaziente.class);
-                    intent.putExtra("paziente", paziente);
-                    intent.putExtra("medico", true);
+                    intent.putExtra("Paziente", paziente);
                     startActivity(intent);
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(RequestManagerVisita.this);
