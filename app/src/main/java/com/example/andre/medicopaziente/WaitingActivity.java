@@ -15,8 +15,11 @@ public class WaitingActivity extends BasicDrawerActivity {
         super.onCreate(savedInstanceState);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        transaction.add(R.id.frag_container, new WaitingRequestFragment());
+        if(MainActivity.tipoUtente.equals("Medico"))
+            transaction.add(R.id.frag_container, new WaitingDocRequestFragment());
+        else {
+            transaction.add(R.id.frag_container, new WaitingRequestFragment());
+        }
         transaction.commit();
     }
 }
