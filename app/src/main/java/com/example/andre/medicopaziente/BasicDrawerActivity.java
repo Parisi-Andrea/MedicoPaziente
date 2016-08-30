@@ -64,28 +64,7 @@ public class BasicDrawerActivity extends AppCompatActivity
         //
         //da rimettere!
         //
-        if(!updated) {
-            try{
-                new AsyncCallSoapRichieste().execute();
-            }catch (Exception e){
-                System.out.println(e);
-            }
 
-            // registrazione sul server GCM se non è già stata fatta sul dispositivo in uso
-            SharedPreferences pref = getApplicationContext().getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE);
-            if(pref.getBoolean("GCMRegistration", false)== false){
-                Intent gcmIntent = new Intent(this,RegistrationIntentService.class);
-                String cf = null;
-                if(medico!=null){
-                    cf = medico.getCodiceFiscale();
-                } else if(paziente!=null){
-                    cf = paziente.getCodiceFiscale();
-                }
-                gcmIntent.putExtra("codiceFiscale", cf);
-                startService(gcmIntent);
-            }
-            updated = true;
-        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;//inserito per l'ide!
@@ -140,7 +119,28 @@ public class BasicDrawerActivity extends AppCompatActivity
             paziente = intent.getParcelableExtra("Paziente");
             medico = null;
         }
+        if(!updated) {
+            try{
+                new AsyncCallSoapRichieste().execute();
+            }catch (Exception e){
+                System.out.println(e);
+            }
 
+            // registrazione sul server GCM se non è già stata fatta sul dispositivo in uso
+            SharedPreferences pref = getApplicationContext().getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE);
+            if(pref.getBoolean("GCMRegistration", false)== false){
+                Intent gcmIntent = new Intent(this,RegistrationIntentService.class);
+                String cf = null;
+                if(medico!=null){
+                    cf = medico.getCodiceFiscale();
+                } else if(paziente!=null){
+                    cf = paziente.getCodiceFiscale();
+                }
+                gcmIntent.putExtra("codiceFiscale", cf);
+                startService(gcmIntent);
+            }
+            updated = true;
+        }
         //
         //tolto setNavigationview
         //
