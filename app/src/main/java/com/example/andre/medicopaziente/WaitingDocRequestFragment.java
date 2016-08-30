@@ -32,7 +32,7 @@ public class WaitingDocRequestFragment extends Fragment implements SwipeRefreshL
         //
         //creato arraylist momentaneo per simulare ritorno dalla query su db!
         //
-        final ArrayList<Richiesta> returnfromDB = riempi2();
+        final ArrayList<Richiesta> returnfromDB = getRequests();
         //
         //l'ultimo paramentro = array list da passare all'adapter!
         //nelle altre historyfragment non c'è!
@@ -109,37 +109,10 @@ public class WaitingDocRequestFragment extends Fragment implements SwipeRefreshL
             return v;
         }
     }
-    //
-    //funione momentanea per arraylist sopra!
-    //
-    public ArrayList<Richiesta> riempi2(){
-        ArrayList<Richiesta> array = new ArrayList<>();
-        Richiesta elemento = new Richiesta();
-        elemento.setIdRichiesta(1);
-        elemento.setStato("C");
-        elemento.setTipo("Prescrizione");
-        elemento.setData_richiesta("2016/07/02 alle 08:30 ");
-        elemento.setNome_farmaco("Brufen");
-        elemento.setQuantita_farmaco(2);
-        elemento.setCf_paziente("NLSFLP94T45L378G");
-        array.add(elemento);
-
-        elemento.setIdRichiesta(2);
-        elemento.setStato("R");
-        elemento.setTipo("Visita specialistica");
-        elemento.setNote_richiesta("Specialistica dermatologica presso dottoressa A.TASIN ");
-        elemento.setData_richiesta("2016/05/06 alle 15:30 ");
-        elemento.setCf_paziente("MRORSS94T05E378A");
-        array.add(elemento);
-
-        elemento.setIdRichiesta(3);
-        elemento.setStato("R");
-        elemento.setTipo("Visita di controllo");
-        elemento.setData_richiesta("2016/07/02 alle 08:30 ");
-        elemento.setNome_farmaco("dermatologica");
-        elemento.setCf_paziente("MRORSS94T05E378A");
-        array.add(elemento);
-
+ 
+    public ArrayList<Richiesta> getRequests(){
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        ArrayList<Richiesta> array = db.getAttesaMedico(((WaitingActivity)getActivity()).medico.getCodiceFiscale());
         return array;
     }
 }

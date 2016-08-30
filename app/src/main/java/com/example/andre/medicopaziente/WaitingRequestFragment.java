@@ -34,7 +34,7 @@ public class WaitingRequestFragment extends Fragment implements SwipeRefreshLayo
         //
         //creato arraylist momentaneo per simulare ritorno dalla query su db!
         //
-        final ArrayList<Richiesta> returnfromDB = riempi2();
+        final ArrayList<Richiesta> returnfromDB = getRequests();
         //
         //l'ultimo paramentro = array list da passare all'adapter!
         //nelle altre historyfragment non c'è!
@@ -106,25 +106,11 @@ public class WaitingRequestFragment extends Fragment implements SwipeRefreshLayo
             return v;
         }
     }
-    //
-    //funione momentanea per arraylist sopra!
-    //
-    public ArrayList<Richiesta> riempi2(){
-        ArrayList<Richiesta> array = new ArrayList<>();
-        Richiesta elemento = new Richiesta();
-        elemento.setIdRichiesta(1);
-        elemento.setStato("A");
-        elemento.setTipo("Visita");
-        elemento.setData_richiesta("2012/12/12 alle 14:00 ");
-        elemento.setNote_richiesta("Specialistica dermatologica presso LAB1");
-        array.add(elemento);
-        elemento.setIdRichiesta(2);
-        array.add(elemento);
-        elemento.setIdRichiesta(3);
-        array.add(elemento);
-        elemento.setIdRichiesta(4);
-        array.add(elemento);
 
+
+    public ArrayList<Richiesta> getRequests(){
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        ArrayList<Richiesta> array = db.getAttesaPaziente(((WaitingActivity)getActivity()).paziente.getCodiceFiscale());
         return array;
     }
 }
