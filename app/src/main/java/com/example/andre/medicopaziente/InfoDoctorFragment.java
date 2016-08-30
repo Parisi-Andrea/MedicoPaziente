@@ -25,6 +25,8 @@ public class InfoDoctorFragment extends Fragment {
 
     ListView lista;
 
+    Utils u = new Utils();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,12 +49,12 @@ public class InfoDoctorFragment extends Fragment {
         Medico medico;
         ArrayList<String> description = new ArrayList<>();
         ArrayList<String> dati_medico = new ArrayList<>();
-         String nome;
-         String cognome;
-         String email;
-         String nTel;
-         String ambulatorio;
-         String orario;
+        String nome;
+        String cognome;
+        String email;
+        String nTel;
+        String ambulatorio;
+        String orario;
 
 
         public MyInfoListAdapter(Context context, int res, Medico medicoDB) {
@@ -76,7 +78,7 @@ public class InfoDoctorFragment extends Fragment {
             ambulatorio = medico.getAmbulatorio();
             orario = medico.getOrario();
 
-            dati_medico.add("immagine");
+            dati_medico.add(medico.getImage());
             dati_medico.add(nome + " " + cognome);
             dati_medico.add(email);
             dati_medico.add(nTel);
@@ -102,8 +104,10 @@ public class InfoDoctorFragment extends Fragment {
             if (position == 0) {
                 v = inflater.inflate(R.layout.item_listinfo_image, parent, false);
                 ImageView image = (ImageView) v.findViewById(R.id.img);
-                //manca il ritorno dell'immagine questo è statico
-                image.setImageResource(R.drawable.ali_connors);
+                if (dati_medico.get(position).equals("") || dati_medico.get(position) == null)
+                    image.setImageResource(R.drawable.immagine1);
+                else
+                    u.stringToImageView(image, dati_medico.get(position));
             } else {
                 v = inflater.inflate(R.layout.item_listinfo, parent, false);
                 TextView txt1 = (TextView) v.findViewById(R.id.description);
@@ -117,8 +121,8 @@ public class InfoDoctorFragment extends Fragment {
     }
 
     public Medico riempiMedico() {
-        DatabaseHelper db =new DatabaseHelper(getContext());
-        Medico res = db.getMedico(((InfoActivity)getActivity()).paziente.getMedico());
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        Medico res = db.getMedico(((InfoActivity) getActivity()).paziente.getMedico());
 
         return res;
     }
