@@ -31,11 +31,8 @@ public class HistoryDocApprFragment extends Fragment implements SwipeRefreshLayo
         View v = inflater.inflate(R.layout.fragment_list, container, false);
         lista = (ListView) v.findViewById(R.id.lista);
 
-        //
-        //creato arraylist momentaneo per simulare ritorno dalla query su db!
-        //
-        final ArrayList<Richiesta> requestsfromDB = new ArrayList<>();
-        requestsfromDB.add(riempi());
+
+        final ArrayList<Richiesta> requestsfromDB = getRichieste();
         //
         //l'ultimo paramentro = array list da passare all'adapter!
         //
@@ -90,7 +87,8 @@ public class HistoryDocApprFragment extends Fragment implements SwipeRefreshLayo
             TextView descrizione = (TextView) v.findViewById(R.id.descrizione);
             ImageView img = (ImageView) v.findViewById(R.id.immagine);
 
-            Paziente paziente = getpaziente();//da cambiare con chiamata DB
+            DatabaseHelper db = new DatabaseHelper(getContext());
+            Paziente paziente = db.getPaziente(richieste.get(position).getCf_paziente());//da cambiare con chiamata DB
             if(paziente==null){
                 titolo.setVisibility(View.GONE);
                 descrizione.setVisibility(View.GONE);
@@ -122,34 +120,15 @@ public class HistoryDocApprFragment extends Fragment implements SwipeRefreshLayo
         }
     }
 
-    //
-    //funione momentanea per arraylist sopra!
-    //
-    public Richiesta riempi() {
-        Richiesta elemento = new Richiesta();
-        elemento.setIdRichiesta(1);
-        elemento.setStato("C");
-        elemento.setTipo("Prescrizione");
-        elemento.setData_richiesta("2016/07/02 alle 08:30 ");
-        elemento.setNome_farmaco("Brufen");
-        elemento.setQuantita_farmaco(2);
-        elemento.setCf_paziente("NLSFLP94T45L378G");
 
-        return elemento;
+    public ArrayList<Richiesta> getRichieste(){
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        ArrayList<Richiesta> array = db.getRifiutateMedico(((HistoryActivity) getActivity()).medico.getCodiceFiscale());
+        if(array!=null) {
+            return array;
+        }else{
+            return new ArrayList<Richiesta>();
+        }
     }
 
-
-    public Paziente getpaziente() {
-        Paziente elemento = new Paziente();
-        elemento.setCodiceFiscale("NLSFLP94T45L378G");
-        elemento.setNome("Lia");
-        elemento.setCognome("Filippi");
-        elemento.setDataNascita("05/12/1994");
-        elemento.setLuogoNascita("Trento");
-        elemento.setResidenza("via paludi, 42");
-        elemento.setEmail("annalisa.filippi@mail.it");
-        elemento.setNTel("0461 961361");
-
-        return elemento;
-    }
 }

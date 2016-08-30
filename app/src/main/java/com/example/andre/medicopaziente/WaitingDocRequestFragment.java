@@ -101,7 +101,7 @@ public class WaitingDocRequestFragment extends Fragment implements SwipeRefreshL
                 descrizione.setText(descrizione_visita);
             } else if (tipo.equals("Visita specialistica")) {
                 img.setImageResource(R.drawable.calendar);
-                descrizione.setText(descrizione_visita_spec + nome_farmaco);
+                descrizione.setText(descrizione_visita_spec+ nome_farmaco);
             }
 
             ImageView state = (ImageView) v.findViewById(R.id.state);

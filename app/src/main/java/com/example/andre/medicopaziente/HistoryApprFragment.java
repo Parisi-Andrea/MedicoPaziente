@@ -36,7 +36,7 @@ public class HistoryApprFragment extends Fragment implements SwipeRefreshLayout.
         //
         //creato arraylist momentaneo per simulare ritorno dalla query su db!
         //
-        final ArrayList<Richiesta> returnfromDB = riempi();
+        final ArrayList<Richiesta> returnfromDB = getRichieste();
         //
         //l'ultimo paramentro = array list da passare all'adapter!
         //nelle altre historyfragment non c'è!
@@ -109,27 +109,16 @@ public class HistoryApprFragment extends Fragment implements SwipeRefreshLayout.
             return v;
         }
     }
-    //
-    //funione momentanea per arraylist sopra!
-    //
-    public ArrayList<Richiesta> riempi(){
-        ArrayList<Richiesta> array = new ArrayList<>();
-        Richiesta elemento = new Richiesta();
-        elemento.setIdRichiesta(1);
-        elemento.setStato("C");
-        elemento.setTipo("Prescrizione");
-        elemento.setData_richiesta("2012/12/12 alle 12:00 ");
-        elemento.setNome_farmaco("Brufen");
-        elemento.setQuantita_farmaco(2);
-        array.add(elemento);
-        elemento.setIdRichiesta(2);
-        array.add(elemento);
-        elemento.setIdRichiesta(3);
-        array.add(elemento);
-        elemento.setIdRichiesta(4);
-        array.add(elemento);
 
-        return array;
+    public ArrayList<Richiesta> getRichieste(){
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        ArrayList<Richiesta> array = db.getCompletatePaziente(((HistoryActivity) getActivity()).paziente.getCodiceFiscale());
+        if(array!=null) {
+            return array;
+        }else{
+            return new ArrayList<Richiesta>();
+        }
     }
+
 
 }

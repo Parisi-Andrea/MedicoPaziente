@@ -64,8 +64,10 @@ public class WaitingRequestFragment extends Fragment implements SwipeRefreshLayo
         //versione per dati DB
         private ArrayList<Richiesta> richieste = new ArrayList<>();
         String tipo,  nome_farmaco, stato, data_ora;
+
         final String descrizione_prescrizione= "Al medico è stato richiesto il farmaco: ";
-        final String descrizione_visita= "Al medico è stata richiesta una visita ";
+        final String descrizione_visita= "Al medico è stata richiesta una visita di controllo";
+        final String descrizione_visita_specialistica= "Al medico è stata richiesta una visita specialistica in: ";
 
         public MyListAdapter(Context context, int layout, ArrayList<Richiesta> request){
             super(context, layout);
@@ -97,9 +99,12 @@ public class WaitingRequestFragment extends Fragment implements SwipeRefreshLayo
             if(tipo=="Prescrizione") {
                 textView1.setText(descrizione_prescrizione + nome_farmaco);
                 img.setImageResource(R.drawable.pill_icon);
-            }else if(tipo=="Visita") {
+            }else if(tipo=="Visita di contollo") {
                 img.setImageResource(R.drawable.calendar);
                 textView1.setText(descrizione_visita);
+            } else if(tipo=="Visita specialistica"){
+                img.setImageResource(R.drawable.calendar);
+                textView1.setText(descrizione_visita_specialistica+nome_farmaco);
             }
             ImageView state = (ImageView) v.findViewById(R.id.state);
             state.setVisibility(View.GONE);

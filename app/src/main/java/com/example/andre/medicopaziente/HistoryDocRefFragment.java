@@ -31,12 +31,8 @@ public class HistoryDocRefFragment extends Fragment implements SwipeRefreshLayou
         View v = inflater.inflate(R.layout.fragment_list, container, false);
         lista = (ListView) v.findViewById(R.id.lista);
 
-        //
-        //creato arraylist momentaneo per simulare ritorno dalla query su db!
-        //
-        final ArrayList<Richiesta> requestsfromDB = new ArrayList<>();
-        requestsfromDB.add(riempi1());
-        requestsfromDB.add(riempi2());
+
+        final ArrayList<Richiesta> requestsfromDB = getRichieste();
         //
         //l'ultimo paramentro = array list da passare all'adapter!
         //
@@ -91,7 +87,8 @@ public class HistoryDocRefFragment extends Fragment implements SwipeRefreshLayou
             TextView descrizione = (TextView) v.findViewById(R.id.descrizione);
             ImageView img = (ImageView) v.findViewById(R.id.immagine);
 
-            Paziente paziente = getpaziente();//da cambiare con chiamata DB
+            DatabaseHelper db = new DatabaseHelper(getContext());
+            Paziente paziente = db.getPaziente(richieste.get(position).getCf_paziente());
             if (paziente == null) {
                 titolo.setVisibility(View.GONE);
                 descrizione.setVisibility(View.GONE);
@@ -123,46 +120,13 @@ public class HistoryDocRefFragment extends Fragment implements SwipeRefreshLayou
         }
     }
 
-    //
-    //funione momentanea per arraylist sopra!
-    //
-    public Richiesta riempi2() {
-        Richiesta elemento = new Richiesta();
-        elemento.setIdRichiesta(2);
-        elemento.setStato("R");
-        elemento.setTipo("Visita specialistica");
-        elemento.setNote_richiesta("Specialistica dermatologica presso dottoressa A.TASIN ");
-        elemento.setData_richiesta("2016/05/06 alle 15:30 ");
-        elemento.setCf_paziente("MRORSS94T05E378A");
 
-        return elemento;
-    }
-
-    public Richiesta riempi1() {
-        Richiesta elemento = new Richiesta();
-
-        elemento.setIdRichiesta(3);
-        elemento.setStato("R");
-        elemento.setTipo("Visita di controllo");
-        elemento.setData_richiesta("2016/07/02 alle 08:30 ");
-        elemento.setNome_farmaco("dermatologica");
-        elemento.setCf_paziente("MRORSS94T05E378A");
-
-
-        return elemento;
-    }
-
-    public Paziente getpaziente() {
-        Paziente elemento = new Paziente();
-        elemento.setCodiceFiscale("NLSFLP94T45L378G");
-        elemento.setNome("Lia");
-        elemento.setCognome("Filippi");
-        elemento.setDataNascita("05/12/1994");
-        elemento.setLuogoNascita("Trento");
-        elemento.setResidenza("via paludi, 42");
-        elemento.setEmail("annalisa.filippi@mail.it");
-        elemento.setNTel("0461 961361");
-
-        return elemento;
-    }
+    public ArrayList<Richiesta> getRichieste(){
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        ArrayList<Richiesta> array = db.getRifiutateMedico(((HistoryActivity) getActivity()).medico.getCodiceFiscale());
+        if(array!=null) {
+            return array;
+        }else{
+            return new ArrayList<Richiesta>();
+        }    }
 }

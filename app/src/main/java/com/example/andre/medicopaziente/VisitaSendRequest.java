@@ -93,7 +93,7 @@ public class VisitaSendRequest extends AppCompatActivity implements AdapterView.
                 }
                 final String notes = noteVisita.getText().toString();
                 Calendar c = Calendar.getInstance();
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd 'alle' HH:mm:ss");
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 'alle' HH:mm:ss");
                 final String formattedDate = df.format(c.getTime());
 
                 new AsyncCallSoap().execute(formattedDate,tipo_richiesta, notes, nomeCompletoVisita, "1", cf_paziente, cf_medico);

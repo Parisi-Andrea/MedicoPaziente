@@ -125,6 +125,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
     public boolean createRequest(ArrayList<Richiesta> richiestaArrayList) {
+        boolean res =true;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             for (int i = 0; i < richiestaArrayList.size(); i++) {
@@ -145,7 +146,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 String a = String.valueOf(db.insert(TABLE_RICHIESTA,null,values));
                 if(a.equals("-1")) {
-                    return false;
+                    res = false;
                 }
             }
 
@@ -155,9 +156,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return false;
         }
 
-        return true;
+        return res;
     }
     public boolean createPaziente(Paziente paziente) {
+        boolean res =true;
         try
         {
             SQLiteDatabase db = this.getWritableDatabase();
@@ -176,7 +178,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             values.put(KEY_IMAGE,paziente.getImage());
             String i = String.valueOf(db.insert(TABLE_PAZIENTE,null,values));
             if(i.equals("-1")) {
-                return false;
+                res= false;
             }
 
 
@@ -185,10 +187,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             e.getMessage();
             return false;
         }
-        return true;
+        return res;
     }
 
     public boolean createPazienti(ArrayList<Paziente> pazientiArrayList) {
+        boolean res =true;
         try {
             SQLiteDatabase db = this.getWritableDatabase();
             for (int i = 0; i < pazientiArrayList.size(); i++) {
@@ -208,7 +211,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values.put(KEY_IMAGE,paziente.getImage());
                 String a = String.valueOf(db.insert(TABLE_PAZIENTE,null,values));
                 if(a.equals("-1")) {
-                    return false;
+                    res = false;
                 }
             }
 
@@ -218,7 +221,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return false;
         }
 
-        return true;
+        return res;
     }
 
     public boolean createMedico(Medico medico) {

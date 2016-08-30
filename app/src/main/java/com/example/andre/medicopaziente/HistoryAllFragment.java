@@ -34,8 +34,7 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
         //
         //creato arraylist momentaneo per simulare ritorno dalla query su db!
         //
-        final ArrayList<Richiesta> returnfromDB = riempi();
-        returnfromDB.addAll(riempi2());
+        final ArrayList<Richiesta> returnfromDB = getRichieste();
         //
         //l'ultimo paramentro = array list da passare all'adapter!
         //nelle altre historyfragment non c'è!
@@ -115,44 +114,14 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
         }
     }
 
-    //
-    //funione momentanea per arraylist sopra!
-    //
-    public ArrayList<Richiesta> riempi(){
-        ArrayList<Richiesta> array = new ArrayList<>();
-        Richiesta elemento = new Richiesta();
-        elemento.setIdRichiesta(1);
-        elemento.setStato("C");
-        elemento.setTipo("Prescrizione");
-        elemento.setData_richiesta("2012/12/12 alle 12:00 ");
-        elemento.setNome_farmaco("Brufen");
-        elemento.setQuantita_farmaco(2);
-        array.add(elemento);
-        elemento.setIdRichiesta(2);
-        array.add(elemento);
-        elemento.setIdRichiesta(3);
-        array.add(elemento);
-        elemento.setIdRichiesta(4);
-        array.add(elemento);
 
-        return array;
-    }
-    public ArrayList<Richiesta> riempi2(){
-        ArrayList<Richiesta> array = new ArrayList<>();
-        Richiesta elemento = new Richiesta();
-        elemento.setIdRichiesta(1);
-        elemento.setStato("R");
-        elemento.setTipo("Visita");
-        elemento.setData_richiesta("2012/12/12 alle 14:00 ");
-        elemento.setNote_richiesta("Specialistica dermatologica presso LAB1");
-        array.add(elemento);
-        elemento.setIdRichiesta(2);
-        array.add(elemento);
-        elemento.setIdRichiesta(3);
-        array.add(elemento);
-        elemento.setIdRichiesta(4);
-        array.add(elemento);
-
-        return array;
+    public ArrayList<Richiesta> getRichieste(){
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        ArrayList<Richiesta> array = db.getAllPaziente(((HistoryActivity)getActivity()).paziente.getCodiceFiscale());
+        if(array!=null) {
+            return array;
+        }else{
+            return new ArrayList<Richiesta>();
+        }
     }
 }

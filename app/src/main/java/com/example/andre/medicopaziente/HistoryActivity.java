@@ -1,5 +1,6 @@
 package com.example.andre.medicopaziente;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,8 @@ public class HistoryActivity extends BasicDrawerActivity{
     private Myadapter mSectionsPagerAdapter;
 
     private ViewPager mViewPager;
+    Paziente paziente;
+    Medico medico;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +27,10 @@ public class HistoryActivity extends BasicDrawerActivity{
 
         TabLayout tab = (TabLayout) findViewById(R.id.tabs);
         tab.setVisibility(View.VISIBLE);
+
+        Intent intent = getIntent();
+        paziente = intent.getParcelableExtra("Paziente");
+        medico = intent.getParcelableExtra("Medico");
 
         ViewGroup content = (ViewGroup) findViewById(R.id.frag_container);
         getLayoutInflater().inflate(R.layout.activity_history, content, true);

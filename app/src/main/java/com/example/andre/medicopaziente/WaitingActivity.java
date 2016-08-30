@@ -21,8 +21,11 @@ public class WaitingActivity extends BasicDrawerActivity {
         paziente=intent.getParcelableExtra("Paziente");
         medico=intent.getParcelableExtra("Medico");
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        transaction.add(R.id.frag_container, new WaitingRequestFragment());
+        if(MainActivity.tipoUtente.equals("Medico"))
+            transaction.add(R.id.frag_container, new WaitingDocRequestFragment());
+        else {
+            transaction.add(R.id.frag_container, new WaitingRequestFragment());
+        }
         transaction.commit();
     }
 }

@@ -79,7 +79,7 @@ public class FarmacoSendRequest extends AppCompatActivity {
                 final String medicine = medicineName.getText().toString();
                 final String notes = noteFarmaco.getText().toString();
                 Calendar c = Calendar.getInstance();
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd 'alle' HH:mm:ss");
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd 'alle' HH:mm:ss");
                 final String formattedDate = df.format(c.getTime());
 
                 new AsyncCallSoap().execute(formattedDate,"Prescrizione", notes, medicine, medicineNum.toString(), cf_paziente, cf_medico);
