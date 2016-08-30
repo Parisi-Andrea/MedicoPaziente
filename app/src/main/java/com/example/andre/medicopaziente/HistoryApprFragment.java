@@ -48,6 +48,7 @@ public class HistoryApprFragment extends Fragment implements SwipeRefreshLayout.
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(lista.getContext(),DetailsActivity.class);
+                intent.putExtra("Paziente", ((HistoryActivity)getActivity()).paziente);
                 intent.putExtra("ITEM_CLICKED", returnfromDB.get(position));
                 startActivity(intent);
             }

@@ -268,7 +268,42 @@ public class Utils {
         snackbar.show();
     }
 
-    //
-    //tolta la funzione setNavigationView! la trovi in BasicDrawerActivity
-    //
+    public void creaRicettaRossa(Paziente paziente, Activity activity,Richiesta richiesta) {
+        //System.out.println("PIPPO");
+        try {
+            /*SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+
+            Date now = new Date();
+
+            String fileName = formatter.format(now);*/
+            String fileName = richiesta.getData_risposta().replace(" ","_").replace("/","_");
+            String outName = fileName + ".pdf";
+            String INPUTFILE = Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + "RicettaRossa.pdf";
+            String OUTPUTFILE = Environment.getExternalStorageDirectory() + File.separator + "MedicoPaziente" + File.separator + paziente.getCodiceFiscale() + File.separator + "Ricette" + File.separator + outName;
+            //Create PdfReader instance.
+            PdfReader pdfReader = new PdfReader(INPUTFILE);
+            //Create PdfStamper instance.
+            PdfStamper pdfStamper = new PdfStamper(pdfReader, new FileOutputStream(OUTPUTFILE));
+
+            PdfContentByte canvas = pdfStamper.getOverContent(1);
+
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(paziente.getCognome() + " " + paziente.getNome()), 20, PageSize.A5.getWidth() - 25, 0);
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(paziente.getResidenza()), 20, PageSize.A5.getWidth() - 45, 0);
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(paziente.getCodiceFiscale().replace("", "  ").trim()), PageSize.A5.getHeight() - 275, PageSize.A5.getWidth() - 95, 0);
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(richiesta.getNome_farmaco()), 25, PageSize.A5.getWidth() - 155, 0);
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(paziente.getMedico()), PageSize.A5.getHeight() - 160, PageSize.A5.getWidth() - 250, 0);
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(String.valueOf(richiesta.getQuantita_farmaco()).replace("", "  ").trim()), 55, PageSize.A5.getWidth() - 252, 0);
+            ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(richiesta.getData_risposta().substring(2,10).replace("/","").replace("","   ")),PageSize.A5.getHeight() - 292,PageSize.A5.getWidth() - 255, 0);
+            pdfStamper.close();
+            pdfReader.close();
+
+            System.out.println("PDF modified successfully.");
+            Toast.makeText(activity.getApplicationContext(), "Ricetta scaricata correttamente.", Toast.LENGTH_LONG).show();
+
+        } catch (Exception e) {
+
+            Toast.makeText(activity.getApplicationContext(), e.getMessage().toString(), Toast.LENGTH_LONG).show();
+        }
+        return;
+    }
 }

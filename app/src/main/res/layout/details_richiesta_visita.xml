@@ -168,6 +168,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
+            <Button
+                android:id="@+id/btnstampa_promemoria"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="Stampa Promemoria"
+                android:background="@color/color_cardview_info"
+                android:visibility="invisible"/>
         </LinearLayout>
     </ScrollView>
 </android.support.design.widget.CoordinatorLayout>
