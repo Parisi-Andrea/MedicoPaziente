@@ -16,10 +16,13 @@ import java.util.ArrayList;
 /**
  * Created by Annalisa on 24/08/2016.
  */
-public class HomeActivity extends BasicDrawerActivity{
+public class HomeActivity extends BasicDrawerActivity {
 
     private Medico medico;
     private Paziente paziente;
+    Richiesta ultimarichiestavisita_spec;
+    Richiesta ultimarichiestavisita_con;
+    Richiesta ultimarichiestaprescr;
     private static final String DESCRIZIONE_PRESCR = "Ultima prescrizione richiesta: ";
     private static final String DESCRIZIONE_VISITA = "Ultima visita di controllo richiesta ";
     private static final String DESCRIZIONE_VISITA_spec = "Ultima visita specialistica richiesta in ";
@@ -28,16 +31,13 @@ public class HomeActivity extends BasicDrawerActivity{
     private static final String DOCDESCRIZIONE_VISITA = "Ultima richiesta di visita di controllo ";
     private static final String DOCDESCRIZIONE_VISITA_spec = "Ultima richiesta di visita specialistica in ";
 
-    Utils u;
+    Utils u = new Utils();
     DatabaseHelper db = new DatabaseHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ViewGroup content = (ViewGroup) findViewById(R.id.frag_container);
-        /*getLayoutInflater().inflate(R.layout.cardview_info, content, true);
-        getLayoutInflater().inflate(R.layout.cardview_prescrizione, content, true);
-        getLayoutInflater().inflate(R.layout.cardview_visita, content, true);*/
         getLayoutInflater().inflate(R.layout.activity_home, content, true);
 
         TextView info_medico = (TextView) findViewById(R.id.info_text);
@@ -53,65 +53,65 @@ public class HomeActivity extends BasicDrawerActivity{
         TextView info_visita_spec = (TextView) findViewById(R.id.text_spec);
 
         Intent intent = getIntent();
-        if(MainActivity.tipoUtente.equals("Paziente")){
-            paziente = intent.getParcelableExtra("Paziente");
-            medico =riempiMedico();
-            //medico = db.getMedico(paziente.getCodiceFiscale());
-            //u.stringToImageView(img,medico.getImage());
-            info_medico.setText(medico.getNome()+" "+medico.getCognome());
-            img.setImageResource(R.drawable.ali_connors);
+        if (MainActivity.tipoUtente.equals("Paziente")) {
 
-            Richiesta ultimarichiestavisita_spec = getultimaRichiesta(db.getTipoRichieste("Visita specialistica"));
-            Richiesta ultimarichiestavisita_con = getultimaRichiesta(db.getTipoRichieste("Visita di controllo"));
-            Richiesta ultimarichiestaprescr = getultimaRichiesta(db.getTipoRichieste("Prescrizione"));
-            if(!(ultimarichiestaprescr==null)) {
+            paziente = intent.getParcelableExtra("Paziente");
+            medico = riempiMedico();
+            if(medico.getImage()==null || medico.getImage().equals(""))
+                img.setImageResource(R.drawable.immagine1);
+            else
+                u.stringToImageView(img,medico.getImage());
+            if(medico!=null)
+                info_medico.setText(medico.getNome() + " " + medico.getCognome());
+            else
+                info_medico.setText("");
+            ultimarichiestavisita_spec = getultimaRichiesta(db.getTipoRichieste(paziente.getCodiceFiscale(), "Visita specialistica"));
+            ultimarichiestavisita_con = getultimaRichiesta(db.getTipoRichieste(paziente.getCodiceFiscale(), "Visita di controllo"));
+            ultimarichiestaprescr = getultimaRichiesta(db.getTipoRichieste(paziente.getCodiceFiscale(), "Prescrizione"));
+            if (!(ultimarichiestaprescr == null)) {
                 data_prescrizione.setText(ultimarichiestaprescr.getData_richiesta());
                 info_prescrizione.setText(DESCRIZIONE_PRESCR + ultimarichiestaprescr.getNome_farmaco());
-            }
-            else
+            } else
                 info_prescrizione.setText("Nessuna Prescrizione richiesta.");
 
-            if(!(ultimarichiestavisita_con==null)) {
+            if (!(ultimarichiestavisita_con == null)) {
                 data_visita.setText(ultimarichiestavisita_con.getData_richiesta());
                 info_visita.setText(DESCRIZIONE_VISITA);
-            }
-            else
+            } else
                 info_visita.setText("Nessuna visita di controllo richiesta.");
 
-            if(!(ultimarichiestavisita_spec==null)) {
+            if (!(ultimarichiestavisita_spec == null)) {
                 data_visita_spec.setText(ultimarichiestavisita_spec.getData_richiesta());
                 info_visita_spec.setText(DESCRIZIONE_VISITA_spec + ultimarichiestavisita_spec.getNome_farmaco());
-            }
-            else
+            } else
                 info_visita_spec.setText("Nessuna visita specialistica richiesta.");
-        }
-        else{
+        } else {
             medico = intent.getParcelableExtra("Medico");
-            img.setImageBitmap(photo);
-            info_medico.setText(medico.getNome()+" "+medico.getCognome());
+            if(medico.getImage()==null || medico.getImage().equals(""))
+                img.setImageResource(R.drawable.immagine1);
+            else
+                u.stringToImageView(img,medico.getImage());
+            info_medico.setText(medico.getNome() + " " + medico.getCognome());
 
-            Richiesta ultimarichiestavisita_spec = getultimaRichiesta(db.getTipoRichieste("Visita specialistica"));
-            Richiesta ultimarichiestavisita_con = getultimaRichiesta(db.getTipoRichieste("Visita di controllo"));
-            Richiesta ultimarichiestaprescr = getultimaRichiesta(db.getTipoRichieste("Prescrizione"));
-            if(!(ultimarichiestaprescr==null)) {
+            ultimarichiestavisita_spec = getultimaRichiesta(db.getTipoRichieste(medico.getCodiceFiscale(), "Visita specialistica"));
+            ultimarichiestavisita_con = getultimaRichiesta(db.getTipoRichieste(medico.getCodiceFiscale(), "Visita di controllo"));
+            ultimarichiestaprescr = getultimaRichiesta(db.getTipoRichieste(medico.getCodiceFiscale(), "Prescrizione"));
+            if (!(ultimarichiestaprescr == null)) {
                 data_prescrizione.setText(ultimarichiestaprescr.getData_richiesta());
                 info_prescrizione.setText(DOCDESCRIZIONE_PRESCR + ultimarichiestaprescr.getNome_farmaco());
-            }
-            else
+            } else
                 info_prescrizione.setText("Nessuna Prescrizione richiesta.");
 
-            if(!(ultimarichiestavisita_con==null)) {
+            if (!(ultimarichiestavisita_con == null)) {
                 data_visita.setText(ultimarichiestavisita_con.getData_richiesta());
                 info_visita.setText(DOCDESCRIZIONE_VISITA);
-            }
-            else
+            } else
                 info_visita.setText("Nessuna visita di controllo richiesta.");
 
-            if(!(ultimarichiestavisita_spec==null)) {
+            if (!(ultimarichiestavisita_spec == null)) {
                 data_visita_spec.setText(ultimarichiestavisita_spec.getData_richiesta());
                 info_visita_spec.setText(DOCDESCRIZIONE_VISITA_spec + ultimarichiestavisita_spec.getNome_farmaco());
-            }
-            else
+            } else
                 info_visita_spec.setText("Nessuna visita specialistica richiesta.");
         }
 
@@ -121,32 +121,103 @@ public class HomeActivity extends BasicDrawerActivity{
         btnshow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(MainActivity.tipoUtente.equals("Paziente")){
+                if (MainActivity.tipoUtente.equals("Paziente")) {
                     Intent intentinfo = new Intent(HomeActivity.this, InfoActivity.class);
+                    intentinfo.putExtra("Paziente", paziente);
+                    startActivity(intentinfo);
+                } else {
+                    Intent intentinfo = new Intent(HomeActivity.this, DettagliMedico.class);
+                    intentinfo.putExtra("Medico", medico);
                     startActivity(intentinfo);
                 }
-                else{
-                    //Intent intentinfo = new Intent(HomeActivity.this, DettagliMedico.class);
-                   // startActivity(intentinfo);
+            }
+        });
+
+        CardView prescrizione = (CardView) findViewById(R.id.card_view_pres);
+        assert prescrizione != null;
+        prescrizione.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ultimarichiestaprescr!=null) {
+                    Intent intent1;
+                    if (ultimarichiestaprescr.getStato().equals("A")) {
+                        if (MainActivity.tipoUtente.equals("Medico")) {
+                            intent1 = new Intent(HomeActivity.this, RequestManagerFarmaco.class);
+                            intent1.putExtra("richiesta", ultimarichiestaprescr);
+                        } else {
+                            intent1 = new Intent(HomeActivity.this, DetailsInAttesa.class);
+                            intent1.putExtra("ITEM_CLICKED", ultimarichiestaprescr);
+                        }
+                    } else {
+                        intent1 = new Intent(HomeActivity.this, DetailsActivity.class);
+                        intent1.putExtra("ITEM_CLICKED", ultimarichiestaprescr);
+                    }
+                    startActivity(intent1);
+                }
+            }
+        });
+        CardView viscontrollo = (CardView) findViewById(R.id.card_view_vis);
+        assert viscontrollo != null;
+        viscontrollo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ultimarichiestavisita_con!=null) {
+                    Intent intent1;
+                    if (ultimarichiestavisita_con.getStato().equals("A")) {
+                        if (MainActivity.tipoUtente.equals("Medico")) {
+                            intent1 = new Intent(HomeActivity.this, RequestManagerVisita.class);
+                            intent1.putExtra("richiesta", ultimarichiestavisita_con);
+                        } else {
+                            intent1 = new Intent(HomeActivity.this, DetailsInAttesa.class);
+                            intent1.putExtra("ITEM_CLICKED", ultimarichiestavisita_con);
+                        }
+                    } else {
+                        intent1 = new Intent(HomeActivity.this, DetailsActivity.class);
+                        intent1.putExtra("ITEM_CLICKED", ultimarichiestavisita_con);
+                    }
+                    startActivity(intent1);
+                }
+            }
+        });
+        CardView visspec = (CardView) findViewById(R.id.card_view_spec);
+        assert visspec != null;
+        visspec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ultimarichiestavisita_spec!=null) {
+                    Intent intent1;
+                    if (ultimarichiestavisita_spec.getStato().equals("A")) {
+                        if (MainActivity.tipoUtente.equals("Medico")) {
+                            intent1 = new Intent(HomeActivity.this, RequestManagerVisita.class);
+                            intent1.putExtra("richiesta", ultimarichiestavisita_spec);
+                        } else {
+                            intent1 = new Intent(HomeActivity.this, DetailsInAttesa.class);
+                            intent1.putExtra("ITEM_CLICKED", ultimarichiestavisita_spec);
+                        }
+                    } else {
+                        intent1 = new Intent(HomeActivity.this, DetailsActivity.class);
+                        intent1.putExtra("ITEM_CLICKED", ultimarichiestavisita_spec);
+                    }
+                    startActivity(intent1);
                 }
             }
         });
     }
 
-    public Richiesta getultimaRichiesta(ArrayList<Richiesta> richieste){
-        if(richieste==null)
+    public Richiesta getultimaRichiesta(ArrayList<Richiesta> richieste) {
+        if (richieste == null)
             return null;
         else
             return richieste.get(0);
     }
+
     public Medico riempiMedico() {
-        Medico momentaneo = new Medico();
-        momentaneo.setNome("Ali");
-        momentaneo.setCognome("Connors");
-        momentaneo.setEmail("mario.rossi@mail.it");
-        momentaneo.setNTel("0461 961361");
-        momentaneo.setAmbulatorio("Rosti - via le man dal cul, 2");
-        momentaneo.setOrario("Lun-Ven 9.00-15.00");
-        return momentaneo;
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        if (MainActivity.tipoUtente.equals("Paziente")) {
+            Medico res = db.getMedico(paziente.getMedico());
+            return res;
+        } else {
+            return medico;
+        }
     }
 }

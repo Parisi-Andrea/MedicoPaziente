@@ -31,7 +31,7 @@ public class InfoDettagliPazActivity extends AppCompatActivity {
         //paziente momentaneo
         //
         Intent intent = getIntent();
-        Paziente returnfromDB = intent.getParcelableExtra("InfoPaziente");
+        Paziente returnfromDB = intent.getParcelableExtra("Paziente");
         MyInfoListAdapter adapter = new MyInfoListAdapter(this, R.layout.item_listinfo, returnfromDB);
         lista.setAdapter(adapter);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

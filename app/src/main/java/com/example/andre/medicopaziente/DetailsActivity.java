@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,11 +18,13 @@ import android.widget.TextView;
  */
 public class DetailsActivity extends AppCompatActivity {
 
+    Utils u = new Utils();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        Richiesta item_richiesta = intent.getParcelableExtra("ITEM_CLICKED");
+        final Richiesta item_richiesta = intent.getParcelableExtra("ITEM_CLICKED");
+        final Paziente paziente = intent.getParcelableExtra("Paziente");
         String tipo = item_richiesta.getTipo();
         String stato = item_richiesta.getStato();
         String data_richiesta = item_richiesta.getData_richiesta();
@@ -48,9 +51,7 @@ public class DetailsActivity extends AppCompatActivity {
             txttipo.setText(tipo);
             txtdescrizione.setText("Al medico è stato richiesto il farmaco:" + nome_farmaco);
             txtdata.setText(data_richiesta);
-            if (stato.equals("A"))
-                txtstato.setText("In Attesa");
-            else if (stato.equals("C"))
+            if (stato.equals("C"))
                 txtstato.setText("Completata");
             else if (stato.equals("R"))
                 txtstato.setText("Rifiutata");
@@ -81,6 +82,14 @@ public class DetailsActivity extends AppCompatActivity {
             txtdata.setText(data_richiesta);
             if (stato.equals("C")) {
                 txtstato.setText("Completata");
+                Button btn_promemoria = (Button) findViewById(R.id.btnstampa_promemoria);
+                btn_promemoria.setVisibility(View.VISIBLE);
+                btn_promemoria.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        u.creaRicettaRossa(paziente, DetailsActivity.this, item_richiesta);
+                    }
+                });
             } else if (stato.equals("R")) {
                 txtstato.setText("Rifiutata");
             }
@@ -112,6 +121,8 @@ public class DetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

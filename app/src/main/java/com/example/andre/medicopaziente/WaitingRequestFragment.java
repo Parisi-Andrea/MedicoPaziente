@@ -34,7 +34,7 @@ public class WaitingRequestFragment extends Fragment implements SwipeRefreshLayo
         //
         //creato arraylist momentaneo per simulare ritorno dalla query su db!
         //
-        final ArrayList<Richiesta> returnfromDB = riempi2();
+        final ArrayList<Richiesta> returnfromDB = getRequests();
         //
         //l'ultimo paramentro = array list da passare all'adapter!
         //nelle altre historyfragment non c'è!
@@ -64,8 +64,10 @@ public class WaitingRequestFragment extends Fragment implements SwipeRefreshLayo
         //versione per dati DB
         private ArrayList<Richiesta> richieste = new ArrayList<>();
         String tipo,  nome_farmaco, stato, data_ora;
+
         final String descrizione_prescrizione= "Al medico è stato richiesto il farmaco: ";
-        final String descrizione_visita= "Al medico è stata richiesta una visita ";
+        final String descrizione_visita= "Al medico è stata richiesta una visita di controllo";
+        final String descrizione_visita_specialistica= "Al medico è stata richiesta una visita specialistica in: ";
 
         public MyListAdapter(Context context, int layout, ArrayList<Richiesta> request){
             super(context, layout);
@@ -94,37 +96,26 @@ public class WaitingRequestFragment extends Fragment implements SwipeRefreshLayo
             TextView textView1 = (TextView) v.findViewById(R.id.descrizione);
             ImageView img = (ImageView) v.findViewById(R.id.immagine);
 
-            if(tipo=="Prescrizione") {
+            if(tipo.equals("Prescrizione")) {
                 textView1.setText(descrizione_prescrizione + nome_farmaco);
                 img.setImageResource(R.drawable.pill_icon);
-            }else if(tipo=="Visita") {
+            }else if(tipo.equals("Visita di contollo")) {
                 img.setImageResource(R.drawable.calendar);
                 textView1.setText(descrizione_visita);
+            } else if(tipo.equals("Visita specialistica")){
+                img.setImageResource(R.drawable.calendar);
+                textView1.setText(descrizione_visita_specialistica+nome_farmaco);
             }
             ImageView state = (ImageView) v.findViewById(R.id.state);
             state.setVisibility(View.GONE);
             return v;
         }
     }
-    //
-    //funione momentanea per arraylist sopra!
-    //
-    public ArrayList<Richiesta> riempi2(){
-        ArrayList<Richiesta> array = new ArrayList<>();
-        Richiesta elemento = new Richiesta();
-        elemento.setIdRichiesta(1);
-        elemento.setStato("A");
-        elemento.setTipo("Visita");
-        elemento.setData_richiesta("2012/12/12 alle 14:00 ");
-        elemento.setNote_richiesta("Specialistica dermatologica presso LAB1");
-        array.add(elemento);
-        elemento.setIdRichiesta(2);
-        array.add(elemento);
-        elemento.setIdRichiesta(3);
-        array.add(elemento);
-        elemento.setIdRichiesta(4);
-        array.add(elemento);
 
+
+    public ArrayList<Richiesta> getRequests(){
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        ArrayList<Richiesta> array = db.getAttesaPaziente(((WaitingActivity)getActivity()).paziente.getCodiceFiscale());
         return array;
     }
 }

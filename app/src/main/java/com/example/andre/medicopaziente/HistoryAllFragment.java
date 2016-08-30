@@ -34,8 +34,7 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
         //
         //creato arraylist momentaneo per simulare ritorno dalla query su db!
         //
-        final ArrayList<Richiesta> returnfromDB = riempi();
-        returnfromDB.addAll(riempi2());
+        final ArrayList<Richiesta> returnfromDB = getRichieste();
         //
         //l'ultimo paramentro = array list da passare all'adapter!
         //nelle altre historyfragment non c'è!
@@ -48,6 +47,7 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(lista.getContext(),DetailsActivity.class);
+                intent.putExtra("Paziente", ((HistoryActivity)getActivity()).paziente);
                 intent.putExtra("ITEM_CLICKED", returnfromDB.get(position));
                 startActivity(intent);
             }
@@ -70,6 +70,7 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
         String tipo,  nome_farmaco, stato, data_ora;
         final String descrizione_prescrizione= "Al medico è stato richiesto il farmaco: ";
         final String descrizione_visita= "Al medico è stata richiesta una visita ";
+        final String descrizione_visita_spec= "Al medico è stata richiesta una visita specialistica: ";
 
         public MyListAdapter(Context context, int layout, ArrayList<Richiesta> request){
             super(context, layout);
@@ -101,58 +102,31 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
                 textView1.setText(descrizione_prescrizione + nome_farmaco);
                 img.setImageResource(R.drawable.pill_icon);
             }
-            else if(tipo.equals("Visita")) {
+            else if(tipo.equals("Visita di controllo")) {
                 img.setImageResource(R.drawable.calendar);
                 textView1.setText(descrizione_visita);
+            } else{
+                img.setImageResource(R.drawable.calendar);
+                textView1.setText(descrizione_visita_spec + nome_farmaco);
             }
 
             ImageView state = (ImageView) v.findViewById(R.id.state);
-            if(stato=="C")
+            if(stato.equals("C"))
                 state.setImageResource(R.mipmap.ic_state_complete);
-            else if(stato=="R")
+            else if(stato.equals("R"))
                 state.setImageResource(R.mipmap.ic_state_refused);
             return v;
         }
     }
 
-    //
-    //funione momentanea per arraylist sopra!
-    //
-    public ArrayList<Richiesta> riempi(){
-        ArrayList<Richiesta> array = new ArrayList<>();
-        Richiesta elemento = new Richiesta();
-        elemento.setIdRichiesta(1);
-        elemento.setStato("C");
-        elemento.setTipo("Prescrizione");
-        elemento.setData_richiesta("2012/12/12 alle 12:00 ");
-        elemento.setNome_farmaco("Brufen");
-        elemento.setQuantita_farmaco(2);
-        array.add(elemento);
-        elemento.setIdRichiesta(2);
-        array.add(elemento);
-        elemento.setIdRichiesta(3);
-        array.add(elemento);
-        elemento.setIdRichiesta(4);
-        array.add(elemento);
 
-        return array;
-    }
-    public ArrayList<Richiesta> riempi2(){
-        ArrayList<Richiesta> array = new ArrayList<>();
-        Richiesta elemento = new Richiesta();
-        elemento.setIdRichiesta(1);
-        elemento.setStato("R");
-        elemento.setTipo("Visita");
-        elemento.setData_richiesta("2012/12/12 alle 14:00 ");
-        elemento.setNote_richiesta("Specialistica dermatologica presso LAB1");
-        array.add(elemento);
-        elemento.setIdRichiesta(2);
-        array.add(elemento);
-        elemento.setIdRichiesta(3);
-        array.add(elemento);
-        elemento.setIdRichiesta(4);
-        array.add(elemento);
-
-        return array;
+    public ArrayList<Richiesta> getRichieste(){
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        ArrayList<Richiesta> array = db.getAllPaziente(((HistoryActivity)getActivity()).paziente.getCodiceFiscale());
+        if(array!=null) {
+            return array;
+        }else{
+            return new ArrayList<Richiesta>();
+        }
     }
 }

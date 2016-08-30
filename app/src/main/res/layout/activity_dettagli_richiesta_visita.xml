@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:height="?android:attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:minHeight="80dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Richiedente: "
+                        android:textColor="@color/textColor"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:minHeight="80dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Codice fiscale richiedente: "
+                        android:textColor="@color/textColor"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:minHeight="80dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Stato: "
+                        android:textColor="@color/textColor"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:minHeight="80dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Data Richiesta: "
+                        android:textColor="@color/textColor"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:minHeight="80dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Tipo visita richiesta: "
+                        android:textColor="@color/textColor"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:minHeight="80dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:minHeight="80dp"
+                    android:id="@+id/layout_specialistica1"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Nome visita specialistica: "
+                        android:textColor="@color/textColor"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:id="@+id/break1"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:minHeight="80dp"
+                    android:layout_weight="3">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Note della richiesta: "
+                        android:textColor="@color/textColor"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:minHeight="80dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Data Risposta: "
+                        android:textColor="@color/textColor"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:minHeight="80dp"
+                    android:layout_weight="3">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Note Risposta: "
+                        android:textColor="@color/textColor"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+            </LinearLayout>
+
+
+
+
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:minHeight="80dp"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/richiedente"
+                        android:gravity="center_vertical"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:minHeight="80dp"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/cf_richiedente"
+                        android:gravity="center_vertical"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:minHeight="80dp"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/stato"
+                        android:gravity="center_vertical"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:minHeight="80dp"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/requestDate"
+                        android:gravity="center_vertical"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:minHeight="80dp"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/tipo_visita_richiesta"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:minHeight="80dp"
+                    android:id="@+id/layout_specialistica2"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/nome_visita_specialistica"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:id="@+id/break2"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:minHeight="80dp"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:maxLines="7"
+                        android:scrollbars="vertical"
+                        android:id="@+id/request_notes"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_gravity="center_vertical" />
+                </LinearLayout>
+
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:minHeight="80dp"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/data_risposta"
+                        android:gravity="center_vertical"
+                        android:textStyle="bold" />
+                </LinearLayout>
+                <View android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:background="@color/listDivider"></View>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="3"
+                    android:minHeight="80dp"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/note_risposta"
+                        android:gravity="center_vertical"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

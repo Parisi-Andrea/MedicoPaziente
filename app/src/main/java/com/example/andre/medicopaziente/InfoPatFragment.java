@@ -31,9 +31,7 @@ public class InfoPatFragment extends Fragment{
         View v = inflater.inflate(R.layout.activity_info, container, false);
         lista = (ListView) v.findViewById(R.id.list_info);
 
-        //
-        //creato arraylist momentaneo per simulare ritorno dalla query su db!
-        //
+    
         final ArrayList<Paziente> returnfromDB = riempi();
         //
         //l'ultimo paramentro = array list da passare all'adapter!
@@ -46,7 +44,7 @@ public class InfoPatFragment extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getContext(), InfoDettagliPazActivity.class);
-                intent.putExtra("InfoPaziente",returnfromDB.get(position) );
+                intent.putExtra("Paziente",returnfromDB.get(position) );
                 startActivity(intent);
             }
         });
@@ -74,7 +72,7 @@ public class InfoPatFragment extends Fragment{
             View v = inflater.inflate(R.layout.item_listinfo_pat, parent, false);
 
             TextView textView1 = (TextView) v.findViewById(R.id.nome_cognome);
-            textView1.setText(pazienti.get(position).getNome()+pazienti.get(position).getCognome());
+            textView1.setText(pazienti.get(position).getNome()+ " " +pazienti.get(position).getCognome());
             TextView textView2 = (TextView) v.findViewById(R.id.cf);
             textView2.setText(pazienti.get(position).getCodiceFiscale());
 
@@ -85,26 +83,14 @@ public class InfoPatFragment extends Fragment{
         }
     }
 
-    //
-    //funzione momentanea
-    //
+
     public ArrayList<Paziente> riempi(){
-        ArrayList<Paziente> array = new ArrayList<>();
-        Paziente elemento = new Paziente();
-        elemento.setCodiceFiscale("NLSFLP94T45L378G");
-        elemento.setNome("Annalisa");
-        elemento.setCognome("Filippi");
-        elemento.setDataNascita("05/12/1994");
-        elemento.setLuogoNascita("Trento");
-        elemento.setResidenza("via paludi, 42");
-        elemento.setEmail("annalisa.filippi@mail.it");
-        elemento.setNTel("0461 961361");
-
-        array.add(elemento);
-        array.add(elemento);
-        array.add(elemento);
-        array.add(elemento);
-
-        return array;
+        DatabaseHelper db = new DatabaseHelper(getContext());
+        ArrayList<Paziente> array = db.getPazientiMedico(((InfoActivity)getActivity()).medico.getCodiceFiscale());
+        if(array!=null) {
+            return array;
+        }else{
+            return new ArrayList<Paziente>();
+        }
     }
 }

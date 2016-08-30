@@ -2,6 +2,8 @@ package com.example.andre.medicopaziente;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -74,6 +76,41 @@ public class Profilo extends AppCompatActivity
             paziente = intent.getParcelableExtra("Paziente");
             medico = null;
         }
+
+        // reindirizzamento sulla richiesta ricevuta
+        // funzione che ritorni la Richiesta dato l'id della richiesta
+        if(intent.getStringExtra("richiesta")!=null) {
+            if (intent.getStringExtra("richiesta").equals("")) {
+                //Intent newPage = new Intent(this, WaitingActivity.class);
+            } else {
+                DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                Richiesta richiesta = db.getRichiesta(Integer.parseInt(intent.getStringExtra("richiesta")));
+                if (richiesta != null) {
+                    if (richiesta.getTipo().equals("farmaco")) {
+                        Intent newPage = new Intent(this, DettagliRichiestaFarmaco.class);
+                        newPage.putExtra("richiesta", richiesta);
+                    } else {
+                        Intent newPage = new Intent(this, DettagliRichiestaVisita.class);
+                        newPage.putExtra("richiesta", richiesta);
+                    }
+                }
+            }
+        }
+
+        // registrazione su GCM se non è già stata fatta sul dispositivo in uso
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE);
+        if(pref.getBoolean("GCMRegistration",false)== false){
+            Intent gcmIntent = new Intent(getApplicationContext(), RegistrationIntentService.class);
+            String cf = null;
+            if(medico!=null){
+                cf = medico.getCodiceFiscale();
+            } else if(paziente!=null){
+                cf = paziente.getCodiceFiscale();
+            }
+            gcmIntent.putExtra("codiceFiscale", cf);
+            startService(intent);
+        }
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

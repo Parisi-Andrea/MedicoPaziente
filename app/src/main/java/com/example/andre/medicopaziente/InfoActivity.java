@@ -21,10 +21,20 @@ import java.util.ArrayList;
  */
 public class InfoActivity extends BasicDrawerActivity {
 
+    public Medico medico;
+    public Paziente paziente;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        Intent intent = getIntent();
+        if(MainActivity.tipoUtente.equals("Paziente")) {
+            paziente = intent.getParcelableExtra("Paziente");
+        } else {
+            medico = intent.getParcelableExtra("Medico");
+        }
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         if(MainActivity.tipoUtente.equals("Medico"))

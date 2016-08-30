@@ -23,9 +23,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="top|right"
+            android:gravity="top|center"
             android:textColor="@color/windowBackground"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:layout_margin="10dp"/>
         <TextView
             android:id="@+id/text_prescrizione"
@@ -35,7 +35,7 @@
             android:singleLine="false"
             android:gravity="center"
             android:textColor="@color/windowBackground"
-            android:textSize="20sp"
+            android:textSize="118sp"
             android:layout_margin="10dp"/>
 
     </LinearLayout>
