@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:height="?android:attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+
+    </android.support.design.widget.AppBarLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:paddingTop="8dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:elevation="4dp"
+        android:paddingBottom="8dp">
+
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/photo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:civ_border_width="1dp"
+            app:civ_border_color="#FF000000"
+            android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:src="@drawable/immagine1" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="7"
+            android:paddingLeft="8dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="6"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:text="Damiano Chini"
+                    android:id="@+id/patient_name"
+                    android:autoText="false"
+                    android:textColor="@color/textColor"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="4">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/patient_id"
+                    android:textColor="@color/textColor"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingRight="4dp">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/info_button"
+                android:src="@mipmap/ic_info3"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <View android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:background="@color/listDivider"></View>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:id="@+id/request_manager_landscape">
+
+
+            <!--<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                android:layout_weight="2">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/name_requester"
+                    android:gravity="center_vertical"
+                    android:textStyle="bold"
+    android:textSize="20dp"
+                    android:layout_weight="2"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical|right"
+                    android:layout_weight="1">
+                    <Button
+                        android:id="@+id/viewRequesterDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dettagli&#10;Paziente"/>
+                </LinearLayout>
+            </LinearLayout>-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="horizontal"
+                android:layout_weight="10">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:minHeight="50dp"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Data Richiesta: "
+                            android:textColor="@color/textColor"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:background="@color/listDivider"></View>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:minHeight="50dp"
+                        android:gravity="center_vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Farmaco richiesto: "
+                            android:textColor="@color/textColor"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:background="@color/listDivider"></View>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:minHeight="50dp"
+                        android:layout_weight="1">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Numero confezioni richieste: "
+                            android:textColor="@color/textColor"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:background="@color/listDivider"></View>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:minHeight="50dp"
+                        android:layout_weight="3">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="Note della richiesta: "
+                            android:textColor="@color/textColor"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:minHeight="50dp"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:id="@+id/requestDate"
+                            android:gravity="center_vertical"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                    <View android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:background="@color/listDivider"></View>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:minHeight="50dp"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:id="@+id/medicine_requested"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:background="@color/listDivider"></View>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:minHeight="50dp"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:id="@+id/medicine_amount"
+                            android:textStyle="bold"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                    <View android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/listDivider"></View>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="3"
+                        android:minHeight="50dp"
+                        android:gravity="center">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:maxLines="7"
+                            android:scrollbars="vertical"
+                            android:id="@+id/request_notes"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_gravity="center_vertical" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:minHeight="50dp"
+                android:orientation="horizontal">
+                <Button android:theme="@style/RifiutaButton"
+                    android:id="@+id/rifiuta_richiesta"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Rifiuta"
+                    android:layout_weight="1" />
+                <Button android:theme="@style/AccettaButton"
+                    android:id="@+id/accetta_richiesta"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="Accetta"
+                    android:layout_weight="1"
+                    />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

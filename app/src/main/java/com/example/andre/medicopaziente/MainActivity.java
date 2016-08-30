@@ -41,15 +41,68 @@ public class MainActivity extends AppCompatActivity {
 
     private Medico docProfile;
     private Paziente patProfile;
-
+    private Intent notificationIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        /*Button b = (Button)findViewById(R.id.button);
+        b.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), ChooseRequestType.class);
+                Paziente paziente = new Paziente();
+                paziente.setNome("Damiano");
+                paziente.setCognome("Chini");
+                paziente.setNTel("0461246485");
+                paziente.setResidenza("Zambana");
+                paziente.setLuogoNascita("Trento");
+                paziente.setCodiceFiscale("CHNDMN93333L378G");
+                paziente.setEmail("chinidamiano@gmail.com");
+                paziente.setMedico("CHNDMN9411BL378G");
+                paziente.setDataNascita("11-02-1994");
+                intent.putExtra("paziente", paziente);
+                startActivity(intent);
+            }
+        });
+        Button b2 = (Button)findViewById(R.id.button2);
+        b2.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), RequestManagerFarmaco.class);
+                Richiesta richiesta = new Richiesta();
+                richiesta.setData_richiesta("2016-06-23");
+                richiesta.setTipo("C");
+                richiesta.setCf_medico("AAABBB99A11A111A");
+                richiesta.setCf_paziente("CHNDMN94B11L378G");
+                richiesta.setNome_farmaco("Cancro");
+                richiesta.setQuantita_farmaco(3);
+                richiesta.setNote_richiesta("Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)");
+                intent.putExtra("richiesta", richiesta);
+                startActivity(intent);
+            }
+        });
+        Button b3 = (Button)findViewById(R.id.button3);
+        b3.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), RequestManagerVisita.class);
+                Richiesta richiesta = new Richiesta();
+                richiesta.setData_richiesta("2016-06-23");
+                richiesta.setTipo("S");
+                richiesta.setCf_medico("AAABBB99A11A111A");
+                richiesta.setCf_paziente("CHNDMN94B11L378G");
+                richiesta.setNome_farmaco("Cancro");
+                richiesta.setQuantita_farmaco(3);
+                richiesta.setNote_richiesta("Button b3 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)Button b2 = (Button)");
+                intent.putExtra("richiesta", richiesta);
+                startActivity(intent);
+            }
+        });*/
         docProfile = new Medico();
         patProfile = new Paziente();
+        notificationIntent = getIntent();
 
         codiceFiscaleTxt = (EditText) findViewById(R.id.email);
         passwordTxt = (EditText) findViewById(R.id.password);
@@ -312,7 +365,11 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             Intent newPage = new Intent(getBaseContext(), HomeActivity.class);
-                            if (tipoUtente.equals("Medico")) {
+                            if (notificationIntent!=null && notificationIntent.getStringExtra("richiesta")!=null){
+                                newPage.putExtra("richiesta", notificationIntent.getStringExtra("richiesta"));
+                            }
+                            if(tipoUtente.equals("Medico")) {
+
 
                                 newPage.putExtra("Medico", docProfile);
                             } else if (tipoUtente.equals("Paziente")) {

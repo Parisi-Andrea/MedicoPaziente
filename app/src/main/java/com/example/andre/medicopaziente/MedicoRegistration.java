@@ -89,6 +89,9 @@ public class MedicoRegistration extends AppCompatActivity {
                 AlertDialog dialog= builder.create();
                 progressDialog.dismiss();
                 dialog.show();
+                Intent intent = new Intent(getApplicationContext(), RegistrationIntentService.class);
+                intent.putExtra("codiceFiscale", codiceFiscale);
+                startService(intent);
             }
             else
             {

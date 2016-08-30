@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class CallSoap {
 
-    String ipAddress = "http://192.168.173.1:80";
+    String ipAddress = "http://192.168.137.1:80";
 
     /****************************************************************************
      *
@@ -47,7 +47,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/PazienteRegistration";
         String OPERATION_NAME = "PazienteRegistration";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -134,7 +134,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/UpdateProfilo";
         String OPERATION_NAME = "UpdateProfilo";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -218,7 +218,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/GetPazienteInfo";
         String OPERATION_NAME = "GetPazienteInfo";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -264,7 +264,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/GetMedicoInfo";
         String OPERATION_NAME = "GetMedicoInfo";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -625,6 +625,56 @@ public class CallSoap {
         PI.setType(String.class);
         request.addProperty(PI);
 
+
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envelope.dotNet = true;
+        envelope.setOutputSoapObject(request);
+        String response = null;
+        try {
+            HttpTransportSE httpTransport = new HttpTransportSE(SOAP_ADDRESS);
+            httpTransport.setXmlVersionTag("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            httpTransport.debug = true;
+            httpTransport.call(SOAP_ACTION, envelope);
+            //response = httpTransport.responseDump;
+            SoapPrimitive tmp = (SoapPrimitive) envelope.getResponse();
+
+            response = tmp.toString();
+        } catch (Exception ex) {
+            response = ex.getMessage().toString();
+        }
+        return response;
+    }
+    public String Risposta(int id,String data_risposta,String note_risposta,String stato) {
+        String SOAP_ACTION = "http://tempuri.org/Risposta";
+        String OPERATION_NAME = "Risposta";
+        String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
+        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+
+        SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
+
+        PropertyInfo PI = new PropertyInfo();
+        PI.setName("data_risposta");
+        PI.setValue(data_risposta);
+        PI.setType(String.class);
+        request.addProperty(PI);
+
+        PI = new PropertyInfo();
+        PI.setName("note_risposta");
+        PI.setValue(note_risposta);
+        PI.setType(String.class);
+        request.addProperty(PI);
+
+        PI = new PropertyInfo();
+        PI.setName("stato");
+        PI.setValue(stato);
+        PI.setType(String.class);
+        request.addProperty(PI);
+
+        PI = new PropertyInfo();
+        PI.setName("id");
+        PI.setValue(id);
+        PI.setType(int.class);
+        request.addProperty(PI);
 
         SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
         envelope.dotNet = true;

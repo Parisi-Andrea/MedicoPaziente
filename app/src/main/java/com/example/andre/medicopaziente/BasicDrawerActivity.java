@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -50,6 +51,8 @@ public class BasicDrawerActivity extends AppCompatActivity
 
     public String login;
 
+    private static boolean updated = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +64,29 @@ public class BasicDrawerActivity extends AppCompatActivity
         //
         //da rimettere!
         //
-        //new AsyncCallSoapRichieste().execute();
+        if(!updated) {
+            /*new AsyncCallSoapRichieste().execute();
+            if (MainActivity.tipoUtente.equals("Medico")) {
+                new AsyncCallSoapPazienti().execute();
+            } else {
+                new AsyncCallSoapGetMedico().execute();
+            }*/
+
+            // registrazione sul server GCM se non è già stata fatta sul dispositivo in uso
+            SharedPreferences pref = getApplicationContext().getSharedPreferences(MainActivity.MY_PREFS_NAME, MODE_PRIVATE);
+            if(pref.getBoolean("GCMRegistration", false)== false){
+                Intent gcmIntent = new Intent(this,RegistrationIntentService.class);
+                String cf = null;
+                if(medico!=null){
+                    cf = medico.getCodiceFiscale();
+                } else if(paziente!=null){
+                    cf = paziente.getCodiceFiscale();
+                }
+                gcmIntent.putExtra("codiceFiscale", cf);
+                startService(gcmIntent);
+            }
+            updated = true;
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;//inserito per l'ide!
@@ -69,8 +94,9 @@ public class BasicDrawerActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 if(MainActivity.tipoUtente.equals("Paziente")) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    Intent requestIntent = new Intent(view.getContext(), ChooseRequestType.class);
+                    requestIntent.putExtra("Paziente", paziente);
+                    startActivity(requestIntent);
                 }
                 else{
                     Intent intent = new Intent(BasicDrawerActivity.this, WaitingActivity.class);
@@ -103,17 +129,48 @@ public class BasicDrawerActivity extends AppCompatActivity
         int id = intent.getIntExtra(EXTRA_PACK, 0);
         navigationView.setCheckedItem(id);
 
-            if (MainActivity.tipoUtente.equals("Medico")) {
-                medico = intent.getParcelableExtra("Medico");
-                paziente = null;
-                fab.setImageResource(R.drawable.ic_hourglass_full_white_24dp);
-                Menu drawermenu = navigationView.getMenu();
-                drawermenu.removeItem(R.id.nav_request);
-                drawermenu.getItem(3).setTitle("Informazioni Pazienti");
+
+        if (MainActivity.tipoUtente.equals("Medico")) {
+            medico = intent.getParcelableExtra("Medico");
+            paziente = null;
+            fab.setImageResource(R.drawable.ic_hourglass_full_white_24dp);
+            Menu drawermenu = navigationView.getMenu();
+            drawermenu.removeItem(R.id.nav_request);
+            drawermenu.getItem(3).setTitle("Informazioni Pazienti");
+        } else {
+            paziente = intent.getParcelableExtra("Paziente");
+            medico = null;
+        }
+
+        //
+        //tolto setNavigationview
+        //
+
+        // reindirizzamento sulla richiesta ricevuta il paziente, e sulla lista delle richieste in attesa il medico
+        if(intent.getStringExtra("richiesta")!=null) {
+            if (intent.getStringExtra("richiesta").equals("") && MainActivity.tipoUtente.equals("Medico")) {
+                Intent newPage = new Intent(this, WaitingActivity.class);
+                newPage.putExtra("Medico", medico);
+                startActivity(newPage);
             } else {
-                paziente = intent.getParcelableExtra("Paziente");
-                medico = null;
+                DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                Richiesta richiesta = db.getRichiesta(Integer.parseInt(intent.getStringExtra("richiesta")));
+                if (richiesta != null) {
+                    if (richiesta.getTipo().equals("Prescrizione")) {
+                        Intent newPage = new Intent(this, DettagliRichiestaFarmaco.class);
+                        newPage.putExtra("richiesta", richiesta);
+                        newPage.putExtra("Paziente", paziente);
+                        startActivity(newPage);
+                    } else {
+                        Intent newPage = new Intent(this, DettagliRichiestaVisita.class);
+                        newPage.putExtra("richiesta", richiesta);
+                        newPage.putExtra("Paziente", paziente);
+                        startActivity(newPage);
+                    }
+                }
             }
+        }
+
     }
 
     @Override
@@ -336,7 +393,15 @@ public class BasicDrawerActivity extends AppCompatActivity
         @Override
         protected ArrayList<Richiesta> doInBackground(String... params) {
             CallSoap cs = new CallSoap();
-            return cs.GetPazienteRequest(paziente.getCodiceFiscale());
+            if(MainActivity.tipoUtente.equals("Paziente")) {
+                return cs.GetPazienteRequest(paziente.getCodiceFiscale());
+            }else{
+                ArrayList<Richiesta> all = new ArrayList<Richiesta>();
+                all.addAll(cs.GetMedicoRequest(medico.getCodiceFiscale(), "A"));
+                all.addAll(cs.GetMedicoRequest(medico.getCodiceFiscale(), "R"));
+                all.addAll(cs.GetMedicoRequest(medico.getCodiceFiscale(), "C"));
+                return all;
+            }
 
         }
 
@@ -352,6 +417,62 @@ public class BasicDrawerActivity extends AppCompatActivity
                 int a = 10;
                 a++;
                 System.out.println(a);
+            }
+            progressDialog.dismiss();
+
+        }
+    }
+    public class AsyncCallSoapPazienti extends AsyncTask<String, Void, ArrayList<Paziente>> {
+
+        @Override
+        protected ArrayList<Paziente> doInBackground(String... params) {
+            CallSoap cs = new CallSoap();
+            if(MainActivity.tipoUtente.equals("Medico")) {
+                return cs.GetAllPazientiForMedico(medico.getCodiceFiscale());
+            }else{
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(BasicDrawerActivity.this, "Attendere", "Aggiornamento pazienti...", true);
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Paziente> s) {
+            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            if(s!=null) {
+                db.createPazienti(s);
+            }
+            progressDialog.dismiss();
+
+        }
+    }
+    public class AsyncCallSoapGetMedico extends AsyncTask<String, Void, Medico> {
+
+        @Override
+        protected Medico doInBackground(String... params) {
+            CallSoap cs = new CallSoap();
+            if(MainActivity.tipoUtente.equals("Paziente")) {
+                return cs.GetMedicoInfo(paziente.getMedico());
+            }else{
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = ProgressDialog.show(BasicDrawerActivity.this, "Attendere", "Aggiornamento richieste...", true);
+        }
+
+        @Override
+        protected void onPostExecute(Medico s) {
+            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            if(s!=null) {
+                db.createMedico(s);
             }
             progressDialog.dismiss();
 

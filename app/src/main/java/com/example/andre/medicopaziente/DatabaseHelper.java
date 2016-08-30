@@ -187,6 +187,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return true;
     }
+
+    public boolean createPazienti(ArrayList<Paziente> pazientiArrayList) {
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            for (int i = 0; i < pazientiArrayList.size(); i++) {
+                Paziente paziente = pazientiArrayList.get(i);
+
+                ContentValues values = new ContentValues();
+                values.put(KEY_ID, paziente.getCodiceFiscale());
+                values.put(KEY_NOME, paziente.getNome());
+                values.put(KEY_COGNOME, paziente.getCognome());
+                values.put(KEY_DATA_NASCITA_PAZIENTE,paziente.getDataNascita());
+                values.put(KEY_LUOGO_NASCITA_PAZIENTE,paziente.getLuogoNascita());
+                values.put(KEY_RESIDENZA_PAZIENTE,paziente.getResidenza());
+                values.put(KEY_PASSWORD, paziente.getPassword());
+                values.put(KEY_EMAIL,paziente.getEmail());
+                values.put(KEY_NTEL,paziente.getNTel());
+                values.put(KEY_CF_MEDICO,paziente.getMedico());
+                values.put(KEY_IMAGE,paziente.getImage());
+                String a = String.valueOf(db.insert(TABLE_PAZIENTE,null,values));
+                if(a.equals("-1")) {
+                    return false;
+                }
+            }
+
+        } catch (SQLiteException s)
+        {
+            s.getMessage();
+            return false;
+        }
+
+        return true;
+    }
+
     public boolean createMedico(Medico medico) {
         try
         {
@@ -207,7 +241,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if(i.equals("-1")) {
                 return false;
             }
-            Log.e(LOG,i);
+            Log.e(LOG, i);
             int s = 10;
         } catch (SQLiteException e)
         {
@@ -230,7 +264,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Log.e(LOG, selectQuery);
 
-        Cursor c = db.rawQuery(selectQuery,null);
+        Cursor c = db.rawQuery(selectQuery, null);
 
         if(c.getCount()<=0)
         {
@@ -350,10 +384,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return -1;
         }
     }
-
-
-
-
 
     public Richiesta getRichiesta(Integer idRichiesta) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -734,11 +764,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return null;
         }
     }
-
-    public ArrayList<Richiesta> getTipoRichieste(String tipo) {
+    public ArrayList<Richiesta> getTipoRichieste(String cfPaziente, String tipo) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String selectQuery = "Select * FROM " + TABLE_RICHIESTA + " WHERE "
+                +   KEY_CF_PAZIENTE_RICHIESTA + " =  \"" + cfPaziente + "\" AND "
                 +   KEY_TIPO_RICHIESTA + " =  \"" + tipo + "\" ORDER BY " + KEY_DATA_RICHIESTA + " DESC";
 
         Log.e(LOG, selectQuery);
