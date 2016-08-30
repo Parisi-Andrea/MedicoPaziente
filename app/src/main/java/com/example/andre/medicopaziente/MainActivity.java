@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 //
                 //modifiche per run application! da modificare per versione finale!
                 //
-                /*  = "Paziente";
+                /*tipoUtente = "Paziente";
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                 Paziente paziente = new Paziente();
                 paziente.setNome("Damiano");
