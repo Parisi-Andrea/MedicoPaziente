@@ -123,25 +123,25 @@ public class MainActivity extends AppCompatActivity {
                 //
                 //da rimettere!
                 //
-                //login(v);
+                login(v);
 
                 //
                 //modifiche per run application! da modificare per versione finale!
                 //
-                tipoUtente = "Medico";
-                Medico elemento = new Medico();
-                elemento.setCodiceFiscale("MRORSS94T05E378A");
-                elemento.setNome("Mario");
-                elemento.setCognome("Rossi");
-                //elemento.setDataNascita("05/12/1994");
-                //elemento.setLuogoNascita("Trento");
-                //elemento.setResidenza("via paludi, 104");
-                elemento.setEmail("mario.rossi@mail.it");
-                elemento.setNTel("0461 961361");
-                //elemento.setMedico("FLPNLS94T45L378G");
+                /*tipoUtente = "Paziente";
                 Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                intent.putExtra("Medico", elemento);
-                startActivity(intent);
+                Paziente paziente = new Paziente();
+                paziente.setNome("Damiano");
+                paziente.setCognome("Chini");
+                paziente.setNTel("0461246485");
+                paziente.setResidenza("Zambana");
+                paziente.setLuogoNascita("Trento");
+                paziente.setCodiceFiscale("CHNDMN94B11L378G");
+                paziente.setEmail("chinidamiano@gmail.com");
+                paziente.setMedico("CHNDMN94B11L378G");
+                paziente.setDataNascita("11-02-1994");
+                intent.putExtra("Paziente", paziente);
+                startActivity(intent);*/
                 //
                 //
             }

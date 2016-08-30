@@ -99,7 +99,7 @@ public class DetailsInAttesaDoc extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 Intent intent1 = new Intent(DetailsInAttesaDoc.this, InfoDettagliPazActivity.class);
-                intent1.putExtra("InfoPaziente", paz);
+                intent1.putExtra("Paziente", paz);
                 startActivity(intent1);
             }
         });

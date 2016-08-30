@@ -24,8 +24,6 @@ import java.util.ArrayList;
 public class InfoDoctorFragment extends Fragment {
 
     ListView lista;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -79,7 +77,7 @@ public class InfoDoctorFragment extends Fragment {
             orario = medico.getOrario();
 
             dati_medico.add("immagine");
-            dati_medico.add(nome+cognome);
+            dati_medico.add(nome + " " + cognome);
             dati_medico.add(email);
             dati_medico.add(nTel);
             dati_medico.add(ambulatorio);
@@ -119,13 +117,9 @@ public class InfoDoctorFragment extends Fragment {
     }
 
     public Medico riempiMedico() {
-        Medico momentaneo = new Medico();
-        momentaneo.setNome("Mario");
-        momentaneo.setCognome("Rossi");
-        momentaneo.setEmail("mario.rossi@mail.it");
-        momentaneo.setNTel("0461 961361");
-        momentaneo.setAmbulatorio("Rosti - via le man dal cul, 2");
-        momentaneo.setOrario("Lun-Ven 9.00-15.00");
-        return momentaneo;
+        DatabaseHelper db =new DatabaseHelper(getContext());
+        Medico res = db.getMedico(((InfoActivity)getActivity()).paziente.getMedico());
+
+        return res;
     }
 }

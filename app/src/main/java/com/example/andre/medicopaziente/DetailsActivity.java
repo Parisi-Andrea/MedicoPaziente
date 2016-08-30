@@ -48,9 +48,7 @@ public class DetailsActivity extends AppCompatActivity {
             txttipo.setText(tipo);
             txtdescrizione.setText("Al medico è stato richiesto il farmaco:" + nome_farmaco);
             txtdata.setText(data_richiesta);
-            if (stato.equals("A"))
-                txtstato.setText("In Attesa");
-            else if (stato.equals("C"))
+            if (stato.equals("C"))
                 txtstato.setText("Completata");
             else if (stato.equals("R"))
                 txtstato.setText("Rifiutata");

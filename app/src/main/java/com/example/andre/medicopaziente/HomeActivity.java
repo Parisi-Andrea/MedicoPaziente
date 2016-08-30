@@ -61,9 +61,9 @@ public class HomeActivity extends BasicDrawerActivity{
             info_medico.setText(medico.getNome()+" "+medico.getCognome());
             img.setImageResource(R.drawable.ali_connors);
 
-            Richiesta ultimarichiestavisita_spec = getultimaRichiesta(db.getTipoRichieste("Visita specialistica"));
-            Richiesta ultimarichiestavisita_con = getultimaRichiesta(db.getTipoRichieste("Visita di controllo"));
-            Richiesta ultimarichiestaprescr = getultimaRichiesta(db.getTipoRichieste("Prescrizione"));
+            Richiesta ultimarichiestavisita_spec = getultimaRichiesta(db.getTipoRichieste(paziente.getCodiceFiscale(),"Visita specialistica"));
+            Richiesta ultimarichiestavisita_con = getultimaRichiesta(db.getTipoRichieste(paziente.getCodiceFiscale(),"Visita di controllo"));
+            Richiesta ultimarichiestaprescr = getultimaRichiesta(db.getTipoRichieste(paziente.getCodiceFiscale(),"Prescrizione"));
             if(!(ultimarichiestaprescr==null)) {
                 data_prescrizione.setText(ultimarichiestaprescr.getData_richiesta());
                 info_prescrizione.setText(DESCRIZIONE_PRESCR + ultimarichiestaprescr.getNome_farmaco());
@@ -90,9 +90,9 @@ public class HomeActivity extends BasicDrawerActivity{
             img.setImageBitmap(photo);
             info_medico.setText(medico.getNome()+" "+medico.getCognome());
 
-            Richiesta ultimarichiestavisita_spec = getultimaRichiesta(db.getTipoRichieste("Visita specialistica"));
-            Richiesta ultimarichiestavisita_con = getultimaRichiesta(db.getTipoRichieste("Visita di controllo"));
-            Richiesta ultimarichiestaprescr = getultimaRichiesta(db.getTipoRichieste("Prescrizione"));
+            Richiesta ultimarichiestavisita_spec = getultimaRichiesta(db.getTipoRichieste(medico.getCodiceFiscale(),"Visita specialistica"));
+            Richiesta ultimarichiestavisita_con = getultimaRichiesta(db.getTipoRichieste(medico.getCodiceFiscale(),"Visita di controllo"));
+            Richiesta ultimarichiestaprescr = getultimaRichiesta(db.getTipoRichieste(medico.getCodiceFiscale(),"Prescrizione"));
             if(!(ultimarichiestaprescr==null)) {
                 data_prescrizione.setText(ultimarichiestaprescr.getData_richiesta());
                 info_prescrizione.setText(DOCDESCRIZIONE_PRESCR + ultimarichiestaprescr.getNome_farmaco());
@@ -123,11 +123,13 @@ public class HomeActivity extends BasicDrawerActivity{
             public void onClick(View v) {
                 if(MainActivity.tipoUtente.equals("Paziente")){
                     Intent intentinfo = new Intent(HomeActivity.this, InfoActivity.class);
+                    intentinfo.putExtra("Paziente", paziente);
                     startActivity(intentinfo);
                 }
                 else{
-                    //Intent intentinfo = new Intent(HomeActivity.this, DettagliMedico.class);
-                   // startActivity(intentinfo);
+                    Intent intentinfo = new Intent(HomeActivity.this, DettagliMedico.class);
+                    intentinfo.putExtra("Medico", medico);
+                    startActivity(intentinfo);
                 }
             }
         });

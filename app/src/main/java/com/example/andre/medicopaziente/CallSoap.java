@@ -308,7 +308,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/GetPazienteRequest";
         String OPERATION_NAME = "GetPazienteRequest";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -362,7 +362,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/GetMedicoRequest";
         String OPERATION_NAME = "GetMedicoRequest";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -420,7 +420,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/AutenticazioneMedico";
         String OPERATION_NAME = "AutenticazioneMedico";
         String WSDL_TAREGET_NAMESPACE ="http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE,OPERATION_NAME);
 
@@ -480,7 +480,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/AutenticazionePaziente";
         String OPERATION_NAME = "AutenticazionePaziente";
         String WSDL_TAREGET_NAMESPACE ="http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE,OPERATION_NAME);
 
@@ -540,7 +540,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/Richiesta";
         String OPERATION_NAME = "Richiesta";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -615,7 +615,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/GetImage";
         String OPERATION_NAME = "GetImage";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
         PropertyInfo PI = new PropertyInfo();
@@ -648,7 +648,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/Risposta";
         String OPERATION_NAME = "Risposta";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -702,7 +702,7 @@ public class CallSoap {
         OPERATION_NAME = "InsertImage";
 
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -749,7 +749,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/MedicoRegistration";
         String OPERATION_NAME = "MedicoRegistration";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
@@ -813,7 +813,7 @@ public class CallSoap {
         String SOAP_ACTION = "http://tempuri.org/GetAllPazientiForMedico";
         String OPERATION_NAME = "GetAllPazientiForMedico";
         String WSDL_TAREGET_NAMESPACE = "http://tempuri.org/";
-        String SOAP_ADDRESS = "http://192.168.173.1:80/test/WebService1.asmx";
+        String SOAP_ADDRESS = "http://192.168.137.1:80/test/WebService1.asmx";
 
         SoapObject request = new SoapObject(WSDL_TAREGET_NAMESPACE, OPERATION_NAME);
 
