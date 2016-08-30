@@ -90,7 +90,7 @@ public class HomeActivity extends BasicDrawerActivity {
             if(medico.getImage()==null || medico.getImage().equals(""))
                 img.setImageResource(R.drawable.immagine1);
             else
-                img.setImageBitmap(photo);
+                u.stringToImageView(img,medico.getImage());
             info_medico.setText(medico.getNome() + " " + medico.getCognome());
 
             ultimarichiestavisita_spec = getultimaRichiesta(db.getTipoRichieste(medico.getCodiceFiscale(), "Visita specialistica"));
