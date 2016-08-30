@@ -54,13 +54,14 @@ public class HomeActivity extends BasicDrawerActivity {
 
         Intent intent = getIntent();
         if (MainActivity.tipoUtente.equals("Paziente")) {
+
             paziente = intent.getParcelableExtra("Paziente");
             medico = riempiMedico();
-            //medico = db.getMedico(paziente.getCodiceFiscale());
-            //u.stringToImageView(img,medico.getImage());
+            if(photo==null || photo.equals(""))
+                img.setImageResource(R.drawable.immagine1);
+            else
+                u.stringToImageView(img,medico.getImage());
             info_medico.setText(medico.getNome() + " " + medico.getCognome());
-            img.setImageResource(R.drawable.ali_connors);
-
             ultimarichiestavisita_spec = getultimaRichiesta(db.getTipoRichieste(paziente.getCodiceFiscale(), "Visita specialistica"));
             ultimarichiestavisita_con = getultimaRichiesta(db.getTipoRichieste(paziente.getCodiceFiscale(), "Visita di controllo"));
             ultimarichiestaprescr = getultimaRichiesta(db.getTipoRichieste(paziente.getCodiceFiscale(), "Prescrizione"));

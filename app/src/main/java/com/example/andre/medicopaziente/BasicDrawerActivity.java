@@ -61,9 +61,6 @@ public class BasicDrawerActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //
-        //da rimettere!
-        //
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -141,9 +138,7 @@ public class BasicDrawerActivity extends AppCompatActivity
             }
             updated = true;
         }
-        //
-        //tolto setNavigationview
-        //
+
 
         // reindirizzamento sulla richiesta ricevuta il paziente, e sulla lista delle richieste in attesa il medico
         if(intent.getStringExtra("richiesta")!=null) {
@@ -182,10 +177,6 @@ public class BasicDrawerActivity extends AppCompatActivity
         }
     }
 
-
-    //
-    //rimessa funzione controlla che sia corretta!
-    //
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

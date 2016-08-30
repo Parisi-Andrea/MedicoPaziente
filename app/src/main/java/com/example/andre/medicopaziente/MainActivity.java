@@ -253,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
             switch (tipoUtente) {
                 case "Medico":
                     //Cerco di fare il login sul web service
-                    //docProfile = CS.LoginMedico(username, password, tipoUtente);
+                    docProfile = CS.LoginMedico(username, password, tipoUtente);
 
                     //Se ci sono riuscito controlla la password e creo il db interno
                     if (docProfile != null) {
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case "Paziente":
-                    //patProfile = CS.LoginPaziente(username, password, tipoUtente);
+                    patProfile = CS.LoginPaziente(username, password, tipoUtente);
                     if (patProfile != null) {
                         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
                         if (!db.createPaziente(patProfile))
