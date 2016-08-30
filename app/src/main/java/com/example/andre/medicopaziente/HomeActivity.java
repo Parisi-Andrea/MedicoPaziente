@@ -87,7 +87,7 @@ public class HomeActivity extends BasicDrawerActivity {
                 info_visita_spec.setText("Nessuna visita specialistica richiesta.");
         } else {
             medico = intent.getParcelableExtra("Medico");
-            if(photo==null || photo.equals(""))
+            if(medico.getImage()==null || medico.getImage().equals(""))
                 img.setImageResource(R.drawable.immagine1);
             else
                 img.setImageBitmap(photo);
