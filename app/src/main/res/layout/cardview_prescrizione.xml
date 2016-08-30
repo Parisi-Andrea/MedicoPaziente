@@ -35,7 +35,7 @@
             android:singleLine="false"
             android:gravity="center"
             android:textColor="@color/windowBackground"
-            android:textSize="20sp"
+            android:textSize="118sp"
             android:layout_margin="10dp"/>
 
     </LinearLayout>

@@ -57,7 +57,7 @@ public class HomeActivity extends BasicDrawerActivity {
 
             paziente = intent.getParcelableExtra("Paziente");
             medico = riempiMedico();
-            if(photo==null || photo.equals(""))
+            if(medico.getImage()==null || medico.getImage().equals(""))
                 img.setImageResource(R.drawable.immagine1);
             else
                 u.stringToImageView(img,medico.getImage());

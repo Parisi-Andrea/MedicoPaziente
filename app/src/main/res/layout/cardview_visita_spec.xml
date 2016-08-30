@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="top|center"
-            android:text="2016-05-04"
             android:textColor="@color/windowBackground"
             android:textSize="18sp"
             android:layout_margin="10dp"/>
@@ -33,7 +32,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:singleLine="false"
-            android:text="Ultima richiesta di visita di controllo"
             android:gravity="center"
             android:textColor="@color/windowBackground"
             android:textSize="18sp"
