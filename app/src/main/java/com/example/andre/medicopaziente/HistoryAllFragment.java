@@ -111,9 +111,9 @@ public class HistoryAllFragment extends Fragment implements SwipeRefreshLayout.O
             }
 
             ImageView state = (ImageView) v.findViewById(R.id.state);
-            if(stato=="C")
+            if(stato.equals("C"))
                 state.setImageResource(R.mipmap.ic_state_complete);
-            else if(stato=="R")
+            else if(stato.equals("R"))
                 state.setImageResource(R.mipmap.ic_state_refused);
             return v;
         }
