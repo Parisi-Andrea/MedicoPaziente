@@ -169,7 +169,7 @@ public class DettagliPaziente extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        Intent newPage = new Intent(DettagliPaziente.this, MainActivity.class);
+                        Intent newPage = new Intent(DettagliPaziente.this, HomeActivity.class);
                         DettagliPaziente.this.finish();
                         startActivity(newPage);
                     }
