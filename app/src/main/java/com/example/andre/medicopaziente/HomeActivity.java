@@ -31,7 +31,7 @@ public class HomeActivity extends BasicDrawerActivity {
     private static final String DOCDESCRIZIONE_VISITA = "Ultima richiesta di visita di controllo ";
     private static final String DOCDESCRIZIONE_VISITA_spec = "Ultima richiesta di visita specialistica in ";
 
-    Utils u;
+    Utils u = new Utils();
     DatabaseHelper db = new DatabaseHelper(this);
 
     @Override
